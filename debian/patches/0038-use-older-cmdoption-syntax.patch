@@ -1,0 +1,21 @@
+From: Anthony Sottile <asottile@umich.edu>
+Date: Mon, 5 Oct 2020 16:26:58 -0700
+Subject: use older cmdoption syntax
+
+---
+ Doc/library/py_compile.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Doc/library/py_compile.rst b/Doc/library/py_compile.rst
+index 4fba4cb..e76967f 100644
+--- a/Doc/library/py_compile.rst
++++ b/Doc/library/py_compile.rst
+@@ -137,7 +137,7 @@ not be compiled.
+ 
+ .. program:: python -m py_compile
+ 
+-.. cmdoption:: <file> ... <fileN>
++.. cmdoption:: filenames
+                -
+ 
+    Positional arguments are files to compile.  If ``-`` is the only
