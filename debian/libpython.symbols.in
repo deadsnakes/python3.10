@@ -1,7 +1,5 @@
  PyAST_CompileEx@Base @SVER@
  PyAST_CompileObject@Base @SVER@
- PyAST_FromNode@Base @SVER@
- PyAST_FromNodeObject@Base @SVER@
  PyAST_Validate@Base @SVER@
  PyArena_AddPyObject@Base @SVER@
  PyArena_Free@Base @SVER@
@@ -102,6 +100,7 @@
  PyCodec_StreamReader@Base @SVER@
  PyCodec_StreamWriter@Base @SVER@
  PyCodec_StrictErrors@Base @SVER@
+ PyCodec_Unregister@Base 3.10.0~a1
  PyCodec_XMLCharRefReplaceErrors@Base @SVER@
  PyCompile_OpcodeStackEffect@Base @SVER@
  PyCompile_OpcodeStackEffectWithJump@Base @SVER@
@@ -363,6 +362,7 @@
  PyGILState_Release@Base @SVER@
  PyGen_New@Base @SVER@
  PyGen_NewWithQualName@Base @SVER@
+ PyGen_Send@Base 3.10.0~a1
  PyGen_Type@Base @SVER@
  PyGetSetDescr_Type@Base @SVER@
  PyHash_GetFuncDef@Base @SVER@
@@ -491,7 +491,6 @@
  PyLong_FromSize_t@Base @SVER@
  PyLong_FromSsize_t@Base @SVER@
  PyLong_FromString@Base @SVER@
- PyLong_FromUnicode@Base @SVER@
  PyLong_FromUnicodeObject@Base @SVER@
  PyLong_FromUnsignedLong@Base @SVER@
  PyLong_FromUnsignedLongLong@Base @SVER@
@@ -561,11 +560,6 @@
  PyModule_NewObject@Base @SVER@
  PyModule_SetDocString@Base @SVER@
  PyModule_Type@Base @SVER@
- PyNode_AddChild@Base @SVER@
- PyNode_Compile@Base @SVER@
- PyNode_Free@Base @SVER@
- PyNode_ListTree@Base @SVER@
- PyNode_New@Base @SVER@
  PyNumber_Absolute@Base @SVER@
  PyNumber_Add@Base @SVER@
  PyNumber_And@Base @SVER@
@@ -632,10 +626,7 @@
  PyOS_strtoul@Base @SVER@
  PyOS_vsnprintf@Base @SVER@
  PyObject_ASCII@Base @SVER@
- PyObject_AsCharBuffer@Base @SVER@
  PyObject_AsFileDescriptor@Base @SVER@
- PyObject_AsReadBuffer@Base @SVER@
- PyObject_AsWriteBuffer@Base @SVER@
  PyObject_Bytes@Base @SVER@
  PyObject_Call@Base @SVER@
  PyObject_CallFinalizer@Base @SVER@
@@ -648,7 +639,6 @@
  PyObject_CallObject@Base @SVER@
  PyObject_Calloc@Base @SVER@
  PyObject_CheckBuffer@Base 3.9.0~a6
- PyObject_CheckReadBuffer@Base @SVER@
  PyObject_ClearWeakRefs@Base @SVER@
  PyObject_CopyData@Base @SVER@
  PyObject_DelItem@Base @SVER@
@@ -703,28 +693,9 @@
  PyObject_VectorcallMethod@Base 3.9.0~a4
  PyParser_ASTFromFile@Base @SVER@
  PyParser_ASTFromFileObject@Base @SVER@
+ PyParser_ASTFromFilename@Base 3.10.0~a1
  PyParser_ASTFromString@Base @SVER@
  PyParser_ASTFromStringObject@Base @SVER@
- PyParser_ClearError@Base @SVER@
- PyParser_ParseFile@Base @SVER@
- PyParser_ParseFileFlags@Base @SVER@
- PyParser_ParseFileFlagsEx@Base @SVER@
- PyParser_ParseFileObject@Base @SVER@
- PyParser_ParseString@Base @SVER@
- PyParser_ParseStringFlags@Base @SVER@
- PyParser_ParseStringFlagsFilename@Base @SVER@
- PyParser_ParseStringFlagsFilenameEx@Base @SVER@
- PyParser_ParseStringObject@Base @SVER@
- PyParser_SetError@Base @SVER@
- PyParser_SimpleParseFile@Base @SVER@
- PyParser_SimpleParseFileFlags@Base @SVER@
- PyParser_SimpleParseString@Base @SVER@
- PyParser_SimpleParseStringFlags@Base @SVER@
- PyParser_SimpleParseStringFlagsFilename@Base @SVER@
- PyPegen_ASTFromFileObject@Base 3.9.0~a6
- PyPegen_ASTFromFilename@Base 3.9.0~b1
- PyPegen_ASTFromString@Base 3.9.0~a6
- PyPegen_ASTFromStringObject@Base 3.9.0~a6
  PyPickleBuffer_FromObject@Base 3.8.0~b1
  PyPickleBuffer_GetBuffer@Base 3.8.0~b1
  PyPickleBuffer_Release@Base 3.8.0~b1
@@ -735,25 +706,13 @@
  PyRangeIter_Type@Base @SVER@
  PyRange_Type@Base @SVER@
  PyReversed_Type@Base @SVER@
- PyRun_AnyFile@Base @SVER@
- PyRun_AnyFileEx@Base @SVER@
  PyRun_AnyFileExFlags@Base @SVER@
- PyRun_AnyFileFlags@Base @SVER@
- PyRun_File@Base @SVER@
- PyRun_FileEx@Base @SVER@
  PyRun_FileExFlags@Base @SVER@
- PyRun_FileFlags@Base @SVER@
- PyRun_InteractiveLoop@Base @SVER@
  PyRun_InteractiveLoopFlags@Base @SVER@
- PyRun_InteractiveOne@Base @SVER@
  PyRun_InteractiveOneFlags@Base @SVER@
  PyRun_InteractiveOneObject@Base @SVER@
- PyRun_SimpleFile@Base @SVER@
- PyRun_SimpleFileEx@Base @SVER@
  PyRun_SimpleFileExFlags@Base @SVER@
- PyRun_SimpleString@Base @SVER@
  PyRun_SimpleStringFlags@Base @SVER@
- PyRun_String@Base @SVER@
  PyRun_StringFlags@Base @SVER@
  PySTEntry_Type@Base @SVER@
  PyST_GetScope@Base @SVER@
@@ -950,7 +909,6 @@
  PyUnicode_AsUTF8String@Base @SVER@
  PyUnicode_AsUnicode@Base @SVER@
  PyUnicode_AsUnicodeAndSize@Base @SVER@
- PyUnicode_AsUnicodeCopy@Base @SVER@
  PyUnicode_AsUnicodeEscapeString@Base @SVER@
  PyUnicode_AsWideChar@Base @SVER@
  PyUnicode_AsWideCharString@Base @SVER@
@@ -1010,7 +968,6 @@
  PyUnicode_FromWideChar@Base @SVER@
  PyUnicode_GetDefaultEncoding@Base @SVER@
  PyUnicode_GetLength@Base @SVER@
- PyUnicode_GetMax@Base @SVER@
  PyUnicode_GetSize@Base @SVER@
  PyUnicode_InternFromString@Base @SVER@
  PyUnicode_InternImmortal@Base @SVER@
@@ -1048,9 +1005,7 @@
  Py_BuildValue@Base @SVER@
  Py_BytesMain@Base 3.8.0~b1
  Py_BytesWarningFlag@Base @SVER@
- Py_CompileString@Base @SVER@
  Py_CompileStringExFlags@Base @SVER@
- Py_CompileStringFlags@Base @SVER@
  Py_CompileStringObject@Base @SVER@
  Py_DebugFlag@Base @SVER@
  Py_DecRef@Base @SVER@
@@ -1115,14 +1070,6 @@
  Py_SetStandardStreamEncoding@Base @SVER@
  Py_SymtableString@Base @SVER@
  Py_SymtableStringObject@Base @SVER@
- Py_UNICODE_strcat@Base @SVER@
- Py_UNICODE_strchr@Base @SVER@
- Py_UNICODE_strcmp@Base @SVER@
- Py_UNICODE_strcpy@Base @SVER@
- Py_UNICODE_strlen@Base @SVER@
- Py_UNICODE_strncmp@Base @SVER@
- Py_UNICODE_strncpy@Base @SVER@
- Py_UNICODE_strrchr@Base @SVER@
  Py_UTF8Mode@Base @SVER@
  Py_UnbufferedStdioFlag@Base @SVER@
  Py_UniversalNewlineFgets@Base @SVER@
@@ -1273,7 +1220,6 @@
  _PyGC_CollectNoFail@Base @SVER@
  _PyGC_InitState@Base 3.9.0~a2
  _PyGILState_GetInterpreterStateUnsafe@Base @SVER@
- _PyGILState_Reinit@Base @SVER@
  _PyGen_FetchStopIterationValue@Base @SVER@
  _PyGen_Finalize@Base @SVER@
  _PyGen_Send@Base @SVER@
@@ -1297,7 +1243,6 @@
  _PyInterpreterID_LookUp@Base 3.8.0~a3
  _PyInterpreterID_New@Base 3.8.0~a3
  _PyInterpreterID_Type@Base 3.8.0~a3
- _PyInterpreterState_DeleteExceptMain@Base @SVER@
  _PyInterpreterState_Enable@Base @SVER@
  _PyInterpreterState_GetConfig@Base 3.9.0~a6
  _PyInterpreterState_GetEvalFrameFunc@Base 3.9.0~a5
@@ -1326,8 +1271,6 @@
  _PyLong_FromByteArray@Base @SVER@
  _PyLong_FromBytes@Base @SVER@
  _PyLong_FromGid@Base @SVER@
- _PyLong_FromNbIndexOrNbInt@Base 3.8.0~a3
- _PyLong_FromNbInt@Base @SVER@
  _PyLong_FromTime_t@Base @SVER@
  _PyLong_FromUid@Base @SVER@
  _PyLong_GCD@Base @SVER@
@@ -1358,9 +1301,9 @@
  _PyModule_CreateInitialized@Base @SVER@
  _PyNamespace_New@Base @SVER@
  _PyNamespace_Type@Base @SVER@
- _PyNode_SizeOf@Base @SVER@
  _PyNone_Type@Base @SVER@
  _PyNotImplemented_Type@Base @SVER@
+ _PyNumber_Index@Base 3.10.0~a1
  _PyOS_InterruptOccurred@Base 3.9.0~b3
  _PyOS_IsMainThread@Base @SVER@
  _PyOS_ReadlineTState@Base @SVER@
@@ -1406,13 +1349,11 @@
  _PyObject_RealIsInstance@Base @SVER@
  _PyObject_RealIsSubclass@Base @SVER@
  _PyObject_SetAttrId@Base @SVER@
- _PyParser_Grammar@Base @SVER@
  _PyParser_TokenNames@Base @SVER@
  _PyPreConfig_InitCompatConfig@Base 3.8.0~b1
  _PyRuntime@Base @SVER@
  _PyRuntimeState_Fini@Base @SVER@
  _PyRuntimeState_Init@Base @SVER@
- _PyRuntimeState_ReInitThreads@Base 3.8.0~a3
  _PyRuntime_Finalize@Base @SVER@
  _PyRuntime_Initialize@Base @SVER@
  _PySequence_BytesToCharpArray@Base @SVER@
@@ -1420,7 +1361,6 @@
  _PySet_Dummy@Base @SVER@
  _PySet_NextEntry@Base @SVER@
  _PySet_Update@Base @SVER@
- _PySignal_AfterFork@Base @SVER@
  _PySlice_FromIndices@Base @SVER@
  _PySlice_GetLongIndices@Base @SVER@
  _PyStack_AsDict@Base @SVER@
@@ -1466,7 +1406,6 @@
  _PyTime_gmtime@Base @SVER@
  _PyTime_localtime@Base @SVER@
  _PyTraceMalloc_GetTraceback@Base @SVER@
- _PyTraceMalloc_NewReference@Base @SVER@
  _PyTraceback_Add@Base @SVER@
  _PyTrash_begin@Base 3.9.0~a5
  _PyTrash_deposit_object@Base @SVER@
@@ -1545,6 +1484,8 @@
  _PyUnicode_ToUpperFull@Base @SVER@
  _PyUnicode_ToUppercase@Base @SVER@
  _PyUnicode_TransformDecimalAndSpaceToASCII@Base @SVER@
+ _PyUnicode_WideCharString_Converter@Base 3.10.0~a1
+ _PyUnicode_WideCharString_Opt_Converter@Base 3.10.0~a1
  _PyUnicode_XStrip@Base @SVER@
  _PyWarnings_Init@Base @SVER@
  _PyWeakref_CallableProxyType@Base @SVER@
@@ -1559,20 +1500,16 @@
  _Py_BreakPoint@Base @SVER@
  _Py_BuildValue_SizeT@Base @SVER@
  _Py_CheckFunctionResult@Base @SVER@
- _Py_CheckRecursionLimit@Base @SVER@
  _Py_CheckRecursiveCall@Base @SVER@
  _Py_ClearArgcArgv@Base 3.8.0~a3
  _Py_ClearStandardStreamEncoding@Base @SVER@
  _Py_CoerceLegacyLocale@Base @SVER@
  _Py_Dealloc@Base @SVER@
  _Py_DecodeLocaleEx@Base @SVER@
- _Py_DecodeUTF8Ex@Base @SVER@
- _Py_DecodeUTF8_surrogateescape@Base @SVER@
  _Py_DisplaySourceLine@Base @SVER@
  _Py_EllipsisObject@Base @SVER@
  _Py_EncodeLocaleEx@Base @SVER@
  _Py_EncodeLocaleRaw@Base @SVER@
- _Py_EncodeUTF8Ex@Base @SVER@
  _Py_FalseStruct@Base @SVER@
  _Py_FatalErrorFormat@Base 3.9.0~a6
  _Py_FatalErrorFunc@Base 3.9.0~a5
@@ -1617,6 +1554,8 @@
  _Py_TrueStruct@Base @SVER@
  _Py_Uid_Converter@Base @SVER@
  _Py_UnhandledKeyboardInterrupt@Base 3.8.0~a3
+ _Py_Union@Base 3.10.0~a1
+ _Py_UnionType@Base 3.10.0~a1
  _Py_VaBuildStack@Base @SVER@
  _Py_VaBuildStack_SizeT@Base @SVER@
  _Py_VaBuildValue_SizeT@Base @SVER@
@@ -1624,7 +1563,6 @@
  _Py_add_one_to_index_C@Base @SVER@
  _Py_add_one_to_index_F@Base @SVER@
  _Py_ascii_whitespace@Base @SVER@
- _Py_bit_length@Base 3.9.0~a3
  _Py_c_abs@Base @SVER@
  _Py_c_diff@Base @SVER@
  _Py_c_neg@Base @SVER@
