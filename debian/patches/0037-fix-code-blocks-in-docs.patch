@@ -1,0 +1,39 @@
+From: Anthony Sottile <asottile@umich.edu>
+Date: Mon, 5 Oct 2020 14:33:00 -0700
+Subject: fix code-blocks in docs
+
+---
+ Doc/c-api/decimal.rst | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Doc/c-api/decimal.rst b/Doc/c-api/decimal.rst
+index f530571..94cc4a7 100644
+--- a/Doc/c-api/decimal.rst
++++ b/Doc/c-api/decimal.rst
+@@ -16,7 +16,7 @@ Initialize
+ Typically, a C extension module that uses the decimal API will do these
+ steps in its init function:
+ 
+-.. code-block::
++.. code-block:: c
+ 
+     #include "pydecimal.h"
+ 
+@@ -88,7 +88,7 @@ Data structures
+ 
+ The conversion functions use the following status codes and data structures:
+ 
+-.. code-block::
++.. code-block:: c
+ 
+    /* status cases for getting a triple */
+    enum mpd_triple_class {
+@@ -126,7 +126,7 @@ Functions
+    For simplicity, the usage of the function and all special cases are
+    explained in code form and comments:
+ 
+-.. code-block::
++.. code-block:: c
+ 
+     triple = PyDec_AsUint128Triple(dec);
+     switch (triple.tag) {
