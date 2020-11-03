@@ -2,6 +2,356 @@
 Python News
 +++++++++++
 
+What's New in Python 3.10.0 alpha 2?
+====================================
+
+*Release date: 2020-11-03*
+
+Security
+--------
+
+- bpo-42103: Prevented potential DoS attack via CPU and RAM exhaustion when
+  processing malformed Apple Property List files in binary format.
+
+- bpo-42051: The :mod:`plistlib` module no longer accepts entity
+  declarations in XML plist files to avoid XML vulnerabilities. This should
+  not affect users as entity declarations are not used in regular plist
+  files.
+
+Core and Builtins
+-----------------
+
+- bpo-42236: If the ``nl_langinfo(CODESET)`` function returns an empty
+  string, Python now uses UTF-8 as the filesystem encoding. Patch by Victor
+  Stinner.
+
+- bpo-42218: Fixed a bug in the PEG parser that was causing crashes in debug
+  mode. Now errors are checked in left-recursive rules to avoid cases where
+  such errors do not get handled in time and appear as long-distance crashes
+  in other places.
+
+- bpo-42214: Fixed a possible crash in the PEG parser when checking for the
+  '!=' token in the ``barry_as_flufl`` rule. Patch by Pablo Galindo.
+
+- bpo-42206: Propagate and raise the errors caused by
+  :c:func:`PyAST_Validate` in the parser.
+
+- bpo-41796: The :mod:`ast` module internal state is now per interpreter.
+  Patch by Victor Stinner.
+
+- bpo-42143: Fix handling of errors during creation of ``PyFunctionObject``,
+  which resulted in operations on uninitialized memory. Patch by Yonatan
+  Goldschmidt.
+
+- bpo-41659: Fix a bug in the parser, where a curly brace following a
+  `primary` didn't fail immediately. This led to invalid expressions like `a
+  {b}` to throw a :exc:`SyntaxError` with a wrong offset, or invalid
+  expressions ending with a curly brace like `a {` to not fail immediately
+  in the REPL.
+
+- bpo-42150: Fix possible buffer overflow in the new parser when checking
+  for continuation lines. Patch by Pablo Galindo.
+
+- bpo-42123: Run the parser two times. On the first run, disable all the
+  rules that only generate better error messages to gain performance. If
+  there's a parse failure, run the parser a second time with those enabled.
+
+- bpo-41910: Document the default implementation of `object.__eq__`.
+
+- bpo-42093: The ``LOAD_ATTR`` instruction now uses new "per opcode cache"
+  mechanism and it is about 36% faster now. Patch by Pablo Galindo and Yury
+  Selivanov.
+
+- bpo-42030: Support for the legacy AIX-specific shared library loading
+  support has been removed. All versions of AIX since 4.3 have supported and
+  defaulted to using the common Unix mechanism instead.
+
+- bpo-41984: The garbage collector now tracks all user-defined classes.
+  Patch by Brandt Bucher.
+
+- bpo-41993: Fixed potential issues with removing not completely initialized
+  module from ``sys.modules`` when import fails.
+
+- bpo-41979: Star-unpacking is now allowed for with item's targets in the
+  PEG parser.
+
+- bpo-41974: Removed special methods ``__int__``, ``__float__``,
+  ``__floordiv__``, ``__mod__``, ``__divmod__``, ``__rfloordiv__``,
+  ``__rmod__`` and ``__rdivmod__`` of the :class:`complex` class.  They
+  always raised a :exc:`TypeError`.
+
+- bpo-41902: Micro optimization when compute
+  :c:member:`~PySequenceMethods.sq_item` and
+  :c:member:`~PyMappingMethods.mp_subscript` of :class:`range`. Patch by
+  Dong-hee Na.
+
+- bpo-41894: When loading a native module and a load failure occurs, prevent
+  a possible UnicodeDecodeError when not running in a UTF-8 locale by
+  decoding the load error message using the current locale's encoding.
+
+- bpo-41902: Micro optimization for range.index if step is 1. Patch by
+  Dong-hee Na.
+
+- bpo-41435: Add `sys._current_exceptions()` function to retrieve a
+  dictionary mapping each thread's identifier to the topmost exception
+  currently active in that thread at the time the function is called.
+
+- bpo-38605: Enable ``from __future__ import annotations`` (:pep:`563`) by
+  default. The values found in :attr:`__annotations__` dicts are now
+  strings, e.g. ``{"x": "int"}`` instead of ``{"x": int}``.
+
+Library
+-------
+
+- bpo-35455: On Solaris, :func:`~time.thread_time` is now implemented with
+  ``gethrvtime()`` because ``clock_gettime(CLOCK_THREAD_CPUTIME_ID)`` is not
+  always available. Patch by Jakub Kulik.
+
+- bpo-42233: The :func:`repr` of :mod:`typing` types containing
+  :ref:`Generic Alias Types <types-genericalias>` previously did not show
+  the parameterized types in the ``GenericAlias``.  They have now been
+  changed to do so.
+
+- bpo-29566: ``binhex.binhex()`` consisently writes macOS 9 line endings.
+
+- bpo-26789: The :class:`logging.FileHandler` class now keeps a reference to
+  the builtin :func:`open` function to be able to open or reopen the file
+  during Python finalization. Fix errors like: ``NameError: name 'open' is
+  not defined``. Patch by Victor Stinner.
+
+- bpo-42157: Removed the ``unicodedata.ucnhash_CAPI`` attribute which was an
+  internal PyCapsule object. The related private ``_PyUnicode_Name_CAPI``
+  structure was moved to the internal C API. Patch by Victor Stinner.
+
+- bpo-42157: Convert the :mod:`unicodedata` extension module to the
+  multiphase initialization API (:pep:`489`) and convert the
+  ``unicodedata.UCD`` static type to a heap type. Patch by Mohamed Koubaa
+  and Victor Stinner.
+
+- bpo-42146: Fix memory leak in :func:`subprocess.Popen` in case an uid
+  (gid) specified in `user` (`group`, `extra_groups`) overflows `uid_t`
+  (`gid_t`).
+
+- bpo-42103: :exc:`~plistlib.InvalidFileException` and :exc:`RecursionError`
+  are now the only errors caused by loading malformed binary Plist file
+  (previously ValueError and TypeError could be raised in some specific
+  cases).
+
+- bpo-41490: In ``importlib.resources``, ``.path`` method is more aggressive
+  about releasing handles to zipfile objects early, enabling use-cases like
+  certifi to leave the context open but delete the underlying zip file.
+
+- bpo-41052: Pickling heap types implemented in C with protocols 0 and 1
+  raises now an error instead of producing incorrect data.
+
+- bpo-42089: In ``importlib.metadata.PackageNotFoundError``, make reference
+  to the package metadata being missing to improve the user experience.
+
+- bpo-41491: plistlib: fix parsing XML plists with hexadecimal integer
+  values
+
+- bpo-42065: Fix an incorrectly formatted error from
+  :meth:`_codecs.charmap_decode` when called with a mapped value outside the
+  range of valid Unicode code points. PR by Max Bernstein.
+
+- bpo-41966: Fix pickling pure Python :class:`datetime.time` subclasses.
+  Patch by Dean Inwood.
+
+- bpo-19270: :meth:`sched.scheduler.cancel()` will now cancel the correct
+  event, if two events with same priority are scheduled for the same time.
+  Patch by Bar Harel.
+
+- bpo-28660: :func:`textwrap.wrap` now attempts to break long words after
+  hyphens when ``break_long_words=True`` and ``break_on_hyphens=True``.
+
+- bpo-35823: Use ``vfork()`` instead of ``fork()`` for
+  :func:`subprocess.Popen` on Linux to improve performance in cases where it
+  is deemed safe.
+
+- bpo-42043: Add support for ``zipfile.Path`` inheritance.
+  ``zipfile.Path.is_file()`` now returns False for non-existent names.
+  ``zipfile.Path`` objects now expose a ``.filename`` attribute and rely on
+  that to resolve ``.name`` and ``.parent`` when the ``Path`` object is at
+  the root of the zipfile.
+
+- bpo-42021: Fix possible ref leaks in :mod:`sqlite3` module init.
+
+- bpo-39101: Fixed tests using IsolatedAsyncioTestCase from hanging on
+  BaseExceptions.
+
+- bpo-41976: Fixed a bug that was causing :func:`ctypes.util.find_library`
+  to return ``None`` when triying to locate a library in an environment when
+  gcc>=9 is available and ``ldconfig`` is not. Patch by Pablo Galindo
+
+- bpo-41943: Fix bug where TestCase.assertLogs doesn't correctly filter
+  messages by level.
+
+- bpo-41923: Implement :pep:`613`, introducing :data:`typing.TypeAlias`
+  annotation.
+
+- bpo-41905: A new function in abc: *update_abstractmethods* to re-calculate
+  an abstract class's abstract status. In addition, *dataclass* has been
+  changed to call this function.
+
+- bpo-23706: Added *newline* parameter to ``pathlib.Path.write_text()``.
+
+- bpo-41876: Tkinter font class repr uses font name
+
+- bpo-41831: ``str()`` for the ``type`` attribute of the ``tkinter.Event``
+  object always returns now the numeric code returned by Tk instead of the
+  name of the event type.
+
+- bpo-39337: :func:`encodings.normalize_encoding` now ignores non-ASCII
+  characters.
+
+- bpo-41747: Ensure all methods that generated from
+  :func:`dataclasses.dataclass` objects now have the proper ``__qualname__``
+  attribute referring to the class they belong to. Patch by Batuhan Taskaya.
+
+- bpo-30681: Handle exceptions caused by unparseable date headers when using
+  email "default" policy.  Patch by Tim Bell, Georges Toth
+
+- bpo-41586: Add F_SETPIPE_SZ and F_GETPIPE_SZ to fcntl module. Allow
+  setting pipesize on subprocess.Popen.
+
+- bpo-41229: Add ``contextlib.aclosing`` for deterministic cleanup of async
+  generators which is analogous to ``contextlib.closing`` for non-async
+  generators. Patch by Joongi Kim and John Belmonte.
+
+- bpo-16936: Allow ``ctypes.wintypes`` to be imported on non-Windows
+  systems.
+
+- bpo-4356: Add a key function to the bisect module.
+
+- bpo-40592: :func:`shutil.which` now ignores empty entries in
+  :envvar:`PATHEXT` instead of treating them as a match.
+
+- bpo-40492: Fix ``--outfile`` for :mod:`cProfile` / :mod:`profile` not
+  writing the output file in the original directory when the program being
+  profiled changes the working directory.  PR by Anthony Sottile.
+
+- bpo-34204: The :mod:`shelve` module now uses
+  :data:`pickle.DEFAULT_PROTOCOL` by default instead of :mod:`pickle`
+  protocol ``3``.
+
+- bpo-27321: Fixed KeyError exception when flattening an email to a string
+  attempts to replace a non-existent Content-Transfer-Encoding header.
+
+- bpo-38976: The :mod:`http.cookiejar` module now supports the parsing of
+  cookies in CURL-style cookiejar files through MozillaCookieJar on all
+  platforms. Previously, such cookie entries would be silently ignored when
+  loading a cookiejar with such entries.
+
+  Additionally, the HTTP Only attribute is persisted in the object, and will
+  be correctly written to file if the MozillaCookieJar object is
+  subsequently dumped.
+
+Documentation
+-------------
+
+- bpo-42061: Document __format__ functionality for IP addresses.
+
+- bpo-42010: Clarify that subscription expressions are also valid for
+  certain :term:`classes <class>` and :term:`types <type>` in the standard
+  library, and for user-defined classes and types if the classmethod
+  :meth:`__class_getitem__` is provided.
+
+- bpo-41805: Documented :ref:`generic alias type <types-genericalias>` and
+  :data:`types.GenericAlias`. Also added an entry in glossary for
+  :term:`generic types <generic type>`.
+
+- bpo-39693: Fix tarfile's extractfile documentation
+
+- bpo-39416: Document some restrictions on the default string
+  representations of numeric classes.
+
+Tests
+-----
+
+- bpo-41739: Fix test_logging.test_race_between_set_target_and_flush(): the
+  test now waits until all threads complete to avoid leaking running
+  threads.
+
+- bpo-41970: Avoid a test failure in ``test_lib2to3`` if the module has
+  already imported at the time the test executes. Patch by Pablo Galindo.
+
+- bpo-41944: Tests for CJK codecs no longer call ``eval()`` on content
+  received via HTTP.
+
+- bpo-41306: Fixed a failure in ``test_tk.test_widgets.ScaleTest`` happening
+  when executing the test with Tk 8.6.10.
+
+Build
+-----
+
+- bpo-38980: Add ``-fno-semantic-interposition`` to both the compile and
+  link line when building with ``--enable-optimizations``. Patch by Victor
+  Stinner and Pablo Galindo.
+
+Windows
+-------
+
+- bpo-38439: Updates the icons for IDLE in the Windows Store package.
+
+- bpo-38252: Use 8-byte step to detect ASCII sequence in 64-bit Windows
+  build.
+
+- bpo-39107: Update Tcl and Tk to 8.6.10 in Windows installer.
+
+- bpo-41557: Update Windows installer to use SQLite 3.33.0.
+
+- bpo-38324: Avoid Unicode errors when accessing certain locale data on
+  Windows.
+
+macOS
+-----
+
+- bpo-41471: Ignore invalid prefix lengths in system proxy excludes.
+
+IDLE
+----
+
+- bpo-33987: Mostly finish using ttk widgets, mainly for editor, settings,
+  and searches. Some patches by Mark Roseman.
+
+- bpo-40511: Typing opening and closing parentheses inside the parentheses
+  of a function call will no longer cause unnecessary "flashing" off and on
+  of an existing open call-tip, e.g. when typed in a string literal.
+
+- bpo-38439: Add a 256×256 pixel IDLE icon to the Windows .ico file. Created
+  by Andrew Clover. Remove the low-color gif variations from the .ico file.
+
+C API
+-----
+
+- bpo-42157: The private ``_PyUnicode_Name_CAPI`` structure of the PyCapsule
+  API ``unicodedata.ucnhash_CAPI`` has been moved to the internal C API.
+  Patch by Victor Stinner.
+
+- bpo-42015: Fix potential crash in deallocating method objects when
+  dynamically allocated `PyMethodDef`'s lifetime is managed through the
+  ``self`` argument of a `PyCFunction`.
+
+- bpo-40423: The :mod:`subprocess` module and ``os.closerange`` will now use
+  the ``close_range(low, high, flags)`` syscall when it is available for
+  more efficient closing of ranges of descriptors.
+
+- bpo-41845: :c:func:`PyObject_GenericGetDict` is available again in the
+  limited API when targeting 3.10 or later.
+
+- bpo-40422: Add `_Py_closerange` function to provide performant closing of
+  a range of file descriptors.
+
+- bpo-41986: :c:data:`Py_FileSystemDefaultEncodeErrors` and
+  :c:data:`Py_UTF8Mode` are available again in limited API.
+
+- bpo-41756: Add `PyIter_Send` function to allow sending value into
+  generator/coroutine/iterator without raising StopIteration exception to
+  signal return.
+
+- bpo-41784: Added ``PyUnicode_AsUTF8AndSize`` to the limited C API.
+
+
 What's New in Python 3.10.0 alpha 1?
 ====================================
 
@@ -56,10 +406,6 @@ Core and Builtins
 
 - bpo-1635741: Port the :mod:`_lsprof` extension module to multi-phase
   initialization (:pep:`489`).
-
-- bpo-41756: Add PyGen_Send function to allow sending value into
-  generator/coroutine without raising StopIteration exception to signal
-  return
 
 - bpo-1635741: Port the :mod:`cmath` extension module to multi-phase
   initialization (:pep:`489`).
@@ -3283,10 +3629,10 @@ Core and Builtins
 
 - bpo-33387: Removed WITH_CLEANUP_START, WITH_CLEANUP_FINISH, BEGIN_FINALLY,
   END_FINALLY, CALL_FINALLY and POP_FINALLY bytecodes. Replaced with RERAISE
-  and WITH_EXCEPT_FINISH bytecodes. The compiler now generates different
-  code for exceptional and non-exceptional branches for 'with' and
-  'try-except' statements. For 'try-finally' statements the 'finally' block
-  is replicated for each exit from the 'try' body.
+  and WITH_EXCEPT_START bytecodes. The compiler now generates different code
+  for exceptional and non-exceptional branches for 'with' and 'try-except'
+  statements. For 'try-finally' statements the 'finally' block is replicated
+  for each exit from the 'try' body.
 
 Library
 -------
