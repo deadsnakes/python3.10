@@ -13,7 +13,6 @@ are:
   _ast			extension
   _bisect		extension
   _blake2		extension
-  _bootlocale		module
   _bytesio		builtin
   _codecs		builtin
   _collections		extension
