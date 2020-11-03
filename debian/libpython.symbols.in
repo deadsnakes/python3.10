@@ -362,7 +362,6 @@
  PyGILState_Release@Base @SVER@
  PyGen_New@Base @SVER@
  PyGen_NewWithQualName@Base @SVER@
- PyGen_Send@Base 3.10.0~a1
  PyGen_Type@Base @SVER@
  PyGetSetDescr_Type@Base @SVER@
  PyHash_GetFuncDef@Base @SVER@
@@ -458,6 +457,7 @@
  PyInterpreterState_ThreadHead@Base @SVER@
  PyIter_Check@Base @SVER@
  PyIter_Next@Base @SVER@
+ PyIter_Send@Base 3.10.0~a2
  PyListIter_Type@Base @SVER@
  PyListRevIter_Type@Base @SVER@
  PyList_Append@Base @SVER@
@@ -1129,7 +1129,6 @@
  _PyCodecInfo_GetIncrementalEncoder@Base @SVER@
  _PyCodec_DecodeText@Base @SVER@
  _PyCodec_EncodeText@Base @SVER@
- _PyCodec_Forget@Base @SVER@
  _PyCodec_Lookup@Base @SVER@
  _PyCodec_LookupTextEncoding@Base @SVER@
  _PyComplex_FormatAdvancedWriter@Base @SVER@
@@ -1144,12 +1143,12 @@
  _PyDictView_Intersect@Base @SVER@
  _PyDictView_New@Base @SVER@
  _PyDict_CheckConsistency@Base 3.8.0~a4
- _PyDict_Contains@Base @SVER@
+ _PyDict_ContainsId@Base 3.10.0~a2
+ _PyDict_Contains_KnownHash@Base 3.10.0~a2
  _PyDict_DebugMallocStats@Base @SVER@
  _PyDict_DelItemId@Base @SVER@
  _PyDict_DelItemIf@Base @SVER@
  _PyDict_DelItem_KnownHash@Base @SVER@
- _PyDict_GetItemId@Base @SVER@
  _PyDict_GetItemIdWithError@Base @SVER@
  _PyDict_GetItemStringWithError@Base 3.8.0~a3
  _PyDict_GetItem_KnownHash@Base @SVER@
@@ -1216,13 +1215,9 @@
  _PyFloat_Unpack8@Base @SVER@
  _PyFrame_DebugMallocStats@Base @SVER@
  _PyFunction_Vectorcall@Base 3.8.0~b1
- _PyGC_CollectIfEnabled@Base @SVER@
- _PyGC_CollectNoFail@Base @SVER@
- _PyGC_InitState@Base 3.9.0~a2
  _PyGILState_GetInterpreterStateUnsafe@Base @SVER@
  _PyGen_FetchStopIterationValue@Base @SVER@
  _PyGen_Finalize@Base @SVER@
- _PyGen_Send@Base @SVER@
  _PyGen_SetStopIterationValue@Base @SVER@
  _PyHamtItems_Type@Base @SVER@
  _PyHamtKeys_Type@Base @SVER@
@@ -1263,6 +1258,7 @@
  _PyLong_Copy@Base @SVER@
  _PyLong_DigitValue@Base @SVER@
  _PyLong_DivmodNear@Base @SVER@
+ _PyLong_FileDescriptor_Converter@Base 3.10.0~a2
  _PyLong_Format@Base @SVER@
  _PyLong_FormatAdvancedWriter@Base @SVER@
  _PyLong_FormatBytesWriter@Base @SVER@
@@ -1277,7 +1273,6 @@
  _PyLong_Lshift@Base 3.8.0~b1
  _PyLong_New@Base @SVER@
  _PyLong_NumBits@Base @SVER@
- _PyLong_One@Base @SVER@
  _PyLong_Rshift@Base 3.8.0~b1
  _PyLong_Sign@Base @SVER@
  _PyLong_Size_t_Converter@Base @SVER@
@@ -1285,7 +1280,6 @@
  _PyLong_UnsignedLongLong_Converter@Base @SVER@
  _PyLong_UnsignedLong_Converter@Base @SVER@
  _PyLong_UnsignedShort_Converter@Base @SVER@
- _PyLong_Zero@Base @SVER@
  _PyManagedBuffer_Type@Base @SVER@
  _PyMem_GetAllocatorName@Base 3.8.0~b1
  _PyMem_GetCurrentAllocatorName@Base 3.8.0~b1
@@ -1335,7 +1329,6 @@
  _PyObject_GetCrossInterpreterData@Base @SVER@
  _PyObject_GetDictPtr@Base @SVER@
  _PyObject_GetMethod@Base @SVER@
- _PyObject_HasAttrId@Base @SVER@
  _PyObject_HasLen@Base @SVER@
  _PyObject_IsAbstract@Base @SVER@
  _PyObject_IsFreed@Base @SVER@
@@ -1375,6 +1368,7 @@
  _PyThreadState_Prealloc@Base @SVER@
  _PyThreadState_Swap@Base 3.8.0~b1
  _PyThreadState_UncheckedGet@Base @SVER@
+ _PyThread_CurrentExceptions@Base 3.10.0~a2
  _PyThread_CurrentFrames@Base @SVER@
  _PyThread_at_fork_reinit@Base 3.9.0~a6
  _PyTime_AsMicroseconds@Base @SVER@
@@ -1521,6 +1515,8 @@
  _Py_GetEnv@Base 3.8.0~a4
  _Py_GetErrorHandler@Base @SVER@
  _Py_GetForceASCII@Base @SVER@
+ _Py_GetLocaleEncoding@Base 3.10.0~a2
+ _Py_GetLocaleEncodingObject@Base 3.10.0~a2
  _Py_GetLocaleconvNumeric@Base @SVER@
  _Py_Gid_Converter@Base @SVER@
  _Py_HandleSystemExit@Base 3.8.0~b1
@@ -1570,6 +1566,7 @@
  _Py_c_prod@Base @SVER@
  _Py_c_quot@Base @SVER@
  _Py_c_sum@Base @SVER@
+ _Py_closerange@Base 3.10.0~a2
  _Py_convert_optional_to_ssize_t@Base @SVER@
  _Py_ctype_table@Base @SVER@
  _Py_ctype_tolower@Base @SVER@
