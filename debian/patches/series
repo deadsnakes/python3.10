@@ -34,4 +34,3 @@ argparse-no-shutil.diff
 0034-fix-old-sphinx.patch
 0035-mark-_setuptools_disclaimer-as-orphan.patch
 0036-allow-older-libmpdec.patch
-0037-fix-code-blocks-in-docs.patch
