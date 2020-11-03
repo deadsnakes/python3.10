@@ -268,14 +268,11 @@ out_of_memory:
 }
 
 
-void
-PyInterpreterState_Clear(PyInterpreterState *interp)
+static void
+interpreter_clear(PyInterpreterState *interp, PyThreadState *tstate)
 {
     _PyRuntimeState *runtime = interp->runtime;
 
-    /* Use the current Python thread state to call audit hooks,
-       not the current Python thread state of 'interp'. */
-    PyThreadState *tstate = _PyThreadState_GET();
     if (_PySys_Audit(tstate, "cpython.PyInterpreterState_Clear", NULL) < 0) {
         _PyErr_Clear(tstate);
     }
@@ -306,6 +303,12 @@ PyInterpreterState_Clear(PyInterpreterState *interp)
     if (_PyRuntimeState_GetFinalizing(runtime) == NULL) {
         _PyWarnings_Fini(interp);
     }
+
+    /* Last garbage collection on this interpreter */
+    _PyGC_CollectNoFail(tstate);
+
+    _PyGC_Fini(tstate);
+
     /* We don't clear sysdict and builtins until the end of this function.
        Because clearing other attributes can execute arbitrary Python code
        which requires sysdict and builtins. */
@@ -317,6 +320,25 @@ PyInterpreterState_Clear(PyInterpreterState *interp)
     // XXX Once we have one allocator per interpreter (i.e.
     // per-interpreter GC) we must ensure that all of the interpreter's
     // objects have been cleaned up at the point.
+}
+
+
+void
+PyInterpreterState_Clear(PyInterpreterState *interp)
+{
+    // Use the current Python thread state to call audit hooks and to collect
+    // garbage. It can be different than the current Python thread state
+    // of 'interp'.
+    PyThreadState *current_tstate = _PyThreadState_GET();
+
+    interpreter_clear(interp, current_tstate);
+}
+
+
+void
+_PyInterpreterState_Clear(PyThreadState *tstate)
+{
+    interpreter_clear(tstate->interp, tstate);
 }
 
 
@@ -1185,6 +1207,69 @@ _PyThread_CurrentFrames(void)
             }
             int stat = PyDict_SetItem(result, id, (PyObject *)frame);
             Py_DECREF(id);
+            if (stat < 0) {
+                goto fail;
+            }
+        }
+    }
+    goto done;
+
+fail:
+    Py_CLEAR(result);
+
+done:
+    HEAD_UNLOCK(runtime);
+    return result;
+}
+
+PyObject *
+_PyThread_CurrentExceptions(void)
+{
+    PyThreadState *tstate = _PyThreadState_GET();
+
+    _Py_EnsureTstateNotNULL(tstate);
+
+    if (_PySys_Audit(tstate, "sys._current_exceptions", NULL) < 0) {
+        return NULL;
+    }
+
+    PyObject *result = PyDict_New();
+    if (result == NULL) {
+        return NULL;
+    }
+
+    /* for i in all interpreters:
+     *     for t in all of i's thread states:
+     *          if t's frame isn't NULL, map t's id to its frame
+     * Because these lists can mutate even when the GIL is held, we
+     * need to grab head_mutex for the duration.
+     */
+    _PyRuntimeState *runtime = tstate->interp->runtime;
+    HEAD_LOCK(runtime);
+    PyInterpreterState *i;
+    for (i = runtime->interpreters.head; i != NULL; i = i->next) {
+        PyThreadState *t;
+        for (t = i->tstate_head; t != NULL; t = t->next) {
+            _PyErr_StackItem *err_info = _PyErr_GetTopmostException(t);
+            if (err_info == NULL) {
+                continue;
+            }
+            PyObject *id = PyLong_FromUnsignedLong(t->thread_id);
+            if (id == NULL) {
+                goto fail;
+            }
+            PyObject *exc_info = PyTuple_Pack(
+                3,
+                err_info->exc_type != NULL ? err_info->exc_type : Py_None,
+                err_info->exc_value != NULL ? err_info->exc_value : Py_None,
+                err_info->exc_traceback != NULL ? err_info->exc_traceback : Py_None);
+            if (exc_info == NULL) {
+                Py_DECREF(id);
+                goto fail;
+            }
+            int stat = PyDict_SetItem(result, id, exc_info);
+            Py_DECREF(id);
+            Py_DECREF(exc_info);
             if (stat < 0) {
                 goto fail;
             }
