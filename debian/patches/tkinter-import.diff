@@ -9,7 +9,7 @@ Subject: tkinter-import
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/Lib/tkinter/__init__.py b/Lib/tkinter/__init__.py
-index 3919397..de37ffe 100644
+index 3bfeb7a..f0bc915 100644
 --- a/Lib/tkinter/__init__.py
 +++ b/Lib/tkinter/__init__.py
 @@ -34,7 +34,10 @@ import enum
