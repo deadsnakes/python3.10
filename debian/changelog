@@ -1,3 +1,9 @@
+python3.10 (3.10.0~a3-1+bionic1) bionic; urgency=medium
+
+  * Python 3.10.0 alpha 3 release.
+
+ -- Anthony Sottile <asottile@umich.edu>  Tue, 08 Dec 2020 16:48:02 -0800
+
 python3.10 (3.10.0~a2-1+bionic1) bionic; urgency=medium
 
   * Python 3.10.0 alpha 2 release.
