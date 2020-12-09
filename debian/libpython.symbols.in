@@ -546,6 +546,7 @@
  PyModule_AddFunctions@Base @SVER@
  PyModule_AddIntConstant@Base @SVER@
  PyModule_AddObject@Base @SVER@
+ PyModule_AddObjectRef@Base 3.10.0~a3
  PyModule_AddStringConstant@Base @SVER@
  PyModule_AddType@Base 3.9.0~a5
  PyModule_ExecDef@Base @SVER@
@@ -610,7 +611,6 @@
  PyOS_AfterFork_Parent@Base @SVER@
  PyOS_BeforeFork@Base @SVER@
  PyOS_FSPath@Base @SVER@
- PyOS_InitInterrupts@Base @SVER@
  PyOS_InputHook@Base @SVER@
  PyOS_InterruptOccurred@Base @SVER@
  PyOS_Readline@Base @SVER@
@@ -706,13 +706,25 @@
  PyRangeIter_Type@Base @SVER@
  PyRange_Type@Base @SVER@
  PyReversed_Type@Base @SVER@
+ PyRun_AnyFile@Base 3.10.0~a3
+ PyRun_AnyFileEx@Base 3.10.0~a3
  PyRun_AnyFileExFlags@Base @SVER@
+ PyRun_AnyFileFlags@Base 3.10.0~a3
+ PyRun_File@Base 3.10.0~a3
+ PyRun_FileEx@Base 3.10.0~a3
  PyRun_FileExFlags@Base @SVER@
+ PyRun_FileFlags@Base 3.10.0~a3
+ PyRun_InteractiveLoop@Base 3.10.0~a3
  PyRun_InteractiveLoopFlags@Base @SVER@
+ PyRun_InteractiveOne@Base 3.10.0~a3
  PyRun_InteractiveOneFlags@Base @SVER@
  PyRun_InteractiveOneObject@Base @SVER@
+ PyRun_SimpleFile@Base 3.10.0~a3
+ PyRun_SimpleFileEx@Base 3.10.0~a3
  PyRun_SimpleFileExFlags@Base @SVER@
+ PyRun_SimpleString@Base 3.10.0~a3
  PyRun_SimpleStringFlags@Base @SVER@
+ PyRun_String@Base 3.10.0~a3
  PyRun_StringFlags@Base @SVER@
  PySTEntry_Type@Base @SVER@
  PyST_GetScope@Base @SVER@
@@ -1005,7 +1017,9 @@
  Py_BuildValue@Base @SVER@
  Py_BytesMain@Base 3.8.0~b1
  Py_BytesWarningFlag@Base @SVER@
+ Py_CompileString@Base 3.10.0~a3
  Py_CompileStringExFlags@Base @SVER@
+ Py_CompileStringFlags@Base 3.10.0~a3
  Py_CompileStringObject@Base @SVER@
  Py_DebugFlag@Base @SVER@
  Py_DecRef@Base @SVER@
@@ -1053,6 +1067,7 @@
  Py_Main@Base @SVER@
  Py_MakePendingCalls@Base @SVER@
  Py_NewInterpreter@Base @SVER@
+ Py_NewRef@Base 3.10.0~a3
  Py_NoSiteFlag@Base @SVER@
  Py_NoUserSiteDirectory@Base @SVER@
  Py_OptimizeFlag@Base @SVER@
@@ -1075,6 +1090,7 @@
  Py_UniversalNewlineFgets@Base @SVER@
  Py_VaBuildValue@Base @SVER@
  Py_VerboseFlag@Base @SVER@
+ Py_XNewRef@Base 3.10.0~a3
  Py_hexdigits@Base @SVER@
  _PyAST_GetDocString@Base @SVER@
  _PyAST_Optimize@Base @SVER@
@@ -1132,6 +1148,8 @@
  _PyCodec_Lookup@Base @SVER@
  _PyCodec_LookupTextEncoding@Base @SVER@
  _PyComplex_FormatAdvancedWriter@Base @SVER@
+ _PyConfig_AsDict@Base 3.10.0~a3
+ _PyConfig_FromDict@Base 3.10.0~a3
  _PyConfig_InitCompatConfig@Base 3.8.0~b1
  _PyContext_NewHamtForTests@Base @SVER@
  _PyCoroWrapper_Type@Base @SVER@
@@ -1227,6 +1245,7 @@
  _PyHamt_CollisionNode_Type@Base @SVER@
  _PyHamt_Type@Base @SVER@
  _PyImport_AcquireLock@Base @SVER@
+ _PyImport_FindBuiltin@Base 3.10.0~a3
  _PyImport_FindExtensionObject@Base @SVER@
  _PyImport_FixupBuiltin@Base @SVER@
  _PyImport_FixupExtensionObject@Base @SVER@
@@ -1240,6 +1259,7 @@
  _PyInterpreterID_Type@Base 3.8.0~a3
  _PyInterpreterState_Enable@Base @SVER@
  _PyInterpreterState_GetConfig@Base 3.9.0~a6
+ _PyInterpreterState_GetConfigCopy@Base 3.10.0~a3
  _PyInterpreterState_GetEvalFrameFunc@Base 3.9.0~a5
  _PyInterpreterState_GetIDObject@Base 3.8.0~a3
  _PyInterpreterState_GetMainModule@Base 3.8.0~a3
@@ -1249,6 +1269,7 @@
  _PyInterpreterState_LookUpID@Base @SVER@
  _PyInterpreterState_RequireIDRef@Base 3.8.0~a3
  _PyInterpreterState_RequiresIDRef@Base 3.8.0~a3
+ _PyInterpreterState_SetConfig@Base 3.10.0~a3
  _PyInterpreterState_SetEvalFrameFunc@Base 3.9.0~a5
  _PyList_DebugMallocStats@Base @SVER@
  _PyList_Extend@Base @SVER@
@@ -1392,7 +1413,6 @@
  _PyTime_GetPerfCounterWithInfo@Base @SVER@
  _PyTime_GetSystemClock@Base @SVER@
  _PyTime_GetSystemClockWithInfo@Base @SVER@
- _PyTime_Init@Base @SVER@
  _PyTime_MulDiv@Base @SVER@
  _PyTime_ObjectToTime_t@Base @SVER@
  _PyTime_ObjectToTimespec@Base @SVER@
@@ -1402,6 +1422,7 @@
  _PyTraceMalloc_GetTraceback@Base @SVER@
  _PyTraceback_Add@Base @SVER@
  _PyTrash_begin@Base 3.9.0~a5
+ _PyTrash_cond@Base 3.10.0~a3
  _PyTrash_deposit_object@Base @SVER@
  _PyTrash_destroy_chain@Base @SVER@
  _PyTrash_end@Base 3.9.0~a5
@@ -1413,6 +1434,7 @@
  _PyType_CalculateMetaclass@Base @SVER@
  _PyType_CheckConsistency@Base 3.8.0~a4
  _PyType_GetDocFromInternalDoc@Base @SVER@
+ _PyType_GetModuleByDef@Base 3.10.0~a3
  _PyType_GetTextSignatureFromInternalDoc@Base @SVER@
  _PyType_Lookup@Base @SVER@
  _PyType_LookupId@Base @SVER@
@@ -1616,6 +1638,7 @@
  _Py_strhex_with_sep@Base 3.8.0~b1
  _Py_string_to_number_with_underscores@Base @SVER@
  _Py_tracemalloc_config@Base @SVER@
+ _Py_union_type_or@Base 3.10.0~a3
  _Py_wfopen@Base @SVER@
  _Py_wgetcwd@Base @SVER@
  _Py_wreadlink@Base @SVER@
