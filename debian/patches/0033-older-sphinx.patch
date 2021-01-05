@@ -9,10 +9,10 @@ Subject: older sphinx
  3 files changed, 2 insertions(+), 84 deletions(-)
 
 diff --git a/Doc/conf.py b/Doc/conf.py
-index 079d177..c537e59 100644
+index 6b88c23..dfa2759 100644
 --- a/Doc/conf.py
 +++ b/Doc/conf.py
-@@ -46,7 +46,7 @@ today_fmt = '%B %d, %Y'
+@@ -45,7 +45,7 @@ today_fmt = '%B %d, %Y'
  highlight_language = 'python3'
  
  # Minimum version of sphinx required
@@ -22,7 +22,7 @@ index 079d177..c537e59 100644
  # Ignore any .rst files in the venv/ directory.
  exclude_patterns = ['venv/*', 'README.rst']
 diff --git a/Doc/library/turtle.rst b/Doc/library/turtle.rst
-index d348753..fb1f45b 100644
+index 2084d75..58e75c3 100644
 --- a/Doc/library/turtle.rst
 +++ b/Doc/library/turtle.rst
 @@ -250,7 +250,6 @@ Turtle motion
@@ -279,7 +279,7 @@ index d348753..fb1f45b 100644
        >>> turtle.penup()
        >>> turtle.isdown()
 @@ -917,7 +884,6 @@ Color control
-     newly set pencolor.
+    newly set pencolor.
  
     .. doctest::
 -      :skipif: _tkinter is None
@@ -287,7 +287,7 @@ index d348753..fb1f45b 100644
         >>> colormode()
         1.0
 @@ -966,7 +932,6 @@ Color control
-     with the newly set fillcolor.
+    with the newly set fillcolor.
  
     .. doctest::
 -      :skipif: _tkinter is None
@@ -295,7 +295,7 @@ index d348753..fb1f45b 100644
         >>> turtle.fillcolor("violet")
         >>> turtle.fillcolor()
 @@ -1005,7 +970,6 @@ Color control
-     with the newly set colors.
+    with the newly set colors.
  
     .. doctest::
 -      :skipif: _tkinter is None

@@ -30,10 +30,10 @@ index 9efe3aa..b843152 100644
     +---------------------------------------------------------+-----------------------------------+--------------+
     | Slot                                                    | :ref:`Type <slot-typedefs-table>` | special      |
 diff --git a/Doc/conf.py b/Doc/conf.py
-index 1fa6b18..dd9a877 100644
+index 61e189a..e0de2e6 100644
 --- a/Doc/conf.py
 +++ b/Doc/conf.py
-@@ -46,7 +46,7 @@ today_fmt = '%B %d, %Y'
+@@ -45,7 +45,7 @@ today_fmt = '%B %d, %Y'
  highlight_language = 'python3'
  
  # Minimum version of sphinx required
@@ -43,7 +43,7 @@ index 1fa6b18..dd9a877 100644
  # Ignore any .rst files in the venv/ directory.
  exclude_patterns = ['venv/*', 'README.rst']
 diff --git a/Doc/tools/extensions/pyspecific.py b/Doc/tools/extensions/pyspecific.py
-index 80fbd96..bb4764e 100644
+index 2899439..e4ead9c 100644
 --- a/Doc/tools/extensions/pyspecific.py
 +++ b/Doc/tools/extensions/pyspecific.py
 @@ -9,6 +9,7 @@
@@ -62,7 +62,7 @@ index 80fbd96..bb4764e 100644
  from sphinx.util.nodes import split_explicit_title
  from sphinx.writers.text import TextWriter, TextTranslator
  from sphinx.writers.latex import LaTeXTranslator
-@@ -474,7 +474,7 @@ class PydocTopicsBuilder(Builder):
+@@ -479,7 +479,7 @@ class PydocTopicsBuilder(Builder):
  
      def write(self, *ignored):
          writer = TextWriter(self)

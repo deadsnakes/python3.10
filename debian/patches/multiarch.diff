@@ -23,12 +23,12 @@ index 8a334c7..181e881 100644
      elif os.name == "nt":
          if python_build:
 diff --git a/Lib/sysconfig.py b/Lib/sysconfig.py
-index e1b2f93..5366e5b 100644
+index c1aaf79..44fac8b 100644
 --- a/Lib/sysconfig.py
 +++ b/Lib/sysconfig.py
-@@ -563,6 +563,12 @@ def get_config_vars(*args):
-         # the init-function.
-         _CONFIG_VARS['userbase'] = _getuserbase()
+@@ -576,6 +576,12 @@ def get_config_vars(*args):
+             # the init-function.
+             _CONFIG_VARS['userbase'] = _getuserbase()
  
 +        multiarch = get_config_var('MULTIARCH')
 +        if multiarch:
@@ -40,7 +40,7 @@ index e1b2f93..5366e5b 100644
          srcdir = _CONFIG_VARS.get('srcdir', _PROJECT_BASE)
          if os.name == 'posix':
 diff --git a/Makefile.pre.in b/Makefile.pre.in
-index 34610bd..13a2f1a 100644
+index 4157ec9..d3b536f 100644
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
 @@ -810,6 +810,7 @@ Modules/signalmodule.o: $(srcdir)/Modules/signalmodule.c $(srcdir)/Modules/posix
@@ -51,7 +51,7 @@ index 34610bd..13a2f1a 100644
  		-DSOABI='"$(SOABI)"' \
  		-o $@ $(srcdir)/Python/dynload_shlib.c
  
-@@ -1611,7 +1612,7 @@ inclinstall:
+@@ -1646,7 +1647,7 @@ inclinstall:
  LIBPL=		@LIBPL@
  
  # pkgconfig directory
