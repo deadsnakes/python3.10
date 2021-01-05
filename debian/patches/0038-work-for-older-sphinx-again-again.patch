@@ -1,0 +1,23 @@
+From: Anthony Sottile <asottile@umich.edu>
+Date: Mon, 4 Jan 2021 18:07:32 -0800
+Subject: work for older sphinx again again
+
+---
+ Doc/tools/extensions/glossary_search.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Doc/tools/extensions/glossary_search.py b/Doc/tools/extensions/glossary_search.py
+index 34d227d..a6cf227 100644
+--- a/Doc/tools/extensions/glossary_search.py
++++ b/Doc/tools/extensions/glossary_search.py
+@@ -7,9 +7,9 @@
+ 
+     :license: Python license.
+ """
++import logging
+ from os import path
+ from sphinx.addnodes import glossary
+-from sphinx.util import logging
+ from docutils.nodes import definition_list_item
+ import json
+ 
