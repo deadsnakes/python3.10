@@ -20,10 +20,10 @@ Subject: distutils-install-layout
  8 files changed, 102 insertions(+), 17 deletions(-)
 
 diff --git a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
-index aaa300e..1067e67 100644
+index bdead13..945aafb 100644
 --- a/Lib/distutils/command/install.py
 +++ b/Lib/distutils/command/install.py
-@@ -35,6 +35,20 @@ INSTALL_SCHEMES = {
+@@ -36,6 +36,20 @@ INSTALL_SCHEMES = {
          'scripts': '$base/bin',
          'data'   : '$base',
          },
@@ -44,7 +44,7 @@ index aaa300e..1067e67 100644
      'unix_home': {
          'purelib': '$base/lib/python',
          'platlib': '$base/$platlibdir/python',
-@@ -131,6 +145,9 @@ class install(Command):
+@@ -132,6 +146,9 @@ class install(Command):
  
          ('record=', None,
           "filename in which to record list of installed files"),
@@ -54,7 +54,7 @@ index aaa300e..1067e67 100644
          ]
  
      boolean_options = ['compile', 'force', 'skip-build']
-@@ -151,6 +168,7 @@ class install(Command):
+@@ -152,6 +169,7 @@ class install(Command):
          self.exec_prefix = None
          self.home = None
          self.user = 0
@@ -62,9 +62,9 @@ index aaa300e..1067e67 100644
  
          # These select only the installation base; it's up to the user to
          # specify the installation scheme (currently, that means supplying
-@@ -172,6 +190,9 @@ class install(Command):
-         self.install_userbase = USER_BASE
-         self.install_usersite = USER_SITE
+@@ -174,6 +192,9 @@ class install(Command):
+             self.install_userbase = USER_BASE
+             self.install_usersite = USER_SITE
  
 +        # enable custom installation, known values: deb
 +        self.install_layout = None
@@ -72,7 +72,7 @@ index aaa300e..1067e67 100644
          self.compile = None
          self.optimize = None
  
-@@ -414,6 +435,7 @@ class install(Command):
+@@ -417,6 +438,7 @@ class install(Command):
              self.install_base = self.install_platbase = self.home
              self.select_scheme("unix_home")
          else:
@@ -80,7 +80,7 @@ index aaa300e..1067e67 100644
              if self.prefix is None:
                  if self.exec_prefix is not None:
                      raise DistutilsOptionError(
-@@ -428,7 +450,26 @@ class install(Command):
+@@ -431,7 +453,26 @@ class install(Command):
  
              self.install_base = self.prefix
              self.install_platbase = self.exec_prefix
@@ -195,10 +195,10 @@ index 01a233b..f99dec5 100644
              wanted.append('foo.%s.pyc' % sys.implementation.cache_tag)
          self.assertEqual(contents, sorted(wanted))
 diff --git a/Lib/distutils/tests/test_install.py b/Lib/distutils/tests/test_install.py
-index 51c80e0..2ada481 100644
+index 21a7b7c..1482431 100644
 --- a/Lib/distutils/tests/test_install.py
 +++ b/Lib/distutils/tests/test_install.py
-@@ -194,7 +194,7 @@ class InstallTestCase(support.TempdirManager,
+@@ -196,7 +196,7 @@ class InstallTestCase(support.TempdirManager,
          found = [os.path.basename(line) for line in content.splitlines()]
          expected = ['hello.py', 'hello.%s.pyc' % sys.implementation.cache_tag,
                      'sayhi',
@@ -207,7 +207,7 @@ index 51c80e0..2ada481 100644
          self.assertEqual(found, expected)
  
      def test_record_extensions(self):
-@@ -227,7 +227,7 @@ class InstallTestCase(support.TempdirManager,
+@@ -229,7 +229,7 @@ class InstallTestCase(support.TempdirManager,
  
          found = [os.path.basename(line) for line in content.splitlines()]
          expected = [_make_ext_name('xx'),
@@ -229,7 +229,7 @@ index e595c39..6d9fc26 100755
              object.__name__ not in ('xml.etree', 'test.pydoc_mod')):
              if docloc.startswith(("http://", "https://")):
 diff --git a/Lib/site.py b/Lib/site.py
-index 3a0f619..c25b1b3 100644
+index 5f1b31e..e84b51b 100644
 --- a/Lib/site.py
 +++ b/Lib/site.py
 @@ -7,12 +7,18 @@
@@ -252,7 +252,7 @@ index 3a0f619..c25b1b3 100644
  If a file named "pyvenv.cfg" exists one directory above sys.executable,
  sys.prefix and sys.exec_prefix are set to that directory and
  it is also checked for site-packages (sys.base_prefix and
-@@ -358,10 +364,20 @@ def getsitepackages(prefixes=None):
+@@ -365,10 +371,20 @@ def getsitepackages(prefixes=None):
  
          if os.sep == '/':
              for libdir in libdirs:
@@ -278,10 +278,10 @@ index 3a0f619..c25b1b3 100644
              sitepackages.append(prefix)
  
 diff --git a/Lib/test/test_site.py b/Lib/test/test_site.py
-index 2e70880..4d27ac6 100644
+index 6060288..31b532c 100644
 --- a/Lib/test/test_site.py
 +++ b/Lib/test/test_site.py
-@@ -277,16 +277,16 @@ class HelperFunctionsTests(unittest.TestCase):
+@@ -281,16 +281,16 @@ class HelperFunctionsTests(unittest.TestCase):
          if os.sep == '/':
              # OS X, Linux, FreeBSD, etc
              if sys.platlibdir != "lib":
