@@ -1,3 +1,9 @@
+python3.10 (3.10.0~a4-1+xenial2) xenial; urgency=medium
+
+  * Fix documentation build for old sphinx.
+
+ -- Anthony Sottile <asottile@umich.edu>  Mon, 04 Jan 2021 18:07:51 -0800
+
 python3.10 (3.10.0~a4-1+xenial1) xenial; urgency=medium
 
   * Python 3.10.0 alpha 4 release.
