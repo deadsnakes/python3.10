@@ -1206,7 +1206,6 @@
  _PyErr_WriteUnraisableMsg@Base 3.8.0~b1
  _PyEval_AddPendingCall@Base 3.8.0~b1
  _PyEval_CallTracing@Base @SVER@
- _PyEval_EvalCodeWithName@Base @SVER@
  _PyEval_EvalFrameDefault@Base @SVER@
  _PyEval_GetAsyncGenFinalizer@Base @SVER@
  _PyEval_GetAsyncGenFirstiter@Base @SVER@
@@ -1246,8 +1245,6 @@
  _PyHamt_CollisionNode_Type@Base @SVER@
  _PyHamt_Type@Base @SVER@
  _PyImport_AcquireLock@Base @SVER@
- _PyImport_FindBuiltin@Base 3.10.0~a3
- _PyImport_FindExtensionObject@Base @SVER@
  _PyImport_FixupBuiltin@Base @SVER@
  _PyImport_FixupExtensionObject@Base @SVER@
  _PyImport_GetModuleId@Base @SVER@
@@ -1527,6 +1524,7 @@
  _Py_Dealloc@Base @SVER@
  _Py_DecodeLocaleEx@Base @SVER@
  _Py_DisplaySourceLine@Base @SVER@
+ _Py_DumpExtensionModules@Base 3.10.0~a5
  _Py_EllipsisObject@Base @SVER@
  _Py_EncodeLocaleEx@Base @SVER@
  _Py_EncodeLocaleRaw@Base @SVER@
