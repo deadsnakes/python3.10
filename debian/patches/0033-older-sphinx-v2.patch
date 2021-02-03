@@ -30,7 +30,7 @@ index 9efe3aa..b843152 100644
     +---------------------------------------------------------+-----------------------------------+--------------+
     | Slot                                                    | :ref:`Type <slot-typedefs-table>` | special      |
 diff --git a/Doc/conf.py b/Doc/conf.py
-index 61e189a..e0de2e6 100644
+index 757d932..217b8c4 100644
 --- a/Doc/conf.py
 +++ b/Doc/conf.py
 @@ -45,7 +45,7 @@ today_fmt = '%B %d, %Y'

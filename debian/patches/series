@@ -8,7 +8,6 @@ tkinter-import.diff
 gdbm-import.diff
 link-opt.diff
 setup-modules.diff
-bdist-wininst-notfound.diff
 profiled-build.diff
 langpack-gettext.diff
 disable-sem-check.diff
@@ -33,4 +32,3 @@ argparse-no-shutil.diff
 0033-older-sphinx-v2.patch
 0035-mark-_setuptools_disclaimer-as-orphan.patch
 0036-allow-older-libmpdec.patch
-0036-fix-docs-for-sphinx-3.2.0.patch
