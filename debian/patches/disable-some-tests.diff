@@ -9,7 +9,7 @@ Subject: disable-some-tests
  1 file changed, 1 insertion(+)
 
 diff --git a/Lib/distutils/tests/test_build_ext.py b/Lib/distutils/tests/test_build_ext.py
-index a3055c1..7e5a262 100644
+index 90f7bb0..4edd34c 100644
 --- a/Lib/distutils/tests/test_build_ext.py
 +++ b/Lib/distutils/tests/test_build_ext.py
 @@ -112,6 +112,7 @@ class BuildExtTestCase(TempdirManager,
