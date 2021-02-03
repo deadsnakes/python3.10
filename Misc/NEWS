@@ -2,6 +2,269 @@
 Python News
 +++++++++++
 
+What's New in Python 3.10.0 alpha 5?
+====================================
+
+*Release date: 2021-02-02*
+
+Security
+--------
+
+- bpo-42938: Avoid static buffers when computing the repr of
+  :class:`ctypes.c_double` and :class:`ctypes.c_longdouble` values.
+
+Core and Builtins
+-----------------
+
+- bpo-42990: Refactor the ``PyEval_`` family of functions.
+
+  * An new function ``_PyEval_Vector`` is added to simplify calls to Python from C.
+  * ``_PyEval_EvalCodeWithName`` is removed
+  * ``PyEval_EvalCodeEx`` is retained as part of the API, but is not used internally
+
+- bpo-38631: Replace :c:func:`Py_FatalError` calls in the compiler with
+  regular :exc:`SystemError` exceptions. Patch by Victor Stinner.
+
+- bpo-42997: Improve error message for missing ":" before blocks. Patch by
+  Pablo Galindo.
+
+- bpo-43017: Improve error message in the parser when using un-parenthesised
+  tuples in comprehensions. Patch by Pablo Galindo.
+
+- bpo-42986: Fix parser crash when reporting syntax errors in f-string with
+  newlines. Patch by Pablo Galindo.
+
+- bpo-40176: Syntax errors for unterminated string literals now point to the
+  start of the string instead of reporting EOF/EOL.
+
+- bpo-42927: The inline cache for ``LOAD_ATTR`` now also optimizes access to
+  attributes defined by ``__slots__``. This makes reading such attribute up
+  to 30% faster.
+
+- bpo-42864: Improve error messages in the parser when parentheses are not
+  closed. Patch by Pablo Galindo.
+
+- bpo-42924: Fix ``bytearray`` repetition incorrectly copying data from the
+  start of the buffer, even if the data is offset within the buffer (e.g.
+  after reassigning a slice at the start of the ``bytearray`` to a shorter
+  byte string).
+
+- bpo-42882: Fix the :c:func:`_PyUnicode_FromId` function
+  (_Py_IDENTIFIER(var) API) when :c:func:`Py_Initialize` /
+  :c:func:`Py_Finalize` is called multiple times: preserve
+  ``_PyRuntime.unicode_ids.next_index`` value.
+
+- bpo-42827: Fix a crash when working out the error line of a
+  :exc:`SyntaxError` in some multi-line expressions.
+
+- bpo-42823: frame.f_lineno is correct even if frame.f_trace is set to True
+
+- bpo-37324: Remove deprecated aliases to
+  :ref:`collections-abstract-base-classes` from the :mod:`collections`
+  module.
+
+- bpo-41994: Fixed possible leak in ``import`` when ``sys.modules`` is not a
+  ``dict``.
+
+- bpo-27772: In string formatting, preceding the *width* field by ``'0'`` no
+  longer affects the default alignment for strings.
+
+Library
+-------
+
+- bpo-43108: Fixed a reference leak in the :mod:`curses` module. Patch by
+  Pablo Galindo
+
+- bpo-43077: Update the bundled pip to 21.0.1 and setuptools to 52.0.0.
+
+- bpo-41282: Deprecate ``distutils`` in documentation and add warning on
+  import.
+
+- bpo-43014: Improve performance of :mod:`tokenize` by 20-30%.  Patch by
+  Anthony Sottile.
+
+- bpo-42323: Fix :func:`math.nextafter` for NaN on AIX.
+
+- bpo-42955: Add :data:`sys.stdlib_module_names`, containing the list of the
+  standard library module names. Patch by Victor Stinner.
+
+- bpo-42944: Fix ``random.Random.sample`` when ``counts`` argument is not
+  ``None``.
+
+- bpo-42934: Use :class:`~traceback.TracebackException`'s new ``compact``
+  param in :class:`~unittest.TestResult` to reduce time and memory consumed
+  by traceback formatting.
+
+- bpo-42931: Add :func:`randbytes` to ``random.__all__``.
+
+- bpo-38250: [Enum] Flags consisting of a single bit are now considered
+  canonical, and will be the only flags returned from listing and iterating
+  over a Flag class or a Flag member.  Multi-bit flags are considered
+  aliases; they will be returned from lookups and operations that result in
+  their value. Iteration for both Flag and Flag members is in definition
+  order.
+
+- bpo-42877: Added the ``compact`` parameter to the constructor of
+  :class:`traceback.TracebackException` to reduce time and memory for use
+  cases that only need to call :func:`TracebackException.format` and
+  :func:`TracebackException.format_exception_only`.
+
+- bpo-42923: The :c:func:`Py_FatalError` function and the
+  :mod:`faulthandler` module now dump the list of extension modules on a
+  fatal error.
+
+- bpo-42848: Removed recursion from :class:`~traceback.TracebackException`
+  to allow it to handle long exception chains.
+
+- bpo-42901: [Enum] move member creation from ``EnumMeta.__new__`` to
+  ``_proto_member.__set_name__``, allowing members to be created and visible
+  in ``__init_subclass__``.
+
+- bpo-42780: Fix os.set_inheritable() for O_PATH file descriptors on Linux.
+
+- bpo-42866: Fix a reference leak in the ``getcodec()`` function of CJK
+  codecs. Patch by Victor Stinner.
+
+- bpo-42846: Convert the 6 CJK codec extension modules (_codecs_cn,
+  _codecs_hk, _codecs_iso2022, _codecs_jp, _codecs_kr and _codecs_tw) to the
+  multiphase initialization API (:pep:`489`). Patch by Victor Stinner.
+
+- bpo-42851: remove __init_subclass__ support for Enum members
+
+- bpo-42834: Make internal caches of the ``_json`` module compatible with
+  subinterpreters.
+
+- bpo-41748: Fix HTMLParser parsing rules for element attributes containing
+  commas with spaces. Patch by Karl Dubost.
+
+- bpo-40810: Require SQLite 3.7.15 or newer. Patch by Erlend E. Aasland.
+
+- bpo-1635741: Convert the _multibytecodec extension module (CJK codecs) to
+  multi-phase initialization (:pep:`489`).  Patch by Erlend E. Aasland.
+
+- bpo-42802: The distutils ``bdist_wininst`` command deprecated in Python
+  3.8 has been removed. The distutils ``bidst_wheel`` command is now
+  recommended to distribute binary packages on Windows.
+
+- bpo-24464: The undocumented built-in function
+  ``sqlite3.enable_shared_cache`` is now deprecated, scheduled for removal
+  in Python 3.12.  Its use is strongly discouraged by the SQLite3
+  documentation.  Patch by Erlend E. Aasland.
+
+- bpo-42384: Make pdb populate sys.path[0] exactly the same as regular
+  python execution.
+
+- bpo-42383: Fix pdb: previously pdb would fail to restart the debugging
+  target if it was specified using a relative path and the current directory
+  changed.
+
+- bpo-42005: Fix CLI of :mod:`cProfile` and :mod:`profile` to catch
+  :exc:`BrokenPipeError`.
+
+- bpo-41604: Don't decrement the reference count of the previous user_ptr
+  when set_panel_userptr fails.
+
+- bpo-41149: Allow executing callables that have a boolean value of
+  ``False`` when passed to :class:`Threading.thread` as the target. Patch
+  contributed by Barney Stratford.
+
+- bpo-38307: Add an 'end_lineno' attribute to the Class and Function objects
+  that appear in the tree returned by pyclbr functions.  This and the
+  existing 'lineno' attribute define the extent of class and def statements.
+  Patch by Aviral Srivastava.
+
+- bpo-39273: The ``BUTTON5_*`` constants are now exposed in the
+  :mod:`curses` module if available.
+
+- bpo-33289: Correct call to :mod:`tkinter.colorchooser` to return RGB
+  triplet of ints instead of floats.  Patch by Cheryl Sabella.
+
+Documentation
+-------------
+
+- bpo-40304: Fix doc for type(name, bases, dict).  Patch by Boris
+  Verkhovskiy and Éric Araujo.
+
+- bpo-42811: Updated importlib.utils.resolve_name() doc to use
+  __spec__.parent instead of __package__. (Thanks Yair Frid.)
+
+Tests
+-----
+
+- bpo-40823: Use :meth:`unittest.TestLoader().loadTestsFromTestCase` instead
+  of :meth:`unittest.makeSuite` in :mod:`sqlite3` tests. Patch by Erlend E.
+  Aasland.
+
+- bpo-40810: In :mod:`sqlite3`, fix ``CheckTraceCallbackContent`` for SQLite
+  pre 3.7.15.
+
+Build
+-----
+
+- bpo-43031: Pass ``--timeout=$(TESTTIMEOUT)`` option to the default profile
+  task ``./python -m test --pgo`` command.
+
+- bpo-36143: ``make regen-all`` now also runs ``regen-keyword``. Patch by
+  Victor Stinner.
+
+- bpo-42874: Removed the grep -q and -E flags in the tzpath validation
+  section of the configure script to better accomodate users of some
+  platforms (specifically Solaris 10).
+
+- bpo-31904: Add library search path by wr-cc in add_cross_compiling_paths()
+  for VxWorks.
+
+- bpo-42856: Add ``--with-wheel-pkg-dir=PATH`` option to the ``./configure``
+  script. If specified, the :mod:`ensurepip` module looks for ``setuptools``
+  and ``pip`` wheel packages in this directory: if both are present, these
+  wheel packages are used instead of ensurepip bundled wheel packages.
+
+  Some Linux distribution packaging policies recommend against bundling
+  dependencies. For example, Fedora installs wheel packages in the
+  ``/usr/share/python-wheels/`` directory and don't install the
+  ``ensurepip._bundled`` package.
+
+Windows
+-------
+
+- bpo-41837: Updated Windows installer to include OpenSSL 1.1.1i
+
+- bpo-42584: Upgrade Windows installer to use SQLite 3.34.0.
+
+macOS
+-----
+
+- bpo-42504: Ensure that the value of
+  sysconfig.get_config_var('MACOSX_DEPLOYMENT_TARGET') is always a string,
+  even in when the value is parsable as an integer.
+
+IDLE
+----
+
+- bpo-43008: Make IDLE invoke :func:`sys.excepthook` in normal, 2-process
+  mode. Patch by Ken Hilton.
+
+- bpo-33065: Fix problem debugging user classes with __repr__ method.
+
+- bpo-23544: Disable Debug=>Stack Viewer when user code is running or
+  Debugger is active, to prevent hang or crash.  Patch by Zackery Spytz.
+
+- bpo-32631: Finish zzdummy example extension module: make menu entries
+  work; add docstrings and tests with 100% coverage.
+
+C API
+-----
+
+- bpo-42979: When Python is built in debug mode (with C assertions), calling
+  a type slot like ``sq_length`` (``__len__()`` in Python) now fails with a
+  fatal error if the slot succeeded with an exception set, or failed with no
+  exception set. The error message contains the slot, the type name, and the
+  current exception (if an exception is set). Patch by Victor Stinner.
+
+- bpo-43030: Fixed a compiler warning in :c:func:`Py_UNICODE_ISSPACE()` on
+  platforms with signed ``wchar_t``.
+
+
 What's New in Python 3.10.0 alpha 4?
 ====================================
 
@@ -220,13 +483,13 @@ Library
   :meth:`socket.ntohs` and :meth:`socket.htons`.  Silent truncation was
   deprecated in Python 3.7. Patch by Erlend E. Aasland
 
-- bpo-42222: Harmonized random.randrange() argument handling to match
-  range().
+- bpo-42222: Harmonized :func:`random.randrange` argument handling to match
+  :func:`range`.
 
-  * The integer test and conversion in randrange() now uses
-    operator.index().
-  * Non-integer arguments to randrange() are deprecated.
-  * The *ValueError* is deprecated in favor of a *TypeError*.
+  * The integer test and conversion in ``randrange()`` now uses
+    :func:`operator.index`.
+  * Non-integer arguments to ``randrange()`` are deprecated.
+  * The ``ValueError`` is deprecated in favor of a ``TypeError``.
   * It now runs a little faster than before.
 
   (Contributed by Raymond Hettinger and Serhiy Storchaka.)
