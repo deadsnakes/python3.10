@@ -2,6 +2,240 @@
 Python News
 +++++++++++
 
+What's New in Python 3.10.0 alpha 6?
+====================================
+
+*Release date: 2021-03-01*
+
+Security
+--------
+
+- bpo-42967: Fix web cache poisoning vulnerability by defaulting the query
+  args separator to ``&``, and allowing the user to choose a custom
+  separator.
+
+Core and Builtins
+-----------------
+
+- bpo-43321: Fix ``SystemError`` raised when ``PyArg_Parse*()`` is used with
+  ``#`` but without ``PY_SSIZE_T_CLEAN`` defined.
+
+- bpo-36346: ``PyArg_Parse*()`` functions now emits ``DeprecationWarning``
+  when ``u`` or ``Z`` format is used. See :pep:`623` for detail.
+
+- bpo-43277: Add a new :c:func:`PySet_CheckExact` function to the C-API to
+  check if an object is an instance of :class:`set` but not an instance of a
+  subtype. Patch by Pablo Galindo.
+
+- bpo-42990: The :data:`types.FunctionType` constructor now inherits the
+  current builtins if the *globals* dictionary has no ``"__builtins__"``
+  key, rather than using ``{"None": None}`` as builtins: same behavior as
+  :func:`eval` and :func:`exec` functions. Defining a function with ``def
+  function(...): ...`` in Python is not affected, globals cannot be
+  overriden with this syntax: it also inherits the current builtins. Patch
+  by Victor Stinner.
+
+- bpo-42990: Functions have a new ``__builtins__`` attribute which is used
+  to look for builtin symbols when a function is executed, instead of
+  looking into ``__globals__['__builtins__']``. Patch by Mark Shannon and
+  Victor Stinner.
+
+- bpo-43149: Improve the error message in the parser for exception groups
+  without parentheses. Patch by Pablo Galindo.
+
+- bpo-43121: Fixed an incorrect :exc:`SyntaxError` message for missing comma
+  in literals. Patch by Pablo Galindo.
+
+- bpo-42819: :mod:`readline`: Explicitly disable bracketed paste in the
+  interactive interpreter, even if it's set in the inputrc, is enabled by
+  default (eg GNU Readline 8.1), or a user calls
+  ``readline.read_init_file()``. The Python REPL has not implemented
+  bracketed paste support. Also, bracketed mode writes the ``"\x1b[?2004h"``
+  escape sequence into stdout which causes test failures in applications
+  that don't support it. It can still be explicitly enabled by calling
+  ``readline.parse_and_bind("set enable-bracketed-paste on")``. Patch by
+  Dustin Rodrigues.
+
+- bpo-42808: Simple calls to ``type(object)`` are now faster due to the
+  ``vectorcall`` calling convention. Patch by Dennis Sweeney.
+
+- bpo-42217: Make the compiler merges same co_code and co_linetable objects
+  in a module like already did for co_consts.
+
+- bpo-41972: Substring search functions such as ``str1 in str2`` and
+  ``str2.find(str1)`` now sometimes use the "Two-Way" string comparison
+  algorithm to avoid quadratic behavior on long strings.
+
+- bpo-42128: Implement :pep:`634` (structural pattern matching). Patch by
+  Brandt Bucher.
+
+- bpo-40692: In the :class:`concurrent.futures.ProcessPoolExecutor`,
+  validate that :func:`multiprocess.synchronize` is available on a given
+  platform and rely on that check in the :mod:`concurrent.futures` test
+  suite so we can run tests that are unrelated to
+  :class:`ProcessPoolExecutor` on those platforms.
+
+- bpo-38302: If :func:`object.__ipow__` returns :const:`NotImplemented`, the
+  operator will correctly fall back to :func:`object.__pow__` and
+  :func:`object.__rpow__` as expected.
+
+Library
+-------
+
+- bpo-43316: The ``python -m gzip`` command line application now properly
+  fails when detecting an unsupported extension. It exits with a non-zero
+  exit code and prints an error message to stderr.
+
+- bpo-43317: Set the chunk size for the ``gzip`` module main function to
+  io.DEFAULT_BUFFER_SIZE. This is slightly faster than the 1024 bytes
+  constant that was used previously.
+
+- bpo-43146: Handle None in single-arg versions of
+  :func:`~traceback.print_exception` and
+  :func:`~traceback.format_exception`.
+
+- bpo-43260: Fix TextIOWrapper can not flush internal buffer forever after
+  very large text is written.
+
+- bpo-43258: Prevent needless allocation of :mod:`sqlite3` aggregate
+  function context when no rows match an aggregate query. Patch by Erlend E.
+  Aasland.
+
+- bpo-43251: Improve :mod:`sqlite3` error handling:
+  ``sqlite3_column_name()`` failures now result in :exc:`MemoryError`. Patch
+  by Erlend E. Aasland.
+
+- bpo-40956: Fix segfault in :meth:`sqlite3.Connection.backup` if no
+  argument was provided. The regression was introduced by GH-23838. Patch by
+  Erlend E. Aasland.
+
+- bpo-43172: The readline module now passes its tests when built directly
+  against libedit. Existing irreconcilable API differences remain in
+  :func:`readline.get_begidx` and :func:`readline.get_endidx` behavior based
+  on libreadline vs libedit use.
+
+- bpo-43163: Fix a bug in :mod:`codeop` that was causing it to not ask for
+  more input when multi-line snippets have unclosed parentheses. Patch by
+  Pablo Galindo
+
+- bpo-43162: deprecate unsupported ability to access enum members as
+  attributes of other enum members
+
+- bpo-43146: Fix recent regression in None argument handling in
+  :mod:`~traceback` module functions.
+
+- bpo-43102: The namedtuple __new__ method had its __builtins__ set to None
+  instead of an actual dictionary.  This created problems for introspection
+  tools.
+
+- bpo-43106: Added :data:`~os.O_EVTONLY`, :data:`~os.O_FSYNC`,
+  :data:`~os.O_SYMLINK` and :data:`~os.O_NOFOLLOW_ANY` for macOS. Patch by
+  Dong-hee Na.
+
+- bpo-42960: Adds :data:`resource.RLIMIT_KQUEUES` constant from FreeBSD to
+  the :mod:`resource` module.
+
+- bpo-42151: Make the pure Python implementation of
+  :mod:`xml.etree.ElementTree` behave the same as the C implementation
+  (:mod:`_elementree`) regarding default attribute values (by not setting
+  ``specified_attributes=1``).
+
+- bpo-29753: In ctypes, now packed bitfields are calculated properly and the
+  first item of packed bitfields is now shrank correctly.
+
+Documentation
+-------------
+
+- bpo-27646: Clarify that 'yield from <expr>' works with any iterable, not
+  just iterators.
+
+- bpo-36346: Update some deprecated unicode APIs which are documented as
+  "will be removed in 4.0" to "3.12". See :pep:`623` for detail.
+
+Tests
+-----
+
+- bpo-43288: Fix test_importlib to correctly skip Unicode file tests if the
+  fileystem does not support them.
+
+Build
+-----
+
+- bpo-43174: Windows build now uses ``/utf-8`` compiler option.
+
+- bpo-43103: Add a new configure ``--without-static-libpython`` option to
+  not build the ``libpythonMAJOR.MINOR.a`` static library and not install
+  the ``python.o`` object file.
+
+- bpo-13501: The configure script can now use *libedit* instead of
+  *readline* with the command line option ``--with-readline=editline``.
+
+- bpo-42603: Make configure script use pkg-config to detect the location of
+  Tcl/Tk headers and libraries, used to build tkinter.
+
+  On macOS, a Tcl/Tk configuration provided by pkg-config will be preferred
+  over Tcl/Tk frameworks installed in ``/{System/,}Library/Frameworks``. If
+  both exist and the latter is preferred, the appropriate ``--with-tcltk-*``
+  configuration options need to be explicitly set.
+
+- bpo-39448: Add the "regen-frozen" makefile target that regenerates the
+  code for the frozen ``__hello__`` module.
+
+Windows
+-------
+
+- bpo-43155: :c:func:`PyCMethod_New` is now present in ``python3.lib``.
+
+macOS
+-----
+
+- bpo-41837: Update macOS installer build to use OpenSSL 1.1.1j.
+
+IDLE
+----
+
+- bpo-43283: Document why printing to IDLE's Shell is often slower than
+  printing to a system terminal and that it can be made faster by
+  pre-formatting a single string before printing.
+
+C API
+-----
+
+- bpo-43278: Always put compiler and system information on the first line of
+  the REPL welcome message.
+
+- bpo-43270: Remove the private ``_PyErr_OCCURRED()`` macro: use the public
+  :c:func:`PyErr_Occurred` function instead.
+
+- bpo-35134: Move odictobject.h, parser_interface.h, picklebufobject.h,
+  pydebug.h, and pyfpe.h into the cpython/ directory. They must not be
+  included directly, as they are already included by Python.h: :ref:`Include
+  Files <api-includes>`.
+
+- bpo-35134: Move pyarena.h, pyctype.h, and pytime.h into the cpython/
+  directory. They must not be included directly, as they are already
+  included by Python.h: :ref:`Include Files <api-includes>`.
+
+- bpo-40170: :c:func:`PyExceptionClass_Name` is now always declared as a
+  function, in order to hide implementation details. The macro accessed
+  :c:member:`PyTypeObject.tp_name` directly.  Patch by Erlend E. Aasland.
+
+- bpo-43239: The :c:func:`PyCFunction_New` function is now exported in the
+  ABI when compiled with ``-fvisibility=hidden``.
+
+- bpo-40170: :c:func:`PyIter_Check` is now always declared as a function, in
+  order to hide implementation details. The macro accessed
+  :c:member:`PyTypeObject.tp_iternext` directly. Patch by Erlend E. Aasland.
+
+- bpo-40170: Convert :c:func:`PyDescr_IsData` macro to a function to hide
+  implementation details: The macro accessed
+  :c:member:`PyTypeObject.tp_descr_set` directly. Patch by Erlend E.
+  Aasland.
+
+- bpo-43181: Convert :c:func:`PyObject_TypeCheck` macro to a static inline
+  function. Patch by Erlend E. Aasland.
+
+
 What's New in Python 3.10.0 alpha 5?
 ====================================
 

@@ -246,9 +246,25 @@ SyntaxError: did you forget parentheses around the comprehension target?
 Traceback (most recent call last):
 SyntaxError: did you forget parentheses around the comprehension target?
 
->>> {x,y: None for x,y in range(100)}
+# Missing commas in literals collections should not
+# produce special error messages regarding missing
+# parentheses
+
+>>> [1, 2 3]
 Traceback (most recent call last):
-SyntaxError: did you forget parentheses around the comprehension target?
+SyntaxError: invalid syntax
+
+>>> {1, 2 3}
+Traceback (most recent call last):
+SyntaxError: invalid syntax
+
+>>> {1:2, 2:5 3:12}
+Traceback (most recent call last):
+SyntaxError: invalid syntax
+
+>>> (1, 2 3)
+Traceback (most recent call last):
+SyntaxError: invalid syntax
 
 From compiler_complex_args():
 
@@ -818,6 +834,39 @@ Make sure that the old "raise X, Y[, Z]" form is gone:
    Traceback (most recent call last):
      ...
    SyntaxError: invalid syntax
+
+Check that an exception group with missing parentheses
+raise a custom exception
+
+   >>> try:
+   ...   pass
+   ... except A, B:
+   ...   pass
+   Traceback (most recent call last):
+   SyntaxError: exception group must be parenthesized
+
+   >>> try:
+   ...   pass
+   ... except A, B, C:
+   ...   pass
+   Traceback (most recent call last):
+   SyntaxError: exception group must be parenthesized
+
+   >>> try:
+   ...   pass
+   ... except A, B, C as blech:
+   ...   pass
+   Traceback (most recent call last):
+   SyntaxError: exception group must be parenthesized
+
+   >>> try:
+   ...   pass
+   ... except A, B, C as blech:
+   ...   pass
+   ... finally:
+   ...   pass
+   Traceback (most recent call last):
+   SyntaxError: exception group must be parenthesized
 
 
 >>> f(a=23, a=234)
