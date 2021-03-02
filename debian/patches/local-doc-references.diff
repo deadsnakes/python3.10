@@ -21,7 +21,7 @@ index 98ccf42..c4668ab 100644
        {% if pagename == 'whatsnew/changelog' and not embedded %}
        <script type="text/javascript" src="{{ pathto('_static/changelog_search.js', 1) }}"></script>{% endif %}
 diff --git a/Lib/idlelib/help.html b/Lib/idlelib/help.html
-index 170999e..e439e92 100644
+index 924042d..d9688b7 100644
 --- a/Lib/idlelib/help.html
 +++ b/Lib/idlelib/help.html
 @@ -26,7 +26,7 @@
