@@ -407,7 +407,7 @@ def namedtuple(typename, field_names, *, rename=False, defaults=None, module=Non
 
     namespace = {
         '_tuple_new': tuple_new,
-        '__builtins__': None,
+        '__builtins__': {},
         '__name__': f'namedtuple_{typename}',
     }
     code = f'lambda _cls, {arg_list}: _tuple_new(_cls, ({arg_list}))'
@@ -472,6 +472,7 @@ def namedtuple(typename, field_names, *, rename=False, defaults=None, module=Non
         '__repr__': __repr__,
         '_asdict': _asdict,
         '__getnewargs__': __getnewargs__,
+        '__match_args__': field_names,
     }
     for index, name in enumerate(field_names):
         doc = _sys.intern(f'Alias for field number {index}')
