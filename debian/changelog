@@ -1,3 +1,9 @@
+python3.10 (3.10.0~a6-1+focal1) focal; urgency=medium
+
+  * Python 3.10.0 alpha 6 release.
+
+ -- Anthony Sottile <asottile@umich.edu>  Mon, 01 Mar 2021 17:29:03 -0800
+
 python3.10 (3.10.0~a5-1+focal2) focal; urgency=medium
 
   * libpython-stdlib: depends tzdata, recommends ca-certificates
