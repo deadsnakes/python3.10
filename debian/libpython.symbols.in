@@ -51,6 +51,7 @@
  PyCFunction_GetFlags@Base @SVER@
  PyCFunction_GetFunction@Base @SVER@
  PyCFunction_GetSelf@Base @SVER@
+ PyCFunction_New@Base 3.10.0~a6
  PyCFunction_NewEx@Base @SVER@
  PyCFunction_Type@Base @SVER@
  PyCMethod_New@Base 3.9.0~b1
@@ -133,6 +134,7 @@
  PyContext_Type@Base @SVER@
  PyCoro_New@Base @SVER@
  PyCoro_Type@Base @SVER@
+ PyDescr_IsData@Base 3.10.0~a6
  PyDescr_NewClassMethod@Base @SVER@
  PyDescr_NewGetSet@Base @SVER@
  PyDescr_NewMember@Base @SVER@
@@ -1206,6 +1208,7 @@
  _PyErr_WriteUnraisableMsg@Base 3.8.0~b1
  _PyEval_AddPendingCall@Base 3.8.0~b1
  _PyEval_CallTracing@Base @SVER@
+ _PyEval_DeactivateOpCache@Base 3.10.0~a6
  _PyEval_EvalFrameDefault@Base @SVER@
  _PyEval_GetAsyncGenFinalizer@Base @SVER@
  _PyEval_GetAsyncGenFirstiter@Base @SVER@
