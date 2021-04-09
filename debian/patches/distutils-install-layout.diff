@@ -217,7 +217,7 @@ index 21a7b7c..1482431 100644
  
      def test_debug_mode(self):
 diff --git a/Lib/pydoc.py b/Lib/pydoc.py
-index a852928..0f0ed8e 100755
+index a3f425b..3847b29 100755
 --- a/Lib/pydoc.py
 +++ b/Lib/pydoc.py
 @@ -505,6 +505,7 @@ class Doc:
@@ -229,7 +229,7 @@ index a852928..0f0ed8e 100755
              object.__name__ not in ('xml.etree', 'test.pydoc_mod')):
              if docloc.startswith(("http://", "https://")):
 diff --git a/Lib/site.py b/Lib/site.py
-index 5f1b31e..e84b51b 100644
+index 939893e..0fb8a3f 100644
 --- a/Lib/site.py
 +++ b/Lib/site.py
 @@ -7,12 +7,18 @@
@@ -252,7 +252,7 @@ index 5f1b31e..e84b51b 100644
  If a file named "pyvenv.cfg" exists one directory above sys.executable,
  sys.prefix and sys.exec_prefix are set to that directory and
  it is also checked for site-packages (sys.base_prefix and
-@@ -365,10 +371,20 @@ def getsitepackages(prefixes=None):
+@@ -367,10 +373,20 @@ def getsitepackages(prefixes=None):
  
          if os.sep == '/':
              for libdir in libdirs:
