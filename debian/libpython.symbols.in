@@ -1,10 +1,4 @@
- PyAST_CompileEx@Base @SVER@
- PyAST_CompileObject@Base @SVER@
- PyAST_Validate@Base @SVER@
- PyArena_AddPyObject@Base @SVER@
- PyArena_Free@Base @SVER@
- PyArena_Malloc@Base @SVER@
- PyArena_New@Base @SVER@
+ PyAiter_Check@Base 3.10.0~a7
  PyArg_Parse@Base @SVER@
  PyArg_ParseTuple@Base @SVER@
  PyArg_ParseTupleAndKeywords@Base @SVER@
@@ -204,6 +198,7 @@
  PyErr_SetImportError@Base @SVER@
  PyErr_SetImportErrorSubclass@Base @SVER@
  PyErr_SetInterrupt@Base @SVER@
+ PyErr_SetInterruptEx@Base 3.10.0~a7
  PyErr_SetNone@Base @SVER@
  PyErr_SetObject@Base @SVER@
  PyErr_SetString@Base @SVER@
@@ -255,6 +250,7 @@
  PyExc_ConnectionResetError@Base @SVER@
  PyExc_DeprecationWarning@Base @SVER@
  PyExc_EOFError@Base @SVER@
+ PyExc_EncodingWarning@Base 3.10.0~a7
  PyExc_EnvironmentError@Base @SVER@
  PyExc_Exception@Base @SVER@
  PyExc_FileExistsError@Base @SVER@
@@ -355,8 +351,6 @@
  PyFunction_SetDefaults@Base @SVER@
  PyFunction_SetKwDefaults@Base @SVER@
  PyFunction_Type@Base @SVER@
- PyFuture_FromAST@Base @SVER@
- PyFuture_FromASTObject@Base @SVER@
  PyGC_Collect@Base @SVER@
  PyGILState_Check@Base @SVER@
  PyGILState_Ensure@Base @SVER@
@@ -658,6 +652,7 @@
  PyObject_GenericGetDict@Base @SVER@
  PyObject_GenericSetAttr@Base @SVER@
  PyObject_GenericSetDict@Base @SVER@
+ PyObject_GetAiter@Base 3.10.0~a7
  PyObject_GetArenaAllocator@Base @SVER@
  PyObject_GetAttr@Base @SVER@
  PyObject_GetAttrString@Base @SVER@
@@ -693,11 +688,6 @@
  PyObject_Type@Base @SVER@
  PyObject_VectorcallDict@Base 3.9.0~a4
  PyObject_VectorcallMethod@Base 3.9.0~a4
- PyParser_ASTFromFile@Base @SVER@
- PyParser_ASTFromFileObject@Base @SVER@
- PyParser_ASTFromFilename@Base 3.10.0~a1
- PyParser_ASTFromString@Base @SVER@
- PyParser_ASTFromStringObject@Base @SVER@
  PyPickleBuffer_FromObject@Base 3.8.0~b1
  PyPickleBuffer_GetBuffer@Base 3.8.0~b1
  PyPickleBuffer_Release@Base 3.8.0~b1
@@ -728,8 +718,6 @@
  PyRun_SimpleStringFlags@Base @SVER@
  PyRun_String@Base 3.10.0~a3
  PyRun_StringFlags@Base @SVER@
- PySTEntry_Type@Base @SVER@
- PyST_GetScope@Base @SVER@
  PySeqIter_New@Base @SVER@
  PySeqIter_Type@Base @SVER@
  PySequence_Check@Base @SVER@
@@ -787,9 +775,6 @@
  PyStructSequence_NewType@Base @SVER@
  PyStructSequence_SetItem@Base @SVER@
  PySuper_Type@Base @SVER@
- PySymtable_Build@Base @SVER@
- PySymtable_BuildObject@Base @SVER@
- PySymtable_Free@Base @SVER@
  PySymtable_Lookup@Base @SVER@
  PySys_AddAuditHook@Base 3.8.0~b1
  PySys_AddWarnOption@Base @SVER@
@@ -1086,8 +1071,6 @@
  Py_SetPythonHome@Base @SVER@
  Py_SetRecursionLimit@Base @SVER@
  Py_SetStandardStreamEncoding@Base @SVER@
- Py_SymtableString@Base @SVER@
- Py_SymtableStringObject@Base @SVER@
  Py_UTF8Mode@Base @SVER@
  Py_UnbufferedStdioFlag@Base @SVER@
  Py_UniversalNewlineFgets@Base @SVER@
@@ -1095,13 +1078,16 @@
  Py_VerboseFlag@Base @SVER@
  Py_XNewRef@Base 3.10.0~a3
  Py_hexdigits@Base @SVER@
- _PyAST_GetDocString@Base @SVER@
- _PyAST_Optimize@Base @SVER@
+ _PyAST_Compile@Base 3.10.0~a7
  _PyAccu_Accumulate@Base @SVER@
  _PyAccu_Destroy@Base @SVER@
  _PyAccu_Finish@Base @SVER@
  _PyAccu_FinishAsList@Base @SVER@
  _PyAccu_Init@Base @SVER@
+ _PyArena_AddPyObject@Base 3.10.0~a7
+ _PyArena_Free@Base 3.10.0~a7
+ _PyArena_Malloc@Base 3.10.0~a7
+ _PyArena_New@Base 3.10.0~a7
  _PyArg_BadArgument@Base @SVER@
  _PyArg_CheckPositional@Base @SVER@
  _PyArg_NoKeywords@Base @SVER@
@@ -1208,7 +1194,6 @@
  _PyErr_WriteUnraisableMsg@Base 3.8.0~b1
  _PyEval_AddPendingCall@Base 3.8.0~b1
  _PyEval_CallTracing@Base @SVER@
- _PyEval_DeactivateOpCache@Base 3.10.0~a6
  _PyEval_EvalFrameDefault@Base @SVER@
  _PyEval_GetAsyncGenFinalizer@Base @SVER@
  _PyEval_GetAsyncGenFirstiter@Base @SVER@
@@ -1525,6 +1510,7 @@
  _Py_ClearStandardStreamEncoding@Base @SVER@
  _Py_CoerceLegacyLocale@Base @SVER@
  _Py_Dealloc@Base @SVER@
+ _Py_DecRef@Base 3.10.0~a7
  _Py_DecodeLocaleEx@Base @SVER@
  _Py_DisplaySourceLine@Base @SVER@
  _Py_DumpExtensionModules@Base 3.10.0~a5
@@ -1553,12 +1539,12 @@
  _Py_HashPointer@Base @SVER@
  _Py_HashPointerRaw@Base 3.9.0~b1
  _Py_HashSecret@Base @SVER@
+ _Py_IncRef@Base 3.10.0~a7
  _Py_InitializeMain@Base 3.8.0~b1
  _Py_IsCoreInitialized@Base @SVER@
  _Py_IsFinalizing@Base @SVER@
  _Py_IsLocaleCoercionTarget@Base @SVER@
  _Py_LegacyLocaleDetected@Base @SVER@
- _Py_Mangle@Base @SVER@
  _Py_NewInterpreter@Base 3.9.0~b1
  _Py_NewReference@Base 3.9.0~a4
  _Py_NoneStruct@Base @SVER@
@@ -1573,7 +1559,6 @@
  _Py_Sigset_Converter@Base @SVER@
  _Py_SourceAsString@Base 3.8.0~b1
  _Py_SwappedOp@Base @SVER@
- _Py_SymtableStringObjectFlags@Base 3.8.0~b1
  _Py_TrueStruct@Base @SVER@
  _Py_Uid_Converter@Base @SVER@
  _Py_UnhandledKeyboardInterrupt@Base 3.8.0~a3
