@@ -653,6 +653,7 @@ ac_subst_vars='LTLIBOBJS
 TEST_MODULES
 LIBRARY_DEPS
 STATIC_LIBPYTHON
+OPENSSL_RPATH
 OPENSSL_LDFLAGS
 OPENSSL_LIBS
 OPENSSL_INCLUDES
@@ -883,6 +884,7 @@ with_readline
 with_computed_gotos
 with_ensurepip
 with_openssl
+with_openssl_rpath
 with_ssl_default_suites
 with_builtin_hashlib_hashes
 with_experimental_isolated_subinterpreters
@@ -1629,7 +1631,12 @@ Optional Packages:
   --with-ensurepip[=install|upgrade|no]
                           "install" or "upgrade" using bundled pip (default is
                           upgrade)
-  --with-openssl=DIR      override root of the OpenSSL directory to DIR
+  --with-openssl=DIR      root of the OpenSSL directory
+  --with-openssl-rpath=[DIR|auto|no]
+                          Set runtime library directory (rpath) for OpenSSL
+                          libraries, no (default): don't set rpath, auto:
+                          auto-detect rpath from --with-openssl and
+                          pkg-config, DIR: set an explicit rpath
   --with-ssl-default-suites=[python|openssl|STRING]
                           override default cipher suites string, python: use
                           Python's preferred selection (default), openssl:
@@ -3154,7 +3161,7 @@ if test "$srcdir" != . -a "$srcdir" != "$(pwd)"; then
     # If we're building out-of-tree, we need to make sure the following
     # resources get picked up before their $srcdir counterparts.
     #   Objects/ -> typeslots.inc
-    #   Include/ -> Python-ast.h
+    #   Include/ -> Python.h
     #   Python/  -> importlib.h
     # (A side effect of this is that these resources will automatically be
     #  regenerated when building out-of-tree, regardless of whether or not
@@ -9669,7 +9676,7 @@ printf "%s\n" "#define HAVE_GCC_UINT128_T 1" >>confdefs.h
 fi
 
 
-# Sizes of various common basic types
+# Sizes and alignments of various common basic types
 # ANSI C requires sizeof(char) == 1, so no need to check it
 # The cast to long int works around a bug in the HP C Compiler
 # version HP92453-01 B.11.11.23709.GP, which incorrectly rejects
@@ -9735,6 +9742,38 @@ printf "%s\n" "$ac_cv_sizeof_long" >&6; }
 
 
 printf "%s\n" "#define SIZEOF_LONG $ac_cv_sizeof_long" >>confdefs.h
+
+
+# The cast to long int works around a bug in the HP C Compiler,
+# see AC_CHECK_SIZEOF for more information.
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking alignment of long" >&5
+printf %s "checking alignment of long... " >&6; }
+if test ${ac_cv_alignof_long+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if ac_fn_c_compute_int "$LINENO" "(long int) offsetof (ac__type_alignof_, y)" "ac_cv_alignof_long"        "$ac_includes_default
+typedef struct { char x; long y; } ac__type_alignof_;"
+then :
+
+else $as_nop
+  if test "$ac_cv_type_long" = yes; then
+     { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute alignment of long
+See \`config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_alignof_long=0
+   fi
+fi
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_alignof_long" >&5
+printf "%s\n" "$ac_cv_alignof_long" >&6; }
+
+
+
+printf "%s\n" "#define ALIGNOF_LONG $ac_cv_alignof_long" >>confdefs.h
 
 
 # The cast to long int works around a bug in the HP C Compiler
@@ -9966,6 +10005,38 @@ printf "%s\n" "$ac_cv_sizeof_size_t" >&6; }
 
 
 printf "%s\n" "#define SIZEOF_SIZE_T $ac_cv_sizeof_size_t" >>confdefs.h
+
+
+# The cast to long int works around a bug in the HP C Compiler,
+# see AC_CHECK_SIZEOF for more information.
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking alignment of size_t" >&5
+printf %s "checking alignment of size_t... " >&6; }
+if test ${ac_cv_alignof_size_t+y}
+then :
+  printf %s "(cached) " >&6
+else $as_nop
+  if ac_fn_c_compute_int "$LINENO" "(long int) offsetof (ac__type_alignof_, y)" "ac_cv_alignof_size_t"        "$ac_includes_default
+typedef struct { char x; size_t y; } ac__type_alignof_;"
+then :
+
+else $as_nop
+  if test "$ac_cv_type_size_t" = yes; then
+     { { printf "%s\n" "$as_me:${as_lineno-$LINENO}: error: in \`$ac_pwd':" >&5
+printf "%s\n" "$as_me: error: in \`$ac_pwd':" >&2;}
+as_fn_error 77 "cannot compute alignment of size_t
+See \`config.log' for more details" "$LINENO" 5; }
+   else
+     ac_cv_alignof_size_t=0
+   fi
+fi
+
+fi
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $ac_cv_alignof_size_t" >&5
+printf "%s\n" "$ac_cv_alignof_size_t" >&6; }
+
+
+
+printf "%s\n" "#define ALIGNOF_SIZE_T $ac_cv_alignof_size_t" >>confdefs.h
 
 
 # The cast to long int works around a bug in the HP C Compiler
@@ -16731,10 +16802,10 @@ if ac_fn_c_try_compile "$LINENO"
 then :
 
 
-if $GREP noonsees conftest.$ac_objext >/dev/null ; then
+if grep noonsees conftest.$ac_objext >/dev/null ; then
   ax_cv_c_float_words_bigendian=yes
 fi
-if $GREP seesnoon conftest.$ac_objext >/dev/null ; then
+if grep seesnoon conftest.$ac_objext >/dev/null ; then
   if test "$ax_cv_c_float_words_bigendian" = unknown; then
     ax_cv_c_float_words_bigendian=no
   else
@@ -19983,6 +20054,38 @@ printf "%s\n" "#define HAVE_X509_VERIFY_PARAM_SET1_HOST 1" >>confdefs.h
     LDFLAGS="$save_LDFLAGS"
     LIBS="$save_LIBS"
 fi
+
+# rpath to libssl and libcrypto
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for --with-openssl-rpath" >&5
+printf %s "checking for --with-openssl-rpath... " >&6; }
+
+# Check whether --with-openssl-rpath was given.
+if test ${with_openssl_rpath+y}
+then :
+  withval=$with_openssl_rpath;
+else $as_nop
+  with_openssl_rpath=no
+
+fi
+
+case $with_openssl_rpath in #(
+  auto|yes) :
+    OPENSSL_RPATH=auto ;; #(
+  no) :
+    OPENSSL_RPATH= ;; #(
+  *) :
+    if test -d "$with_openssl_rpath"
+then :
+  OPENSSL_RPATH="$with_openssl_rpath"
+else $as_nop
+  as_fn_error $? "--with-openssl-rpath \"$with_openssl_rpath\" is not a directory" "$LINENO" 5
+fi
+
+ ;;
+esac
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: $OPENSSL_RPATH" >&5
+printf "%s\n" "$OPENSSL_RPATH" >&6; }
+
 
 # ssl module default cipher suite string
 

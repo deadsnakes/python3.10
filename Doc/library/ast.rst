@@ -140,6 +140,11 @@ Node classes
    In the meantime, instantiating them will return an instance of
    a different class.
 
+.. note::
+    The descriptions of the specific node classes displayed here
+    were initially adapted from the fantastic `Green Tree
+    Snakes <https://greentreesnakes.readthedocs.io/en/latest/>`__ project and
+    all its contributors.
 
 Literals
 ^^^^^^^^
@@ -833,7 +838,7 @@ Statements
    context), ``op`` is :class:`Add`, and ``value`` is a :class:`Constant` with
    value for 1.
 
-   The ``target`` attribute connot be of class :class:`Tuple` or :class:`List`,
+   The ``target`` attribute cannot be of class :class:`Tuple` or :class:`List`,
    unlike the targets of :class:`Assign`.
 
    .. doctest::
@@ -1247,7 +1252,7 @@ Control flow
    :class:`match_case` nodes with the different cases.
 
 
-.. class:: match_case(context_expr, optional_vars)
+.. class:: match_case(pattern, guard, body)
 
     A single case pattern in a ``match`` statement. ``pattern`` contains the
     match pattern that will be used to match the subject against. Notice that
