@@ -1,3 +1,9 @@
+python3.10 (3.10.0~a7-1+bionic2) bionic; urgency=medium
+
+  * add -full package
+
+ -- Anthony Sottile <asottile@umich.edu>  Sun, 02 May 2021 18:46:41 -0700
+
 python3.10 (3.10.0~a7-1+bionic1) bionic; urgency=medium
 
   * Python 3.10.0 alpha 7 release.
