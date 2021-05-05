@@ -1,3 +1,9 @@
+python3.10 (3.10.0~b1-1+focal2) focal; urgency=medium
+
+  * enable fast pgo.
+
+ -- Anthony Sottile <asottile@umich.edu>  Tue, 04 May 2021 21:23:51 -0700
+
 python3.10 (3.10.0~b1-1+focal1) focal; urgency=medium
 
   * Python 3.10.0 beta 1 release.
