@@ -1,3 +1,9 @@
+python3.10 (3.10.0~b1-1+bionic2) bionic; urgency=medium
+
+  * enable fast pgo.
+
+ -- Anthony Sottile <asottile@umich.edu>  Tue, 04 May 2021 20:09:49 -0700
+
 python3.10 (3.10.0~b1-1+bionic1) bionic; urgency=medium
 
   * Python 3.10.0 beta 1 release.
