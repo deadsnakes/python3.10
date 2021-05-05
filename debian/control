@@ -30,7 +30,7 @@ Depends: python3.10-minimal (= ${binary:Version}),
  libpython3.10-stdlib (= ${binary:Version}),
  mime-support,
  ${shlibs:Depends}, ${misc:Depends}
-Suggests: python3.10-venv, python3.10-doc, binutils
+Suggests: python3.10-venv, binutils
 Breaks: ${python39:Breaks}
 Description: Interactive high-level object-oriented language (version 3.10)
  Python is a high-level, interactive, object-oriented language. Its 3.10 version
@@ -167,28 +167,6 @@ Description: IDE for Python (v3.10) using Tkinter
  IDLE is an Integrated Development Environment for Python (v3.10).
  IDLE is written using Tkinter and therefore quite platform-independent.
 
-Package: python3.10-doc
-Section: doc
-Architecture: all
-Multi-Arch: foreign
-Depends: libjs-jquery, libjs-underscore, ${misc:Depends}
-Suggests: python3.10
-Description: Documentation for the high-level object-oriented language Python (v3.10)
- These is the official set of documentation for the interactive high-level
- object-oriented language Python (v3.10). All documents are provided
- in HTML format. The package consists of ten documents:
- .
-   * What's New in Python3.10
-   * Tutorial
-   * Python Library Reference
-   * Macintosh Module Reference
-   * Python Language Reference
-   * Extending and Embedding Python
-   * Python/C API Reference
-   * Installing Python Modules
-   * Documenting Python
-   * Distributing Python Modules
-
 Package: python3.10-dbg
 Section: debug
 Architecture: any
@@ -296,7 +274,7 @@ Depends: python3.10 (= ${binary:Version}),
   python3.10-tk,
   ca-certificates,
   ${shlibs:Depends}, ${misc:Depends}
-Recommends: python3.10-doc, python3.10-examples,
+Recommends: python3.10-examples,
 Suggests: python3.10-dev
 Description: Python Interpreter with complete class library (version 3.10)
  Python, the high-level, interactive object oriented language,
