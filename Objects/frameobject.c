@@ -2,6 +2,7 @@
 
 #include "Python.h"
 #include "pycore_ceval.h"         // _PyEval_BuiltinsFromGlobals()
+#include "pycore_moduleobject.h"  // _PyModule_GetDict()
 #include "pycore_object.h"        // _PyObject_GC_UNTRACK()
 
 #include "frameobject.h"          // PyFrameObject
@@ -12,7 +13,7 @@
 
 static PyMemberDef frame_memberlist[] = {
     {"f_back",          T_OBJECT,       OFF(f_back),      READONLY},
-    {"f_code",          T_OBJECT,       OFF(f_code),      READONLY},
+    {"f_code",          T_OBJECT,       OFF(f_code),      READONLY|PY_AUDIT_READ},
     {"f_builtins",      T_OBJECT,       OFF(f_builtins),  READONLY},
     {"f_globals",       T_OBJECT,       OFF(f_globals),   READONLY},
     {"f_trace_lines",   T_BOOL,         OFF(f_trace_lines), 0},
@@ -52,7 +53,13 @@ PyFrame_GetLineNumber(PyFrameObject *f)
 static PyObject *
 frame_getlineno(PyFrameObject *f, void *closure)
 {
-    return PyLong_FromLong(PyFrame_GetLineNumber(f));
+    int lineno = PyFrame_GetLineNumber(f);
+    if (lineno < 0) {
+        Py_RETURN_NONE;
+    }
+    else {
+        return PyLong_FromLong(lineno);
+    }
 }
 
 static PyObject *
@@ -1176,7 +1183,7 @@ _PyEval_BuiltinsFromGlobals(PyThreadState *tstate, PyObject *globals)
     PyObject *builtins = _PyDict_GetItemIdWithError(globals, &PyId___builtins__);
     if (builtins) {
         if (PyModule_Check(builtins)) {
-            builtins = PyModule_GetDict(builtins);
+            builtins = _PyModule_GetDict(builtins);
             assert(builtins != NULL);
         }
         return builtins;
