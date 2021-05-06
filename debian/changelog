@@ -1,3 +1,9 @@
+python3.10 (3.10.0~b1-1+bionic3) bionic; urgency=medium
+
+  * fix distutils install layout patch.
+
+ -- Anthony Sottile <asottile@umich.edu>  Wed, 05 May 2021 19:44:57 -0700
+
 python3.10 (3.10.0~b1-1+bionic2) bionic; urgency=medium
 
   * enable fast pgo.
