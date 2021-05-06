@@ -20,10 +20,10 @@ Subject: distutils-install-layout
  8 files changed, 88 insertions(+), 17 deletions(-)
 
 diff --git a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
-index d33a889..4282920 100644
+index 45b227c..0acf6e6 100644
 --- a/Lib/distutils/command/install.py
 +++ b/Lib/distutils/command/install.py
-@@ -141,6 +141,9 @@ class install(Command):
+@@ -143,6 +143,9 @@ class install(Command):
  
          ('record=', None,
           "filename in which to record list of installed files"),
@@ -33,7 +33,7 @@ index d33a889..4282920 100644
          ]
  
      boolean_options = ['compile', 'force', 'skip-build']
-@@ -161,6 +164,7 @@ class install(Command):
+@@ -163,6 +166,7 @@ class install(Command):
          self.exec_prefix = None
          self.home = None
          self.user = 0
@@ -41,7 +41,7 @@ index d33a889..4282920 100644
  
          # These select only the installation base; it's up to the user to
          # specify the installation scheme (currently, that means supplying
-@@ -183,6 +187,9 @@ class install(Command):
+@@ -185,6 +189,9 @@ class install(Command):
              self.install_userbase = USER_BASE
              self.install_usersite = USER_SITE
  
@@ -51,7 +51,7 @@ index d33a889..4282920 100644
          self.compile = None
          self.optimize = None
  
-@@ -426,6 +433,7 @@ class install(Command):
+@@ -428,6 +435,7 @@ class install(Command):
              self.install_base = self.install_platbase = self.home
              self.select_scheme("unix_home")
          else:
@@ -59,7 +59,7 @@ index d33a889..4282920 100644
              if self.prefix is None:
                  if self.exec_prefix is not None:
                      raise DistutilsOptionError(
-@@ -440,7 +448,26 @@ class install(Command):
+@@ -442,7 +450,26 @@ class install(Command):
  
              self.install_base = self.prefix
              self.install_platbase = self.exec_prefix
