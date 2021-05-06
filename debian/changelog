@@ -1,3 +1,9 @@
+python3.10 (3.10.0~b1-1+focal3) focal; urgency=medium
+
+  * fix distutils install layout patch.
+
+ -- Anthony Sottile <asottile@umich.edu>  Wed, 05 May 2021 19:43:13 -0700
+
 python3.10 (3.10.0~b1-1+focal2) focal; urgency=medium
 
   * enable fast pgo.
