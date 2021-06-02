@@ -2079,8 +2079,6 @@ function PyType_GetModule
     added 3.10
 function PyType_GetModuleState
     added 3.10
-function Py_FrozenMain
-    added 3.10
 function PyFrame_GetLineNumber
     added 3.10
 function PyFrame_GetCode
@@ -2097,7 +2095,7 @@ function PyModule_AddObjectRef
     added 3.10
 data Py_FileSystemDefaultEncodeErrors
     added 3.10
-data PyCodec_Unregister
+function PyCodec_Unregister
     added 3.10
 function PyErr_SetInterruptEx
     added 3.10
