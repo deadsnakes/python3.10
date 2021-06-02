@@ -14,10 +14,10 @@ this patch can be dropped for python3.5 final, if the upstream chage is kept.
  3 files changed, 20 insertions(+)
 
 diff --git a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
-index 0acf6e6..dbd631d 100644
+index b3f926c..a0b98aa 100644
 --- a/Lib/distutils/command/install.py
 +++ b/Lib/distutils/command/install.py
-@@ -191,6 +191,7 @@ class install(Command):
+@@ -196,6 +196,7 @@ class install(Command):
  
          # enable custom installation, known values: deb
          self.install_layout = None
@@ -25,7 +25,7 @@ index 0acf6e6..dbd631d 100644
          
          self.compile = None
          self.optimize = None
-@@ -452,6 +453,8 @@ class install(Command):
+@@ -460,6 +461,8 @@ class install(Command):
              self.install_platbase = self.exec_prefix
              if self.install_layout:
                  if self.install_layout.lower() in ['deb']:
