@@ -5,17 +5,17 @@ Subject: deb-locations
 # DP: adjust locations of directories to debian policy
 # DP: adjust locations of directories to debian policy
 ---
- Lib/distutils/command/install.py |  4 +++-
+ Lib/distutils/command/install.py |  4 ++--
  Lib/pydoc.py                     |  4 ++++
  Lib/sysconfig.py                 | 20 ++++++++++++++++++++
  Misc/python.man                  |  2 +-
- 4 files changed, 28 insertions(+), 2 deletions(-)
+ 4 files changed, 27 insertions(+), 3 deletions(-)
 
 diff --git a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
-index d33a889..45b227c 100644
+index 26696cf..e2e78d2 100644
 --- a/Lib/distutils/command/install.py
 +++ b/Lib/distutils/command/install.py
-@@ -33,7 +33,7 @@ SCHEME_KEYS = ('purelib', 'platlib', 'headers', 'scripts', 'data')
+@@ -33,13 +33,13 @@ SCHEME_KEYS = ('purelib', 'platlib', 'headers', 'scripts', 'data')
  # alter locations for packages installations in a single place.
  # Note that this module is depracated (PEP 632); all consumers
  # of this information should switch to using sysconfig directly.
@@ -24,15 +24,13 @@ index d33a889..45b227c 100644
  
  # Copy from sysconfig._INSTALL_SCHEMES
  for key in SCHEME_KEYS:
-@@ -43,6 +43,8 @@ for key in SCHEME_KEYS:
-     INSTALL_SCHEMES["unix_prefix"][key] = sysconfig._INSTALL_SCHEMES["posix_prefix"][sys_key]
-     INSTALL_SCHEMES["unix_home"][key] = sysconfig._INSTALL_SCHEMES["posix_home"][sys_key]
-     INSTALL_SCHEMES["nt"][key] = sysconfig._INSTALL_SCHEMES["nt"][sys_key]
-+    INSTALL_SCHEMES["unix_local"][key] = sysconfig._INSTALL_SCHEMES["unix_local"][sys_key]
-+    INSTALL_SCHEMES["deb_system"][key] = sysconfig._INSTALL_SCHEMES["deb_system"][sys_key]
- 
- # Transformation to different template format
- for main_key in INSTALL_SCHEMES:
+     for distutils_scheme_name, sys_scheme_name in (
+             ("unix_prefix", "posix_prefix"), ("unix_home", "posix_home"),
+-            ("nt", "nt")):
++            ("nt", "nt"), ("unix_local", "unix_local"), ("deb_system", "deb_system")):
+         sys_key = key
+         sys_scheme = sysconfig._INSTALL_SCHEMES[sys_scheme_name]
+         if key == "headers" and key not in sys_scheme:
 diff --git a/Lib/pydoc.py b/Lib/pydoc.py
 index 8eecd66..9e49440 100755
 --- a/Lib/pydoc.py
@@ -49,7 +47,7 @@ index 8eecd66..9e49440 100755
  
  This can be overridden by setting the PYTHONDOCS environment variable
 diff --git a/Lib/sysconfig.py b/Lib/sysconfig.py
-index e8869af..2d1150f 100644
+index 730d33d..25f2276 100644
 --- a/Lib/sysconfig.py
 +++ b/Lib/sysconfig.py
 @@ -56,6 +56,26 @@ _INSTALL_SCHEMES = {
