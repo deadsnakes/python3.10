@@ -2,6 +2,217 @@
 Python News
 +++++++++++
 
+What's New in Python 3.10.0 beta 2?
+===================================
+
+*Release date: 2021-05-31*
+
+Security
+--------
+
+- bpo-44022: mod:`http.client` now avoids infinitely reading potential HTTP
+  headers after a ``100 Continue`` status response from the server.
+
+Core and Builtins
+-----------------
+
+- bpo-43667: Improve Unicode support in non-UTF locales on Oracle Solaris.
+  This issue does not affect other Solaris systems.
+
+- bpo-44232: Fix a regression in :func:`type` when a metaclass raises an
+  exception. The C function :c:func:`type_new` must properly report the
+  exception when a metaclass constructor raises an exception and the winner
+  class is not the metaclass. Patch by Victor Stinner.
+
+- bpo-44201: Avoid side effects of checking for specialized syntax errors in
+  the REPL that was causing it to ask for extra tokens after a syntax error
+  had been detected. Patch by Pablo Galindo
+
+- bpo-44184: Fix a crash at Python exit when a deallocator function removes
+  the last strong reference to a heap type. Patch by Victor Stinner.
+
+- bpo-44180: The parser doesn't report generic syntax errors that happen in
+  a position further away that the one it reached in the first pass. Patch
+  by Pablo Galindo
+
+- bpo-44168: Fix error message in the parser involving keyword arguments
+  with invalid expressions. Patch by Pablo Galindo
+
+- bpo-44143: Fixed a crash in the parser that manifest when raising
+  tokenizer errors when an existing exception was present. Patch by Pablo
+  Galindo.
+
+- bpo-44114: Fix incorrect dictkeys_reversed and dictitems_reversed function
+  signatures in C code, which broke webassembly builds.
+
+- bpo-43149: Corrent the syntax error message regarding multiple exception
+  types to not refer to "exception groups". Patch by Pablo Galindo
+
+- bpo-44056: Syntax errors when default ``except`` is not the last
+  ``except``  are reported with the correct location. Patch by Mark Shannon.
+
+- bpo-43822: The parser will prioritize tokenizer errors over custom syntax
+  errors when raising exceptions. Patch by Pablo Galindo.
+
+- bpo-28146: Fix a confusing error message in :func:`str.format`.
+
+Library
+-------
+
+- bpo-44254: On Mac, give turtledemo button text a color that works on both
+  light or dark background.  Programmers cannot control the latter.
+
+- bpo-38693: Prefer f-strings to ``.format`` in importlib.resources.
+
+- bpo-33693: Importlib.metadata now prefers f-strings to .format.
+
+- bpo-44241: Incorporate minor tweaks from importlib_metadata 4.1:
+  SimplePath protocol, support for Metadata 2.2.
+
+- bpo-44210: Make importlib.metadata._meta.PackageMetadata public.
+
+- bpo-43643: Declare readers.MultiplexedPath.name as a property per the
+  spec.
+
+- bpo-33433: For IPv4 mapped IPv6 addresses (:rfc:`4291` Section 2.5.5.2),
+  the :mod:`ipaddress.IPv6Address.is_private` check is deferred to the
+  mapped IPv4 address. This solves a bug where public mapped IPv4 addresses
+  were considered private by the IPv6 check.
+
+- bpo-44145: :mod:`hmac` computations were not releasing the GIL while
+  calling the OpenSSL ``HMAC_Update`` C API (a new feature in 3.9).  This
+  unintentionally prevented parallel computation as other :mod:`hashlib`
+  algorithms support.
+
+- bpo-37788: Fix a reference leak when a Thread object is never joined.
+
+- bpo-38908: Subclasses of ``typing.Protocol`` which only have data
+  variables declared will now raise a ``TypeError`` when checked with
+  ``isinstance`` unless they are decorated with :func:`runtime_checkable`.
+  Previously, these checks passed silently. Patch provided by Yurii Karabas.
+
+- bpo-44098: ``typing.ParamSpec`` will no longer be found in the
+  ``__parameters__`` of most :mod:`typing` generics except in valid use
+  locations specified by :pep:`612`. This prevents incorrect usage like
+  ``typing.List[P][int]``. This change means incorrect usage which may have
+  passed silently in 3.10 beta 1 and earlier will now error.
+
+- bpo-44089: Allow subclassing ``csv.Error`` in 3.10 (it was allowed in 3.9
+  and earlier but was disallowed in early versions of 3.10).
+
+- bpo-44059: Register the SerenityOS Browser in the :mod:`webbrowser`
+  module.
+
+- bpo-36515: The :mod:`hashlib` module no longer does unaligned memory
+  accesses when compiled for ARM platforms.
+
+- bpo-44018: random.seed() no longer mutates bytearray inputs.
+
+- bpo-38352: Add ``IO``, ``BinaryIO``, ``TextIO``, ``Match``, and
+  ``Pattern`` to ``typing.__all__``. Patch by Jelle Zijlstra.
+
+- bpo-43972: When :class:`http.server.SimpleHTTPRequestHandler` sends a
+  ``301 (Moved Permanently)`` for a directory path not ending with `/`, add
+  a ``Content-Length: 0`` header. This improves the behavior for certain
+  clients.
+
+- bpo-28528: Fix a bug in :mod:`pdb` where :meth:`~pdb.Pdb.checkline` raises
+  :exc:`AttributeError` if it is called after :meth:`~pdb.Pdb.reset`.
+
+- bpo-43650: Fix :exc:`MemoryError` in :func:`shutil.unpack_archive` which
+  fails inside :func:`shutil._unpack_zipfile` on large files. Patch by Igor
+  Bolshakov.
+
+- bpo-41730: ``DeprecationWarning`` is now raised when importing
+  :mod:`tkinter.tix`, which has been deprecated in documentation since
+  Python 3.6.
+
+Documentation
+-------------
+
+- bpo-42392: Document the deprecation and removal of the ``loop`` parameter
+  for many functions and classes in :mod:`asyncio`.
+
+- bpo-44195: Corrected references to ``TraversableResources`` in docs. There
+  is no ``TraversableReader``.
+
+- bpo-41963: Document that ``ConfigParser`` strips off comments when reading
+  configuration files.
+
+- bpo-44072: Correct where in the numeric ABC hierarchy ``**`` support is
+  added, i.e., in numbers.Complex, not numbers.Integral.
+
+- bpo-43558: Add the remark to :mod:`dataclasses` documentation that the
+  :meth:`__init__` of any base class has to be called in
+  :meth:`__post_init__`, along with a code example.
+
+- bpo-44025: Clarify when '_' in match statements is a keyword, and when
+  not.
+
+Tests
+-----
+
+- bpo-31904: Ignore error string case in test_py_compile
+  ``test_file_not_exists()``.
+
+- bpo-42083: Add test to check that ``PyStructSequence_NewType`` accepts a
+  ``PyStructSequence_Desc`` with ``doc`` field set to ``NULL``.
+
+- bpo-35753: Fix crash in doctest when doctest parses modules that include
+  unwrappable functions by skipping those functions.
+
+Build
+-----
+
+- bpo-41282: Fix broken ``make install`` that caused standard library
+  extension modules to be unnecessarily and incorrectly rebuilt during the
+  install phase of cpython.
+
+Windows
+-------
+
+- bpo-42686: Build :mod:`sqlite3` with math functions enabled. Patch by
+  Erlend E. Aasland.
+
+macOS
+-----
+
+- bpo-43109: Allow --with-lto configure option to work with Apple-supplied
+  Xcode or Command Line Tools.
+
+IDLE
+----
+
+- bpo-41611: Avoid uncaught exceptions in
+  ``AutoCompleteWindow.winconfig_event()``.
+
+- bpo-41611: Fix IDLE sometimes freezing upon tab-completion on macOS.
+
+- bpo-44010: Highlight the new :ref:`match <match>` statement's :ref:`soft
+  keywords <soft-keywords>`: :keyword:`match`, :keyword:`case <match>`, and
+  :keyword:`_ <wildcard-patterns>`. However, this highlighting is not
+  perfect and will be incorrect in some rare cases, including some ``_``-s
+  in ``case`` patterns.
+
+- bpo-44026: Include interpreter's typo fix suggestions in message line for
+  NameErrors and AttributeErrors.  Patch by E. Paine.
+
+Tools/Demos
+-----------
+
+- bpo-44074: Make patchcheck automatically detect the correct base branch
+  name (previously it was hardcoded to 'master')
+
+C API
+-----
+
+- bpo-43795: The undocumented function :c:func:`Py_FrozenMain` is removed
+  from the Limited API.
+
+- bpo-43795: :c:func:`PyCodec_Unregister` is now properly exported as a
+  function in the Windows Stable ABI DLL.
+
+
 What's New in Python 3.10.0 beta 1?
 ===================================
 
@@ -1505,7 +1716,7 @@ Library
   multi-phase initialization (:pep:`489`).  Patch by Erlend E. Aasland.
 
 - bpo-42802: The distutils ``bdist_wininst`` command deprecated in Python
-  3.8 has been removed. The distutils ``bidst_wheel`` command is now
+  3.8 has been removed. The distutils ``bdist_wheel`` command is now
   recommended to distribute binary packages on Windows.
 
 - bpo-24464: The undocumented built-in function

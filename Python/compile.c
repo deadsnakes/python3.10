@@ -3165,9 +3165,9 @@ compiler_try_except(struct compiler *c, stmt_ty s)
     for (i = 0; i < n; i++) {
         excepthandler_ty handler = (excepthandler_ty)asdl_seq_GET(
             s->v.Try.handlers, i);
+        SET_LOC(c, handler);
         if (!handler->v.ExceptHandler.type && i < n-1)
             return compiler_error(c, "default 'except:' must be last");
-        SET_LOC(c, handler);
         except = compiler_new_block(c);
         if (except == NULL)
             return 0;
@@ -4261,7 +4261,7 @@ validate_keywords(struct compiler *c, asdl_keyword_seq *keywords)
         for (Py_ssize_t j = i + 1; j < nkeywords; j++) {
             keyword_ty other = ((keyword_ty)asdl_seq_GET(keywords, j));
             if (other->arg && !PyUnicode_Compare(key->arg, other->arg)) {
-                c->u->u_col_offset = other->col_offset;
+                SET_LOC(c, other);
                 compiler_error(c, "keyword argument repeated: %U", key->arg);
                 return -1;
             }
@@ -5297,11 +5297,15 @@ static int
 compiler_visit_expr(struct compiler *c, expr_ty e)
 {
     int old_lineno = c->u->u_lineno;
+    int old_end_lineno = c->u->u_end_lineno;
     int old_col_offset = c->u->u_col_offset;
+    int old_end_col_offset = c->u->u_end_col_offset;
     SET_LOC(c, e);
     int res = compiler_visit_expr1(c, e);
     c->u->u_lineno = old_lineno;
+    c->u->u_end_lineno = old_end_lineno;
     c->u->u_col_offset = old_col_offset;
+    c->u->u_end_col_offset = old_end_col_offset;
     return res;
 }
 
@@ -5312,7 +5316,9 @@ compiler_augassign(struct compiler *c, stmt_ty s)
     expr_ty e = s->v.AugAssign.target;
 
     int old_lineno = c->u->u_lineno;
+    int old_end_lineno = c->u->u_end_lineno;
     int old_col_offset = c->u->u_col_offset;
+    int old_end_col_offset = c->u->u_end_col_offset;
     SET_LOC(c, e);
 
     switch (e->kind) {
@@ -5342,7 +5348,9 @@ compiler_augassign(struct compiler *c, stmt_ty s)
     }
 
     c->u->u_lineno = old_lineno;
+    c->u->u_end_lineno = old_end_lineno;
     c->u->u_col_offset = old_col_offset;
+    c->u->u_end_col_offset = old_end_col_offset;
 
     VISIT(c, expr, s->v.AugAssign.value);
     ADDOP(c, inplace_binop(s->v.AugAssign.op));
@@ -5863,14 +5871,14 @@ validate_kwd_attrs(struct compiler *c, asdl_identifier_seq *attrs, asdl_pattern_
     Py_ssize_t nattrs = asdl_seq_LEN(attrs);
     for (Py_ssize_t i = 0; i < nattrs; i++) {
         identifier attr = ((identifier)asdl_seq_GET(attrs, i));
-        c->u->u_col_offset = ((pattern_ty) asdl_seq_GET(patterns, i))->col_offset;
+        SET_LOC(c, ((pattern_ty) asdl_seq_GET(patterns, i)));
         if (forbidden_name(c, attr, Store)) {
             return -1;
         }
         for (Py_ssize_t j = i + 1; j < nattrs; j++) {
             identifier other = ((identifier)asdl_seq_GET(attrs, j));
             if (!PyUnicode_Compare(attr, other)) {
-                c->u->u_col_offset = ((pattern_ty) asdl_seq_GET(patterns, j))->col_offset;
+                SET_LOC(c, ((pattern_ty) asdl_seq_GET(patterns, j)));
                 compiler_error(c, "attribute name repeated in class pattern: %U", attr);
                 return -1;
             }
@@ -5901,7 +5909,7 @@ compiler_pattern_class(struct compiler *c, pattern_ty p, pattern_context *pc)
     }
     if (nattrs) {
         RETURN_IF_FALSE(!validate_kwd_attrs(c, kwd_attrs, kwd_patterns));
-        c->u->u_col_offset = p->col_offset; // validate_kwd_attrs moves this
+        SET_LOC(c, p);
     }
     VISIT(c, expr, p->v.MatchClass.cls);
     PyObject *attr_names;
@@ -5985,7 +5993,7 @@ compiler_pattern_mapping(struct compiler *c, pattern_ty p, pattern_context *pc)
         if (key == NULL) {
             const char *e = "can't use NULL keys in MatchMapping "
                             "(set 'rest' parameter instead)";
-            c->u->u_col_offset = ((pattern_ty) asdl_seq_GET(patterns, i))->col_offset;
+            SET_LOC(c, ((pattern_ty) asdl_seq_GET(patterns, i)));
             return compiler_error(c, e);
         }
         if (!MATCH_VALUE_EXPR(key)) {
@@ -6952,6 +6960,34 @@ insert_generator_prefix(struct compiler *c, basicblock *entryblock) {
     return 0;
 }
 
+/* Make sure that all returns have a line number, even if early passes
+ * have failed to propagate a correct line number.
+ * The resulting line number may not be correct according to PEP 626,
+ * but should be "good enough", and no worse than in older versions. */
+static void
+guarantee_lineno_for_exits(struct assembler *a, int firstlineno) {
+    int lineno = firstlineno;
+    assert(lineno > 0);
+    for (basicblock *b = a->a_entry; b != NULL; b = b->b_next) {
+        if (b->b_iused == 0) {
+            continue;
+        }
+        struct instr *last = &b->b_instr[b->b_iused-1];
+        if (last->i_lineno < 0) {
+            if (last->i_opcode == RETURN_VALUE)
+            {
+                for (int i = 0; i < b->b_iused; i++) {
+                    assert(b->b_instr[i].i_lineno < 0);
+                    b->b_instr[i].i_lineno = lineno;
+                }
+            }
+        }
+        else {
+            lineno = last->i_lineno;
+        }
+    }
+}
+
 static PyCodeObject *
 assemble(struct compiler *c, int addNone)
 {
@@ -7014,6 +7050,7 @@ assemble(struct compiler *c, int addNone)
     if (optimize_cfg(c, &a, consts)) {
         goto error;
     }
+    guarantee_lineno_for_exits(&a, c->u->u_firstlineno);
 
     /* Can't modify the bytecode after computing jump offsets. */
     assemble_jump_offsets(&a, c);
