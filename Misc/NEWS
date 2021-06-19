@@ -2,6 +2,155 @@
 Python News
 +++++++++++
 
+What's New in Python 3.10.0 beta 3?
+===================================
+
+*Release date: 2021-06-17*
+
+Core and Builtins
+-----------------
+
+- bpo-44409: Fix error location information for tokenizer errors raised on
+  initialization of the tokenizer. Patch by Pablo Galindo.
+
+- bpo-44396: Fix a possible crash in the tokenizer when raising syntax
+  errors for unclosed strings. Patch by Pablo Galindo.
+
+- bpo-44349: Fix an edge case when displaying text from files with encoding
+  in syntax errors. Patch by Pablo Galindo.
+
+- bpo-44335: Fix a regression when identifying incorrect characters in
+  syntax errors. Patch by Pablo Galindo
+
+- bpo-44304: Fix a crash in the :mod:`sqlite3` module that happened when the
+  garbage collector clears :class:`sqlite.Statement` objects. Patch by Pablo
+  Galindo
+
+- bpo-44305: Improve error message for ``try`` blocks without ``except`` or
+  ``finally`` blocks. Patch by Pablo Galindo.
+
+- bpo-43833: Emit a deprecation warning if the numeric literal is
+  immediately followed by one of keywords: and, else, for, if, in, is, or.
+  Raise a syntax error with more informative message if it is immediately
+  followed by other keyword or identifier.
+
+- bpo-11105: When compiling :class:`ast.AST` objects with recursive
+  references through :func:`compile`, the interpreter doesn't crash anymore
+  instead it raises a :exc:`RecursionError`.
+
+Library
+-------
+
+- bpo-42972: The _thread.RLock type now fully implement the GC protocol: add
+  a traverse function and the :const:`Py_TPFLAGS_HAVE_GC` flag. Patch by
+  Victor Stinner.
+
+- bpo-44422: The :func:`threading.enumerate` function now uses a reentrant
+  lock to prevent a hang on reentrant call. Patch by Victor Stinner.
+
+- bpo-44389: Fix deprecation of :data:`ssl.OP_NO_TLSv1_3`
+
+- bpo-44362: Improve :mod:`ssl` module's deprecation messages, error
+  reporting, and documentation for deprecations.
+
+- bpo-44342: [Enum] Change pickling from by-value to by-name.
+
+- bpo-44356: [Enum] Allow multiple data-type mixins if they are all the
+  same.
+
+- bpo-44351: Restore back :func:`parse_makefile` in
+  :mod:`distutils.sysconfig` because it behaves differently than the similar
+  implementation in :mod:`sysconfig`.
+
+- bpo-44242: Remove missing flag check from Enum creation and move into a
+  ``verify`` decorator.
+
+- bpo-44246: In ``importlib.metadata``, restore compatibility in the result
+  from ``Distribution.entry_points`` (``EntryPoints``) to honor expectations
+  in older implementations and issuing deprecation warnings for these cases:
+  A. ``EntryPoints`` objects are once again mutable, allowing   for
+  ``sort()`` and other list-based mutation operations.   Avoid deprecation
+  warnings by casting to a   mutable sequence (e.g.
+  ``list(dist.entry_points).sort()``). B. ``EntryPoints`` results once again
+  allow   for access by index. To avoid deprecation warnings,   cast the
+  result to a Sequence first   (e.g. ``tuple(dist.entry_points)[0]``).
+
+- bpo-44246: In importlib.metadata.entry_points, de-duplication of
+  distributions no longer requires loading the full metadata for
+  PathDistribution objects, improving entry point loading performance by
+  ~10x.
+
+- bpo-43853: Improve :mod:`sqlite3` error handling: ``sqlite3_value_text()``
+  errors that set ``SQLITE_NOMEM`` now raise :exc:`MemoryError`. Patch by
+  Erlend E. Aasland.
+
+- bpo-43318: Fix a bug where :mod:`pdb` does not always echo cleared
+  breakpoints.
+
+- bpo-37022: :mod:`pdb` now displays exceptions from ``repr()`` with its
+  ``p`` and ``pp`` commands.
+
+Documentation
+-------------
+
+- bpo-44392: Added a new section in the C API documentation for types used
+  in type hinting.  Documented ``Py_GenericAlias`` and
+  ``Py_GenericAliasType``.
+
+- bpo-38291: Mark ``typing.io`` and ``typing.re`` as deprecated since Python
+  3.8 in the documentation. They were never properly supported by type
+  checkers.
+
+- bpo-44322: Document that SyntaxError args have a details tuple and that
+  details are adjusted for errors in f-string field replacement expressions.
+
+Tests
+-----
+
+- bpo-44363: Account for address sanitizer in test_capi. test_capi now
+  passes when run GCC address sanitizer.
+
+- bpo-43921: Fix test_ssl.test_wrong_cert_tls13(): use
+  ``suppress_ragged_eofs=False``, since ``read()`` can raise
+  :exc:`ssl.SSLEOFError` on Windows. Patch by Victor Stinner.
+
+- bpo-43921: Fix test_pha_required_nocert() of test_ssl: catch two more EOF
+  cases (when the ``recv()`` method returns an empty string). Patch by
+  Victor Stinner.
+
+Build
+-----
+
+- bpo-44381: The Windows build now accepts :envvar:`EnableControlFlowGuard`
+  set to ``guard`` to enable CFG.
+
+IDLE
+----
+
+- bpo-40128: Mostly fix completions on macOS when not using tcl/tk 8.6.11
+  (as with 3.9). The added update_idletask call should be harmless and
+  possibly helpful otherwise.
+
+- bpo-33962: Move the indent space setting from the Font tab to the new
+  Windows tab. Patch by Mark Roseman and Terry Jan Reedy.
+
+- bpo-40468: Split the settings dialog General tab into Windows and Shell/ED
+  tabs. Move help sources, which extend the Help menu, to the Extensions
+  tab. Make space for new options and shorten the dialog. The latter makes
+  the dialog better fit small screens.
+
+C API
+-----
+
+- bpo-43795: The list in :ref:`stable-abi-list` now shows the public name
+  :c:struct:`PyFrameObject` rather than ``_frame``. The non-existing entry
+  ``_node`` no longer appears in the list.
+
+- bpo-44378: :c:func:`Py_IS_TYPE` no longer uses :c:func:`Py_TYPE` to avoid
+  a compiler warning: no longer cast ``const PyObject*`` to ``PyObject*``.
+  Patch by Victor Stinner.
+
+
 What's New in Python 3.10.0 beta 2?
 ===================================
 
