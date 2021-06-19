@@ -136,10 +136,10 @@ index 0ddc736..0a71b61 100644
          self.outputs = [self.target]
  
 diff --git a/Lib/distutils/sysconfig.py b/Lib/distutils/sysconfig.py
-index aa63093..3be630a 100644
+index 3414a76..28ea4e2 100644
 --- a/Lib/distutils/sysconfig.py
 +++ b/Lib/distutils/sysconfig.py
-@@ -217,6 +217,7 @@ def get_python_lib(plat_specific=0, standard_lib=0, prefix=None):
+@@ -320,6 +320,7 @@ def get_python_lib(plat_specific=0, standard_lib=0, prefix=None):
      If 'prefix' is supplied, use it instead of sys.base_prefix or
      sys.base_exec_prefix -- i.e., ignore 'plat_specific'.
      """
@@ -147,7 +147,7 @@ index aa63093..3be630a 100644
      if prefix is None:
          if standard_lib:
              prefix = plat_specific and BASE_EXEC_PREFIX or BASE_PREFIX
-@@ -235,6 +236,12 @@ def get_python_lib(plat_specific=0, standard_lib=0, prefix=None):
+@@ -338,6 +339,12 @@ def get_python_lib(plat_specific=0, standard_lib=0, prefix=None):
                                   "python" + get_python_version())
          if standard_lib:
              return libpython
