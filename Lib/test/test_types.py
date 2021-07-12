@@ -1,8 +1,9 @@
 # Python test set -- part 6, built-in types
 
-from test.support import run_with_locale
+from test.support import run_with_locale, cpython_only
 import collections.abc
 from collections import namedtuple
+import gc
 import inspect
 import pickle
 import locale
@@ -746,6 +747,32 @@ class TypesTests(unittest.TestCase):
                     isinstance(list, type_)
                 with self.assertRaises(TypeError):
                     issubclass(list, type_)
+
+    def test_or_type_operator_with_bad_module(self):
+        class TypeVar:
+            @property
+            def __module__(self):
+                1 / 0
+        # Crashes in Issue44483
+        with self.assertRaises(ZeroDivisionError):
+            str | TypeVar()
+
+    @cpython_only
+    def test_or_type_operator_reference_cycle(self):
+        if not hasattr(sys, 'gettotalrefcount'):
+            self.skipTest('Cannot get total reference count.')
+        gc.collect()
+        before = sys.gettotalrefcount()
+        for _ in range(30):
+            T = typing.TypeVar('T')
+            U = int | list[T]
+            T.blah = U
+            del T
+            del U
+        gc.collect()
+        leeway = 15
+        self.assertLessEqual(sys.gettotalrefcount() - before, leeway,
+                             msg='Check for union reference leak.')
 
     def test_ellipsis_type(self):
         self.assertIsInstance(Ellipsis, types.EllipsisType)
