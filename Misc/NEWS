@@ -2,6 +2,187 @@
 Python News
 +++++++++++
 
+What's New in Python 3.10.0 beta 4?
+===================================
+
+*Release date: 2021-07-10*
+
+Security
+--------
+
+- bpo-41180: Add auditing events to the :mod:`marshal` module, and stop
+  raising ``code.__init__`` events for every unmarshalled code object.
+  Directly instantiated code objects will continue to raise an event, and
+  audit event handlers should inspect or collect the raw marshal data. This
+  reduces a significant performance overhead when loading from ``.pyc``
+  files.
+
+Core and Builtins
+-----------------
+
+- bpo-44562: Remove uses of :c:func:`PyObject_GC_Del` in error path when
+  initializing :class:`types.GenericAlias`.
+
+- bpo-41486: Fix a memory consumption and copying performance regression in
+  earlier 3.10 beta releases if someone used an output buffer larger than
+  4GiB with zlib.decompress on input data that expands that large.
+
+- bpo-44553: Implement GC methods for ``types.Union`` to break reference
+  cycles and prevent memory leaks.
+
+- bpo-44523: Remove the pass-through for :func:`hash` of
+  :class:`weakref.proxy` objects to prevent unintended consequences when the
+  original referred object dies while the proxy is part of a hashable
+  object. Patch by Pablo Galindo.
+
+- bpo-44483: Fix a crash in ``types.Union`` objects when creating a union of
+  an object with bad ``__module__`` field.
+
+- bpo-44297: Make sure that the line number is set when entering a
+  comprehension scope. Ensures that backtraces inclusing generator
+  expressions show the correct line number.
+
+- bpo-44456: Improve the syntax error when mixing positional and keyword
+  patterns. Patch by Pablo Galindo.
+
+- bpo-44368: Improve syntax errors for invalid "as" targets. Patch by Pablo
+  Galindo
+
+- bpo-44317: Improve tokenizer error with improved locations. Patch by Pablo
+  Galindo.
+
+- bpo-43667: Improve Unicode support in non-UTF locales on Oracle Solaris.
+  This issue does not affect other Solaris systems.
+
+Library
+-------
+
+- bpo-44558: Make the implementation consistency of
+  :func:`~operator.indexOf` between C and Python versions. Patch by Dong-hee
+  Na.
+
+- bpo-34798: Break up paragraph about :class:`pprint.PrettyPrinter`
+  construction parameters to make it easier to read.
+
+- bpo-44516: Update vendored pip to 21.1.3
+
+- bpo-44468: :func:`typing.get_type_hints` now finds annotations in classes
+  and base classes with unexpected ``__module__``. Previously, it skipped
+  those MRO elements.
+
+- bpo-43977: Set the proper :const:`Py_TPFLAGS_MAPPING` and
+  :const:`Py_TPFLAGS_SEQUENCE` flags for subclasses created before a parent
+  has been registered as a :class:`collections.abc.Mapping` or
+  :class:`collections.abc.Sequence`.
+
+- bpo-44482: Fix very unlikely resource leak in :mod:`glob` in alternate
+  Python implementations.
+
+- bpo-44466: The :mod:`faulthandler` module now detects if a fatal error
+  occurs during a garbage collector collection. Patch by Victor Stinner.
+
+- bpo-44404: :mod:`tkinter`'s ``after()`` method now supports callables
+  without the ``__name__`` attribute.
+
+- bpo-44458: ``BUFFER_BLOCK_SIZE`` is now declared static, to avoid linking
+  collisions when bz2, lmza or zlib are statically linked.
+
+- bpo-44464: Remove exception for flake8 in deprecated importlib.metadata
+  interfaces. Sync with importlib_metadata 4.6.
+
+- bpo-44446: Take into account that ``lineno`` might be ``None`` in
+  :class:`traceback.FrameSummary`.
+
+- bpo-44439: Fix in :meth:`bz2.BZ2File.write` / :meth:`lzma.LZMAFile.write`
+  methods, when the input data is an object that supports the buffer
+  protocol, the file length may be wrong.
+
+- bpo-44434: _thread.start_new_thread() no longer calls
+  PyThread_exit_thread() explicitly at the thread exit, the call was
+  redundant. On Linux with the glibc, pthread_exit() aborts the whole
+  process if dlopen() fails to open libgcc_s.so file (ex: EMFILE error).
+  Patch by Victor Stinner.
+
+- bpo-44395: Fix :meth:`~email.message.MIMEPart.as_string` to pass unixfrom
+  properly. Patch by Dong-hee Na.
+
+- bpo-34266: Handle exceptions from parsing the arg of :mod:`pdb`'s
+  run/restart command.
+
+- bpo-44077: It's now possible to receive the type of service (ToS), a.k.a.
+  differentiated services (DS), a.k.a. differenciated services code point
+  (DSCP) and excplicit congestion notification (ECN) IP header fields with
+  ``socket.IP_RECVTOS``.
+
+- bpo-43024: Improve the help signature of
+  :func:`traceback.print_exception`, :func:`traceback.format_exception` and
+  :func:`traceback.format_exception_only`.
+
+- bpo-30256: Pass multiprocessing BaseProxy argument ``manager_owned``
+  through AutoProxy.
+
+Documentation
+-------------
+
+- bpo-44558: Match the docstring and python implementation of
+  :func:`~operator.countOf` to the behavior of its c implementation.
+
+- bpo-38062: Clarify that atexit uses equality comparisons internally.
+
+- bpo-40620: Convert examples in tutorial controlflow.rst section 4.3 to be
+  interpreter-demo style.
+
+- bpo-13814: In the Design FAQ, answer "Why don't generators support the
+  with statement?"
+
+- bpo-41621: Document that :class:`collections.defaultdict` parameter
+  ``default_factory`` defaults to None and is positional-only.
+
+Tests
+-----
+
+- bpo-44287: Fix asyncio test_popen() of test_windows_utils by using a
+  longer timeout. Use military grade battle-tested
+  :data:`test.support.SHORT_TIMEOUT` timeout rather than a hardcoded timeout
+  of 10 seconds: it's 30 seconds by default, but it is made longer on slow
+  buildbots. Patch by Victor Stinner.
+
+- bpo-44451: Reset ``DeprecationWarning`` filters in
+  ``test.test_importlib.test_metadata_api.APITests.test_entry_points_by_index``
+  to avoid ``StopIteration`` error if ``DeprecationWarnings`` are ignored.
+
+- bpo-30256: Add test for nested queues when using ``multiprocessing``
+  shared objects ``AutoProxy[Queue]`` inside ``ListProxy`` and ``DictProxy``
+
+Build
+-----
+
+- bpo-44535: Enable building using a Visual Studio 2022 install on Windows.
+
+- bpo-43298: Improved error message when building without a Windows SDK
+  installed.
+
+Windows
+-------
+
+- bpo-44582: Accelerate speed of :mod:`mimetypes` initialization using a
+  native implementation of the registry scan.
+
+- bpo-41299: Fix 16ms jitter when using timeouts in :mod:`threading`, such
+  as with :meth:`threading.Lock.acquire` or
+  :meth:`threading.Condition.wait`.
+
+C API
+-----
+
+- bpo-44441: :c:func:`Py_RunMain` now resets :c:data:`PyImport_Inittab` to
+  its initial value at exit. It must be possible to call
+  :c:func:`PyImport_AppendInittab` or :c:func:`PyImport_ExtendInittab` at
+  each Python initialization. Patch by Victor Stinner.
+
+- bpo-40939: Removed documentation for the removed ``PyParser_*`` C API.
+
+
 What's New in Python 3.10.0 beta 3?
 ===================================
 
