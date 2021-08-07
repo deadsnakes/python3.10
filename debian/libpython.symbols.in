@@ -626,7 +626,10 @@
  PyOS_strtoul@Base @SVER@
  PyOS_vsnprintf@Base @SVER@
  PyObject_ASCII@Base @SVER@
+ PyObject_AsCharBuffer@Base 3.10.0~rc1
  PyObject_AsFileDescriptor@Base @SVER@
+ PyObject_AsReadBuffer@Base 3.10.0~rc1
+ PyObject_AsWriteBuffer@Base 3.10.0~rc1
  PyObject_Bytes@Base @SVER@
  PyObject_Call@Base @SVER@
  PyObject_CallFinalizer@Base @SVER@
@@ -639,6 +642,7 @@
  PyObject_CallObject@Base @SVER@
  PyObject_Calloc@Base @SVER@
  PyObject_CheckBuffer@Base 3.9.0~a6
+ PyObject_CheckReadBuffer@Base 3.10.0~rc1
  PyObject_ClearWeakRefs@Base @SVER@
  PyObject_CopyData@Base @SVER@
  PyObject_DelItem@Base @SVER@
@@ -1572,8 +1576,6 @@
  _Py_UTF8_Edit_Cost@Base 3.10.0~b1
  _Py_Uid_Converter@Base @SVER@
  _Py_UnhandledKeyboardInterrupt@Base 3.8.0~a3
- _Py_Union@Base 3.10.0~a1
- _Py_UnionType@Base 3.10.0~a1
  _Py_VaBuildStack@Base @SVER@
  _Py_VaBuildStack_SizeT@Base @SVER@
  _Py_VaBuildValue_SizeT@Base @SVER@
@@ -1637,7 +1639,6 @@
  _Py_strhex_with_sep@Base 3.8.0~b1
  _Py_string_to_number_with_underscores@Base @SVER@
  _Py_tracemalloc_config@Base @SVER@
- _Py_union_type_or@Base 3.10.0~a3
  _Py_wfopen@Base @SVER@
  _Py_wgetcwd@Base @SVER@
  _Py_wreadlink@Base @SVER@
