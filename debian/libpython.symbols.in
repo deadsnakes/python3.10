@@ -1,4 +1,4 @@
- PyAiter_Check@Base 3.10.0~a7
+ PyAIter_Check@Base 3.10.0~rc2
  PyArg_Parse@Base @SVER@
  PyArg_ParseTuple@Base @SVER@
  PyArg_ParseTupleAndKeywords@Base @SVER@
@@ -660,7 +660,7 @@
  PyObject_GenericGetDict@Base @SVER@
  PyObject_GenericSetAttr@Base @SVER@
  PyObject_GenericSetDict@Base @SVER@
- PyObject_GetAiter@Base 3.10.0~a7
+ PyObject_GetAIter@Base 3.10.0~rc2
  PyObject_GetArenaAllocator@Base @SVER@
  PyObject_GetAttr@Base @SVER@
  PyObject_GetAttrString@Base @SVER@
