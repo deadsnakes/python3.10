@@ -32,7 +32,7 @@ index 26696cf..e2e78d2 100644
          sys_scheme = sysconfig._INSTALL_SCHEMES[sys_scheme_name]
          if key == "headers" and key not in sys_scheme:
 diff --git a/Lib/pydoc.py b/Lib/pydoc.py
-index 9f0acd0..eac7349 100755
+index 4a8c10a..af16580 100755
 --- a/Lib/pydoc.py
 +++ b/Lib/pydoc.py
 @@ -31,6 +31,10 @@ to a file named "<name>.html".
@@ -47,7 +47,7 @@ index 9f0acd0..eac7349 100755
  
  This can be overridden by setting the PYTHONDOCS environment variable
 diff --git a/Lib/sysconfig.py b/Lib/sysconfig.py
-index d700880..471812e 100644
+index 95b48f6..678d905 100644
 --- a/Lib/sysconfig.py
 +++ b/Lib/sysconfig.py
 @@ -56,6 +56,26 @@ _INSTALL_SCHEMES = {
@@ -78,7 +78,7 @@ index d700880..471812e 100644
  
  
 diff --git a/Misc/python.man b/Misc/python.man
-index 10cb807..3fbfb1c 100644
+index 45a4927..5bec85f 100644
 --- a/Misc/python.man
 +++ b/Misc/python.man
 @@ -377,7 +377,7 @@ exception).  Error messages are written to stderr.
