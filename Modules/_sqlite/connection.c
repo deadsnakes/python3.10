@@ -549,10 +549,17 @@ _pysqlite_set_result(sqlite3_context* context, PyObject* py_val)
     } else if (PyFloat_Check(py_val)) {
         sqlite3_result_double(context, PyFloat_AsDouble(py_val));
     } else if (PyUnicode_Check(py_val)) {
-        const char *str = PyUnicode_AsUTF8(py_val);
-        if (str == NULL)
+        Py_ssize_t sz;
+        const char *str = PyUnicode_AsUTF8AndSize(py_val, &sz);
+        if (str == NULL) {
             return -1;
-        sqlite3_result_text(context, str, -1, SQLITE_TRANSIENT);
+        }
+        if (sz > INT_MAX) {
+            PyErr_SetString(PyExc_OverflowError,
+                            "string is longer than INT_MAX bytes");
+            return -1;
+        }
+        sqlite3_result_text(context, str, (int)sz, SQLITE_TRANSIENT);
     } else if (PyObject_CheckBuffer(py_val)) {
         Py_buffer view;
         if (PyObject_GetBuffer(py_val, &view, PyBUF_SIMPLE) != 0) {
@@ -1864,17 +1871,32 @@ pysqlite_connection_exit_impl(pysqlite_Connection *self, PyObject *exc_type,
                               PyObject *exc_value, PyObject *exc_tb)
 /*[clinic end generated code: output=0705200e9321202a input=bd66f1532c9c54a7]*/
 {
-    const char* method_name;
+    int commit = 0;
     PyObject* result;
 
     if (exc_type == Py_None && exc_value == Py_None && exc_tb == Py_None) {
-        method_name = "commit";
-    } else {
-        method_name = "rollback";
+        commit = 1;
+        result = pysqlite_connection_commit_impl(self);
+    }
+    else {
+        result = pysqlite_connection_rollback_impl(self);
     }
 
-    result = PyObject_CallMethod((PyObject*)self, method_name, NULL);
-    if (!result) {
+    if (result == NULL) {
+        if (commit) {
+            /* Commit failed; try to rollback in order to unlock the database.
+             * If rollback also fails, chain the exceptions. */
+            PyObject *exc, *val, *tb;
+            PyErr_Fetch(&exc, &val, &tb);
+            result = pysqlite_connection_rollback_impl(self);
+            if (result == NULL) {
+                _PyErr_ChainExceptions(exc, val, tb);
+            }
+            else {
+                Py_DECREF(result);
+                PyErr_Restore(exc, val, tb);
+            }
+        }
         return NULL;
     }
     Py_DECREF(result);
