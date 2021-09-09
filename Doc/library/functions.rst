@@ -916,9 +916,9 @@ are always available.  They are listed here in alphabetical order.
    Return ``True`` if *class* is a subclass (direct, indirect, or :term:`virtual
    <abstract base class>`) of *classinfo*.  A
    class is considered a subclass of itself. *classinfo* may be a tuple of class
-   objects or a :ref:`types-union`, in which case every entry in *classinfo*
-   will be checked. In any other
-   case, a :exc:`TypeError` exception is raised.
+   objects or a :ref:`types-union`, in which case return ``True`` if *class* is a
+   subclass of any entry in *classinfo*.  In any other case, a :exc:`TypeError`
+   exception is raised.
 
    .. versionchanged:: 3.10
       *classinfo* can be a :ref:`types-union`.
@@ -1208,9 +1208,9 @@ are always available.  They are listed here in alphabetical order.
    * ``'replace'`` causes a replacement marker (such as ``'?'``) to be inserted
      where there is malformed data.
 
-   * ``'surrogateescape'`` will represent any incorrect bytes as code
-     points in the Unicode Private Use Area ranging from U+DC80 to
-     U+DCFF.  These private code points will then be turned back into
+   * ``'surrogateescape'`` will represent any incorrect bytes as low
+     surrogate code units ranging from U+DC80 to U+DCFF.
+     These surrogate code units will then be turned back into
      the same bytes when the ``surrogateescape`` error handler is used
      when writing data.  This is useful for processing files in an
      unknown encoding.
