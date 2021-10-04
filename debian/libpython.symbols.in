@@ -1245,6 +1245,7 @@
  _PyHamt_CollisionNode_Type@Base @SVER@
  _PyHamt_Type@Base @SVER@
  _PyImport_AcquireLock@Base @SVER@
+ _PyImport_FindExtensionObject@Base 3.10.0
  _PyImport_FixupBuiltin@Base @SVER@
  _PyImport_FixupExtensionObject@Base @SVER@
  _PyImport_GetModuleId@Base @SVER@
