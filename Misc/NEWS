@@ -2,6 +2,72 @@
 Python News
 +++++++++++
 
+What's New in Python 3.10.0 final?
+==================================
+
+*Release date: 2021-10-04*
+
+Core and Builtins
+-----------------
+
+- bpo-45121: Fix issue where ``Protocol.__init__`` raises ``RecursionError``
+  when it's called directly or via ``super()``. Patch provided by Yurii
+  Karabas.
+
+Library
+-------
+
+- bpo-45234: Fixed a regression in :func:`~shutil.copyfile`,
+  :func:`~shutil.copy`, :func:`~shutil.copy2` raising
+  :exc:`FileNotFoundError` when source is a directory, which should raise
+  :exc:`IsADirectoryError`
+
+Documentation
+-------------
+
+- bpo-45216: Remove extra documentation listing methods in ``difflib``. It
+  was rendering twice in pydoc and was outdated in some places.
+
+- bpo-45024: :mod:`collections.abc` documentation has been expanded to
+  explicitly cover how instance and subclass checks work, with additional
+  doctest examples and an exhaustive list of ABCs which test membership
+  purely by presence of the right :term:`special method`\s. Patch by Raymond
+  Hettinger.
+
+Tests
+-----
+
+- bpo-45128: Fix ``test_multiprocessing_fork`` failure due to
+  ``test_logging`` and ``sys.modules`` manipulation.
+
+- bpo-44860: Update ``test_sysconfig.test_user_similar()`` for the
+  posix_user scheme: ``platlib`` doesn't use :data:`sys.platlibdir`. Patch
+  by Victor Stinner.
+
+Build
+-----
+
+- bpo-45067: The ncurses function extended_color_content was introduced in
+  2017
+
+  (https://invisible-island.net/ncurses/NEWS.html#index-t20170401).  The
+
+  ncurses-devel package in CentOS 7 had a older version ncurses resulted in
+  compilation error.  For compiling ncurses with extended color support, we
+  verify the version of the ncurses library >= 20170401.
+
+IDLE
+----
+
+- bpo-45193: Make completion boxes appear on Ubuntu again.
+
+C API
+-----
+
+- bpo-45307: Restore the private C API function
+  :func:`_PyImport_FindExtensionObject`. It will be removed in Python 3.11.
+
+
 What's New in Python 3.10.0 release candidate 2?
 ================================================
 
@@ -7617,8 +7683,8 @@ Core and Builtins
   ``dict`` objects. Patch by Dong-hee Na and Inada Naoki.
 
 - bpo-38465: :class:`bytearray`, :class:`~array.array` and
-  :class:`~mmap.mmap` objects allow now to export more than 2**31 buffers at
-  a time.
+  :class:`~mmap.mmap` objects allow now to export more than ``2**31``
+  buffers at a time.
 
 - bpo-38469: Fixed a bug where the scope of named expressions was not being
   resolved correctly in the presence of the *global* keyword. Patch by Pablo
@@ -9696,7 +9762,7 @@ Library
   arguments.
 
 - bpo-35279: Change default *max_workers* of ``ThreadPoolExecutor`` from
-  ``cpu_count() * 5`` to ``min(32, cpu_count() + 4))``.  Previous value was
+  ``cpu_count() * 5`` to ``min(32, cpu_count() + 4)``.  Previous value was
   unreasonably large on many cores machines.
 
 - bpo-37076: :func:`_thread.start_new_thread` now logs uncaught exception
@@ -12473,7 +12539,7 @@ Library
 
 - bpo-34563: On Windows, fix multiprocessing.Connection for very large read:
   fix _winapi.PeekNamedPipe() and _winapi.ReadFile() for read larger than
-  INT_MAX (usually 2^31-1).
+  INT_MAX (usually ``2**31-1``).
 
 - bpo-34558: Correct typo in Lib/ctypes/_aix.py
 
@@ -15986,7 +16052,7 @@ Core and Builtins
   suppresses printing tracebacks. Setting sys.tracebacklimit to None now
   causes using the default limit. Setting sys.tracebacklimit to an integer
   larger than LONG_MAX now means using the limit LONG_MAX rather than the
-  default limit. Fixed integer overflows in the case of more than 2**31
+  default limit. Fixed integer overflows in the case of more than ``2**31``
   traceback items on Windows. Fixed output errors handling.
 
 - bpo-30696: Fix the interactive interpreter looping endlessly when no
@@ -19589,7 +19655,7 @@ Core and Builtins
   suppresses printing tracebacks. Setting sys.tracebacklimit to None now
   causes using the default limit. Setting sys.tracebacklimit to an integer
   larger than LONG_MAX now means using the limit LONG_MAX rather than the
-  default limit. Fixed integer overflows in the case of more than 2**31
+  default limit. Fixed integer overflows in the case of more than ``2**31``
   traceback items on Windows. Fixed output errors handling.
 
 - bpo-30696: Fix the interactive interpreter looping endlessly when no
@@ -28913,7 +28979,7 @@ Library
 - bpo-20729: Restored the use of lazy iterkeys()/itervalues()/iteritems() in
   the mailbox module.
 
-- bpo-21448: Changed FeedParser feed() to avoid O(N**2) behavior when
+- bpo-21448: Changed FeedParser feed() to avoid O(N\ :sup:`2`) behavior when
   parsing long line. Original patch by Raymond Hettinger.
 
 - bpo-22184: The functools LRU Cache decorator factory now gives an earlier
