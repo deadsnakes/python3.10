@@ -2,17 +2,15 @@ From: Ubuntu Core Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Date: Thu, 14 Feb 2019 18:59:13 -0800
 Subject: deb-locations
 
-# DP: adjust locations of directories to debian policy
-# DP: adjust locations of directories to debian policy
 ---
  Lib/distutils/command/install.py |  4 ++--
  Lib/pydoc.py                     |  4 ++++
- Lib/sysconfig.py                 | 20 ++++++++++++++++++++
+ Lib/sysconfig.py                 | 47 +++++++++++++++++++++++++++++++++++-----
  Misc/python.man                  |  2 +-
- 4 files changed, 27 insertions(+), 3 deletions(-)
+ 4 files changed, 49 insertions(+), 8 deletions(-)
 
 diff --git a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
-index 01d5331..cfe948a 100644
+index 01d5331..d25b82f 100644
 --- a/Lib/distutils/command/install.py
 +++ b/Lib/distutils/command/install.py
 @@ -33,13 +33,13 @@ SCHEME_KEYS = ('purelib', 'platlib', 'headers', 'scripts', 'data')
@@ -27,7 +25,7 @@ index 01d5331..cfe948a 100644
      for distutils_scheme_name, sys_scheme_name in (
              ("unix_prefix", "posix_prefix"), ("unix_home", "posix_home"),
 -            ("nt", "nt")):
-+            ("nt", "nt"), ("unix_local", "unix_local"), ("deb_system", "deb_system")):
++            ("nt", "nt"), ("unix_local", "posix_local"), ("deb_system", "deb_system")):
          sys_key = key
          sys_scheme = sysconfig._INSTALL_SCHEMES[sys_scheme_name]
          if key == "headers" and key not in sys_scheme:
@@ -47,23 +45,13 @@ index 4a8c10a..af16580 100755
  
  This can be overridden by setting the PYTHONDOCS environment variable
 diff --git a/Lib/sysconfig.py b/Lib/sysconfig.py
-index daf9f00..12aa55f 100644
+index daf9f00..8a4e919 100644
 --- a/Lib/sysconfig.py
 +++ b/Lib/sysconfig.py
 @@ -56,6 +56,26 @@ _INSTALL_SCHEMES = {
          'scripts': '{base}/Scripts',
          'data': '{base}',
          },
-+    'unix_local': {
-+        'stdlib': '{installed_base}/{platlibdir}/python{py_version_short}',
-+        'platstdlib': '{platbase}/{platlibdir}/python{py_version_short}',
-+        'purelib': '{base}/lib/python{py_version_short}/dist-packages',
-+        'platlib': '{platbase}/{platlibdir}/python{py_version_short}/dist-packages',
-+        'include': '{installed_base}/include/python{py_version_short}{abiflags}',
-+        'platinclude': '{installed_platbase}/include/python{py_version_short}{abiflags}',
-+        'scripts': '{base}/bin',
-+        'data': '{base}',
-+        },
 +    'deb_system': {
 +        'stdlib': '{installed_base}/{platlibdir}/python{py_version_short}',
 +        'platstdlib': '{platbase}/{platlibdir}/python{py_version_short}',
@@ -74,9 +62,53 @@ index daf9f00..12aa55f 100644
 +        'scripts': '{base}/bin',
 +        'data': '{base}',
 +        },
++    'posix_local': {
++        'stdlib': '{installed_base}/{platlibdir}/python{py_version_short}',
++        'platstdlib': '{platbase}/{platlibdir}/python{py_version_short}',
++        'purelib': '{base}/local/lib/python{py_version_short}/dist-packages',
++        'platlib': '{platbase}/local/lib/python{py_version_short}/dist-packages',
++        'include': '{installed_base}/local/include/python{py_version_short}{abiflags}',
++        'platinclude': '{installed_platbase}/local/include/python{py_version_short}{abiflags}',
++        'scripts': '{base}/local/bin',
++        'data': '{base}',
++        },
      }
  
  
+@@ -237,11 +257,28 @@ def _get_preferred_schemes():
+             'home': 'posix_home',
+             'user': 'osx_framework_user',
+         }
+-    return {
+-        'prefix': 'posix_prefix',
+-        'home': 'posix_home',
+-        'user': 'posix_user',
+-    }
++    if 'real_prefix' in sys.__dict__ or 'VIRTUAL_ENV' in os.environ:
++        # virtual environments
++        return {
++            'prefix': 'posix_prefix',
++            'home': 'posix_home',
++            'user': 'posix_user',
++        }
++    else:
++        # default to /usr for package builds, /usr/local otherwise
++        deb_build = os.environ.get('DEB_PYTHON_INSTALL_LAYOUT', 'posix_local')
++        if deb_build in ('deb', 'deb_system'):
++            return {
++                'prefix': 'deb_system',
++                'home': 'posix_home',
++                'user': 'posix_user',
++            }
++        else:
++            return {
++                'prefix': 'posix_local',
++                'home': 'posix_home',
++                'user': 'posix_user',
++            }
+ 
+ 
+ def get_preferred_scheme(key):
 diff --git a/Misc/python.man b/Misc/python.man
 index 45a4927..5bec85f 100644
 --- a/Misc/python.man
