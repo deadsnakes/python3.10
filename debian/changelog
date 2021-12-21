@@ -1,6 +1,12 @@
+python3.10 (3.10.1-1+bionic3) bionic; urgency=medium
+
+  * Fix virtualenv creation and virtualenv package installation.
+
+ -- Anthony Sottile <asottile@umich.edu>  Tue, 21 Dec 2021 13:59:49 -0500
+
 python3.10 (3.10.1-1+bionic2) bionic; urgency=medium
 
-  * Fix installation of global pip packages. 
+  * Fix installation of global pip packages.
 
  -- Anthony Sottile <asottile@umich.edu>  Sat, 18 Dec 2021 16:38:47 -0500
 
