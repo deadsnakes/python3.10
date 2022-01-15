@@ -3104,6 +3104,12 @@ class GetTypeHintTests(BaseTestCase):
                           'my_inner_a2': mod_generics_cache.B.A,
                           'my_outer_a': mod_generics_cache.A})
 
+    def test_get_type_hints_classes_no_implicit_optional(self):
+        class WithNoneDefault:
+            field: int = None  # most type-checkers won't be happy with it
+
+        self.assertEqual(gth(WithNoneDefault), {'field': int})
+
     def test_respect_no_type_check(self):
         @no_type_check
         class NoTpCheck:
@@ -4993,6 +4999,17 @@ class SpecialAttrsTests(BaseTestCase):
             s = pickle.dumps(SpecialAttrsP, proto)
             loaded = pickle.loads(s)
             self.assertIs(SpecialAttrsP, loaded)
+
+    def test_genericalias_dir(self):
+        class Foo(Generic[T]):
+            def bar(self):
+                pass
+            baz = 3
+        # The class attributes of the original class should be visible even
+        # in dir() of the GenericAlias. See bpo-45755.
+        self.assertIn('bar', dir(Foo[int]))
+        self.assertIn('baz', dir(Foo[int]))
+
 
 class AllTests(BaseTestCase):
     """Tests for __all__."""
