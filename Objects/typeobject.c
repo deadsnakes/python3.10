@@ -3707,22 +3707,20 @@ _PyType_GetModuleByDef(PyTypeObject *type, struct PyModuleDef *def)
     // to check i < PyTuple_GET_SIZE(mro) at the first loop iteration.
     assert(PyTuple_GET_SIZE(mro) >= 1);
 
-    Py_ssize_t i = 0;
-    do {
+    Py_ssize_t n = PyTuple_GET_SIZE(mro);
+    for (Py_ssize_t i = 0; i < n; i++) {
         PyObject *super = PyTuple_GET_ITEM(mro, i);
-        // _PyType_GetModuleByDef() must only be called on a heap type created
-        // by PyType_FromModuleAndSpec() or on its subclasses.
-        // type_ready_mro() ensures that a static type cannot inherit from a
-        // heap type.
-        assert(_PyType_HasFeature((PyTypeObject *)type, Py_TPFLAGS_HEAPTYPE));
+        if(!_PyType_HasFeature((PyTypeObject *)super, Py_TPFLAGS_HEAPTYPE)) {
+            // Static types in the MRO need to be skipped
+            continue;
+        }
 
         PyHeapTypeObject *ht = (PyHeapTypeObject*)super;
         PyObject *module = ht->ht_module;
         if (module && _PyModule_GetDef(module) == def) {
             return module;
         }
-        i++;
-    } while (i < PyTuple_GET_SIZE(mro));
+    }
 
     PyErr_Format(
         PyExc_TypeError,
@@ -6384,24 +6382,29 @@ PyType_Ready(PyTypeObject *type)
 static int
 add_subclass(PyTypeObject *base, PyTypeObject *type)
 {
-    int result = -1;
-    PyObject *dict, *key, *newobj;
+    PyObject *key = PyLong_FromVoidPtr((void *) type);
+    if (key == NULL)
+        return -1;
 
-    dict = base->tp_subclasses;
+    PyObject *ref = PyWeakref_NewRef((PyObject *)type, NULL);
+    if (ref == NULL) {
+        Py_DECREF(key);
+        return -1;
+    }
+
+    // Only get tp_subclasses after creating the key and value.
+    // PyWeakref_NewRef() can trigger a garbage collection which can execute
+    // arbitrary Python code and so modify base->tp_subclasses.
+    PyObject *dict = base->tp_subclasses;
     if (dict == NULL) {
         base->tp_subclasses = dict = PyDict_New();
         if (dict == NULL)
             return -1;
     }
     assert(PyDict_CheckExact(dict));
-    key = PyLong_FromVoidPtr((void *) type);
-    if (key == NULL)
-        return -1;
-    newobj = PyWeakref_NewRef((PyObject *)type, NULL);
-    if (newobj != NULL) {
-        result = PyDict_SetItem(dict, key, newobj);
-        Py_DECREF(newobj);
-    }
+
+    int result = PyDict_SetItem(dict, key, ref);
+    Py_DECREF(ref);
     Py_DECREF(key);
     return result;
 }
@@ -7993,7 +7996,7 @@ static slotdef slotdefs[] = {
     UNSLOT("__abs__", nb_absolute, slot_nb_absolute, wrap_unaryfunc,
            "abs(self)"),
     UNSLOT("__bool__", nb_bool, slot_nb_bool, wrap_inquirypred,
-           "self != 0"),
+           "True if self else False"),
     UNSLOT("__invert__", nb_invert, slot_nb_invert, wrap_unaryfunc, "~self"),
     BINSLOT("__lshift__", nb_lshift, slot_nb_lshift, "<<"),
     RBINSLOT("__rlshift__", nb_lshift, slot_nb_lshift, "<<"),
