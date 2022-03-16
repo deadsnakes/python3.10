@@ -1,3 +1,9 @@
+python3.10 (3.10.3-1+focal1) focal; urgency=medium
+
+  * Python 3.10.3 release.
+
+ -- Anthony Sottile <asottile@umich.edu>  Wed, 16 Mar 2022 12:15:16 -0400
+
 python3.10 (3.10.2-1+focal1) focal; urgency=medium
 
   * Python 3.10.2 release.
