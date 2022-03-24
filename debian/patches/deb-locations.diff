@@ -30,7 +30,7 @@ index 01d5331..d25b82f 100644
          sys_scheme = sysconfig._INSTALL_SCHEMES[sys_scheme_name]
          if key == "headers" and key not in sys_scheme:
 diff --git a/Lib/pydoc.py b/Lib/pydoc.py
-index 4a8c10a..af16580 100755
+index e00ba41..497d33f 100755
 --- a/Lib/pydoc.py
 +++ b/Lib/pydoc.py
 @@ -31,6 +31,10 @@ to a file named "<name>.html".
