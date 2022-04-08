@@ -81,6 +81,7 @@ Description: Minimal subset of the Python language (version 3.10)
  be used in the boot process for some basic tasks.
  See /usr/share/doc/python3.10-minimal/README.Debian for a list of the modules
  contained in this package.
+XB-Cnf-Visible-Pkgname: python3.10
 
 Package: libpython3.10-minimal
 Architecture: any
@@ -149,7 +150,7 @@ Package: libpython3.10-testsuite
 Section: libdevel
 Architecture: all
 Depends: python3.10 (>= ${binary:Version}), ${misc:Depends}, net-tools
-Suggests: pythonpython3.10-gdbm, pythonpython3.10-tk
+Suggests: python3.10-gdbm, python3.10-tk
 Description: Testsuite for the Python standard library (v3.10)
  The complete testsuite for the Python standard library.  Note that
  a subset is found in the libpython3.10-stdlib package, which should
@@ -173,7 +174,7 @@ Architecture: any
 Multi-Arch: allowed
 Depends: python3.10 (= ${binary:Version}), libpython3.10-dbg (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Recommends: gdb
-Suggests: pythonpython3.10-gdbm-dbg, pythonpython3.10-tk-dbg
+Suggests: python3.10-gdbm-dbg, python3.10-tk-dbg
 Description: Debug Build of the Python Interpreter (version 3.10)
  The package holds two things:
  .
