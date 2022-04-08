@@ -1,0 +1,67 @@
+From: Anthony Sottile <asottile@umich.edu>
+Date: Fri, 8 Apr 2022 16:28:04 -0400
+Subject: sysconfigdata-name
+
+Description: Don't encode the MACHDEP into the _sysconfigdata file name.
+ Unfortunately on KFreeBSD MACHDEP includes the kernel version, so you end up
+ with a changing MACHDEP.
+
+Bug-cpython: https://bugs.python.org/issue37561
+Forwarded: no
+---
+ Lib/sysconfig.py | 2 +-
+ Makefile.pre.in  | 7 +++++--
+ configure.ac     | 2 +-
+ 3 files changed, 7 insertions(+), 4 deletions(-)
+
+diff --git a/Lib/sysconfig.py b/Lib/sysconfig.py
+index 2fc8cbe..6c2fbab 100644
+--- a/Lib/sysconfig.py
++++ b/Lib/sysconfig.py
+@@ -439,7 +439,7 @@ def _get_sysconfigdata_name():
+     multiarch = getattr(sys.implementation, '_multiarch', '')
+     return os.environ.get(
+         '_PYTHON_SYSCONFIGDATA_NAME',
+-        f'_sysconfigdata_{sys.abiflags}_{sys.platform}_{multiarch}',
++        f'_sysconfigdata_{sys.abiflags}_{multiarch}',
+     )
+ 
+ 
+diff --git a/Makefile.pre.in b/Makefile.pre.in
+index e21b4de..bf7277e 100644
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -1608,8 +1608,10 @@ libinstall:	build_all $(srcdir)/Modules/xxmodule.c
+ 			esac; \
+ 		done; \
+ 	done
+-	$(INSTALL_DATA) `cat pybuilddir.txt`/_sysconfigdata_$(ABIFLAGS)_$(MACHDEP)_$(MULTIARCH).py \
+-		$(DESTDIR)$(LIBDEST); \
++	$(INSTALL_DATA) `cat pybuilddir.txt`/_sysconfigdata_$(ABIFLAGS)_$(MULTIARCH).py \
++		$(DESTDIR)$(LIBDEST)
++	$(LN) -s _sysconfigdata_$(ABIFLAGS)_$(MULTIARCH).py \
++		$(DESTDIR)$(LIBDEST)/_sysconfigdata_$(ABIFLAGS)_$(MACHDEP)_$(MULTIARCH).py
+ 	$(INSTALL_DATA) $(srcdir)/LICENSE $(DESTDIR)$(LIBDEST)/LICENSE.txt
+ 	if test -d $(DESTDIR)$(LIBDEST)/distutils/tests; then \
+ 		$(INSTALL_DATA) $(srcdir)/Modules/xxmodule.c \
+@@ -1766,6 +1768,7 @@ sharedinstall: sharedmods
+ 		--install-scripts=$(BINDIR) \
+ 		--install-platlib=$(DESTSHARED) \
+ 		--root=$(DESTDIR)/
++	-rm $(DESTDIR)$(DESTSHARED)/_sysconfigdata_$(ABIFLAGS)_$(MULTIARCH).py
+ 	-rm $(DESTDIR)$(DESTSHARED)/_sysconfigdata_$(ABIFLAGS)_$(MACHDEP)_$(MULTIARCH).py
+ 	-rm -r $(DESTDIR)$(DESTSHARED)/__pycache__
+ 
+diff --git a/configure.ac b/configure.ac
+index 949be41..a28f21a 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -82,7 +82,7 @@ if test "$cross_compiling" = yes; then
+ 	    AC_MSG_ERROR([python$PACKAGE_VERSION interpreter not found])
+ 	fi
+         AC_MSG_RESULT($interp)
+-	PYTHON_FOR_BUILD='_PYTHON_PROJECT_BASE=$(abs_builddir) _PYTHON_HOST_PLATFORM=$(_PYTHON_HOST_PLATFORM) PYTHONPATH=$(shell test -f pybuilddir.txt && echo $(abs_builddir)/`cat pybuilddir.txt`:)$(srcdir)/Lib _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata_$(ABIFLAGS)_$(MACHDEP)_$(MULTIARCH) '$interp
++	PYTHON_FOR_BUILD='_PYTHON_PROJECT_BASE=$(abs_builddir) _PYTHON_HOST_PLATFORM=$(_PYTHON_HOST_PLATFORM) PYTHONPATH=$(shell test -f pybuilddir.txt && echo $(abs_builddir)/`cat pybuilddir.txt`:)$(srcdir)/Lib _PYTHON_SYSCONFIGDATA_NAME=_sysconfigdata_$(ABIFLAGS)_$(MULTIARCH) '$interp
+     fi
+ elif test "$cross_compiling" = maybe; then
+     AC_MSG_ERROR([Cross compiling required --host=HOST-TUPLE and --build=ARCH])
