@@ -1,3 +1,9 @@
+python3.10 (3.10.4-1+bionic2) bionic; urgency=medium
+
+  * Synchronize with upstream debian.
+
+ -- Anthony Sottile <asottile@umich.edu>  Sat, 09 Apr 2022 17:27:52 -0400
+
 python3.10 (3.10.4-1+bionic1) bionic; urgency=medium
 
   * Python 3.10.4 release.
