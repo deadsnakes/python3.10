@@ -378,24 +378,21 @@ Connection Objects
 
    .. method:: execute(sql[, parameters])
 
-      This is a nonstandard shortcut that creates a cursor object by calling
-      the :meth:`~Connection.cursor` method, calls the cursor's
-      :meth:`~Cursor.execute` method with the *parameters* given, and returns
-      the cursor.
+      Create a new :class:`Cursor` object and call
+      :meth:`~Cursor.execute` on it with the given *sql* and *parameters*.
+      Return the new cursor object.
 
    .. method:: executemany(sql[, parameters])
 
-      This is a nonstandard shortcut that creates a cursor object by
-      calling the :meth:`~Connection.cursor` method, calls the cursor's
-      :meth:`~Cursor.executemany` method with the *parameters* given, and
-      returns the cursor.
+      Create a new :class:`Cursor` object and call
+      :meth:`~Cursor.executemany` on it with the given *sql* and *parameters*.
+      Return the new cursor object.
 
    .. method:: executescript(sql_script)
 
-      This is a nonstandard shortcut that creates a cursor object by
-      calling the :meth:`~Connection.cursor` method, calls the cursor's
-      :meth:`~Cursor.executescript` method with the given *sql_script*, and
-      returns the cursor.
+      Create a new :class:`Cursor` object and call
+      :meth:`~Cursor.executescript` on it with the given *sql_script*.
+      Return the new cursor object.
 
    .. method:: create_function(name, num_params, func, *, deterministic=False)
 
@@ -439,22 +436,19 @@ Connection Objects
 
    .. method:: create_collation(name, callable)
 
-      Creates a collation with the specified *name* and *callable*. The callable will
-      be passed two string arguments. It should return -1 if the first is ordered
-      lower than the second, 0 if they are ordered equal and 1 if the first is ordered
-      higher than the second.  Note that this controls sorting (ORDER BY in SQL) so
-      your comparisons don't affect other SQL operations.
+      Create a collation named *name* using the collating function *callable*.
+      *callable* is passed two :class:`string <str>` arguments,
+      and it should return an :class:`integer <int>`:
 
-      Note that the callable will get its parameters as Python bytestrings, which will
-      normally be encoded in UTF-8.
+      * ``1`` if the first is ordered higher than the second
+      * ``-1`` if the first is ordered lower than the second
+      * ``0`` if they are ordered equal
 
-      The following example shows a custom collation that sorts "the wrong way":
+      The following example shows a reverse sorting collation:
 
       .. literalinclude:: ../includes/sqlite3/collation_reverse.py
 
-      To remove a collation, call ``create_collation`` with ``None`` as callable::
-
-         con.create_collation("reverse", None)
+      Remove a collation function by setting *callable* to :const:`None`.
 
 
    .. method:: interrupt()
