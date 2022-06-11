@@ -230,8 +230,8 @@ ABC hierarchy::
 
     object
      +-- Finder (deprecated)
-     |    +-- MetaPathFinder
-     |    +-- PathEntryFinder
+     +-- MetaPathFinder
+     +-- PathEntryFinder
      +-- Loader
           +-- ResourceLoader --------+
           +-- InspectLoader          |
@@ -264,8 +264,7 @@ ABC hierarchy::
 
 .. class:: MetaPathFinder
 
-   An abstract base class representing a :term:`meta path finder`. For
-   compatibility, this is a subclass of :class:`Finder`.
+   An abstract base class representing a :term:`meta path finder`.
 
    .. versionadded:: 3.3
 
@@ -1750,6 +1749,9 @@ Checking if a module can be imported
 
 If you need to find out if a module can be imported without actually doing the
 import, then you should use :func:`importlib.util.find_spec`.
+
+Note that if ``name`` is a submodule (contains a dot),
+:func:`importlib.util.find_spec` will import the parent module.
 ::
 
   import importlib.util

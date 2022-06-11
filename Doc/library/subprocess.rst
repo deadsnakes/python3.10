@@ -33,9 +33,6 @@ The recommended approach to invoking subprocesses is to use the :func:`run`
 function for all use cases it can handle. For more advanced use cases, the
 underlying :class:`Popen` interface can be used directly.
 
-The :func:`run` function was added in Python 3.5; if you need to retain
-compatibility with older versions, see the :ref:`call-function-trio` section.
-
 
 .. function:: run(args, *, stdin=None, input=None, stdout=None, stderr=None,\
                   capture_output=False, shell=False, cwd=None, timeout=None, \
@@ -214,7 +211,9 @@ compatibility with older versions, see the :ref:`call-function-trio` section.
 .. exception:: CalledProcessError
 
     Subclass of :exc:`SubprocessError`, raised when a process run by
-    :func:`check_call` or :func:`check_output` returns a non-zero exit status.
+    :func:`check_call`, :func:`check_output`, or :func:`run` (with ``check=True``)
+    returns a non-zero exit status.
+
 
     .. attribute:: returncode
 
