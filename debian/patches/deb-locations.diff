@@ -110,10 +110,10 @@ index daf9f00..908ea48 100644
  
  def get_preferred_scheme(key):
 diff --git a/Misc/python.man b/Misc/python.man
-index 45a4927..5bec85f 100644
+index 6b21fdc..34a19d7 100644
 --- a/Misc/python.man
 +++ b/Misc/python.man
-@@ -377,7 +377,7 @@ exception).  Error messages are written to stderr.
+@@ -381,7 +381,7 @@ exception).  Error messages are written to stderr.
  These are subject to difference depending on local installation
  conventions; ${prefix} and ${exec_prefix} are installation-dependent
  and should be interpreted as for GNU software; they may be the same.
