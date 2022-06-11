@@ -1,3 +1,9 @@
+python3.10 (3.10.5-1+focal1) focal; urgency=medium
+
+  * Python 3.10.5 release.
+
+ -- Anthony Sottile (deadsnakes) <asottile+deadsnakes@umich.edu>  Sat, 11 Jun 2022 16:53:24 +0000
+
 python3.10 (3.10.4-1+focal2) focal; urgency=medium
 
   * Synchronize with upstream debian.
