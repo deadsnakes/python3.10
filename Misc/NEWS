@@ -2,6 +2,111 @@
 Python News
 +++++++++++
 
+What's New in Python 3.10.7 final?
+==================================
+
+*Release date: 2022-09-05*
+
+Security
+--------
+
+- gh-issue-95778: Converting between :class:`int` and :class:`str` in bases
+  other than 2 (binary), 4, 8 (octal), 16 (hexadecimal), or 32 such as base
+  10 (decimal) now raises a :exc:`ValueError` if the number of digits in
+  string form is above a limit to avoid potential denial of service attacks
+  due to the algorithmic complexity. This is a mitigation for
+  `CVE-2020-10735
+  <https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-10735>`_.
+
+  This new limit can be configured or disabled by environment variable,
+  command line flag, or :mod:`sys` APIs. See the :ref:`integer string
+  conversion length limitation <int_max_str_digits>` documentation.  The
+  default limit is 4300 digits in string form.
+
+  Patch by Gregory P. Smith [Google] and Christian Heimes [Red Hat] with
+  feedback from Victor Stinner, Thomas Wouters, Steve Dower, Ned Deily, and
+  Mark Dickinson.
+
+Core and Builtins
+-----------------
+
+- gh-issue-96187: Fixed a bug that caused ``_PyCode_GetExtra`` to return
+  garbage for negative indexes. Patch by Pablo Galindo
+
+- gh-issue-95876: Fix format string in
+  ``_PyPegen_raise_error_known_location`` that can lead to memory corruption
+  on some 64bit systems. The function was building a tuple with ``i`` (int)
+  instead of ``n`` (Py_ssize_t) for Py_ssize_t arguments.
+
+- gh-issue-95605: Fix misleading contents of error message when converting
+  an all-whitespace string to :class:`float`.
+
+- gh-issue-93592: ``coroutine.throw()`` now properly initializes the
+  ``frame.f_back`` when resuming a stack of coroutines. This allows e.g.
+  ``traceback.print_stack()`` to work correctly when an exception (such as
+  ``CancelledError``) is thrown into a coroutine.
+
+- gh-issue-94996: :func:`ast.parse` will no longer parse function
+  definitions with positional-only params when passed ``feature_version``
+  less than ``(3, 8)``. Patch by Shantanu Jain.
+
+Library
+-------
+
+- gh-issue-68163: Correct conversion of :class:`numbers.Rational`'s to
+  :class:`float`.
+
+- gh-issue-96159: Fix a performance regression in logging
+  TimedRotatingFileHandler. Only check for special files when the rollover
+  time has passed.
+
+- gh-issue-96175: Fix unused ``localName`` parameter in the ``Attr`` class
+  in :mod:`xml.dom.minidom`.
+
+- gh-issue-95609: Update bundled pip to 22.2.2.
+
+- gh-issue-95231: Fail gracefully if :data:`~errno.EPERM` or
+  :data:`~errno.ENOSYS` is raised when loading :mod:`crypt` methods. This
+  may happen when trying to load ``MD5`` on a Linux kernel with :abbr:`FIPS
+  (Federal Information Processing Standard)` enabled.
+
+Documentation
+-------------
+
+- gh-issue-96098: Improve discoverability of the higher level
+  concurrent.futures module by providing clearer links from the lower level
+  threading and multiprocessing modules.
+
+- gh-issue-95789: Update the default RFC base URL from deprecated
+  tools.ietf.org to datatracker.ietf.org
+
+- gh-issue-91207: Fix stylesheet not working in Windows CHM htmlhelp docs.
+  Contributed by C.A.M. Gerlach.
+
+- bpo-47115: The documentation now lists which members of C structs are part
+  of the :ref:`Limited API/Stable ABI <stable>`.
+
+Tests
+-----
+
+- gh-issue-95243: Mitigate the inherent race condition from using
+  find_unused_port() in testSockName() by trying to find an unused port a
+  few times before failing. Patch by Ross Burton.
+
+Build
+-----
+
+- gh-issue-94682: Build and test with OpenSSL 1.1.1q
+
+IDLE
+----
+
+- gh-issue-65802: Document handling of extensions in Save As dialogs.
+
+- gh-issue-95191: Include prompts when saving Shell (interactive input and
+  output).
+
+
 What's New in Python 3.10.6 final?
 ==================================
 
@@ -217,7 +322,7 @@ Documentation
 
 - gh-issue-88831: Augmented documentation of asyncio.create_task().
   Clarified the need to keep strong references to tasks and added a code
-  snippet detailing how to to this.
+  snippet detailing how to do this.
 
 - bpo-47161: Document that :class:`pathlib.PurePath` does not collapse
   initial double slashes because they denote UNC paths.
@@ -233,11 +338,6 @@ Tests
 
 - gh-issue-91330: Added more tests for :mod:`dataclasses` to cover behavior
   with data descriptor-based fields.
-
-  # Write your Misc/NEWS entry below.  It should be a simple ReST paragraph.
-  # Don't start with "- Issue #<n>: " or "- gh-issue-<n>: " or that sort of
-  stuff.
-  ###########################################################################
 
 - gh-issue-94208: ``test_ssl`` is now checking for supported TLS version and
   protocols in more tests.
