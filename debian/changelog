@@ -1,3 +1,9 @@
+python3.10 (3.10.7-1+bionic1) bionic; urgency=medium
+
+  * Python 3.10.7 release.
+
+ -- Anthony Sottile (deadsnakes) <asottile+deadsnakes@umich.edu>  Wed, 07 Sep 2022 15:23:21 +0000
+
 python3.10 (3.10.6-1+bionic1) bionic; urgency=medium
 
   * Python 3.10.6 release.
