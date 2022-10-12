@@ -1,6 +1,8 @@
 .. currentmodule:: asyncio
 
 
+.. _asyncio-event-loop:
+
 ==========
 Event Loop
 ==========
@@ -92,7 +94,7 @@ This documentation page contains the following sections:
   loop APIs.
 
 
-.. _asyncio-event-loop:
+.. _asyncio-event-loop-methods:
 
 Event Loop Methods
 ==================
@@ -448,6 +450,12 @@ Opening network connections
      *happy_eyeballs_delay*, *interleave*
      and *local_addr* should be specified.
 
+     .. note::
+
+        The *sock* argument transfers ownership of the socket to the
+        transport created. To close the socket, call the transport's
+        :meth:`~asyncio.BaseTransport.close` method.
+
    * *local_addr*, if given, is a ``(local_host, local_port)`` tuple used
      to bind the socket locally.  The *local_host* and *local_port*
      are looked up using ``getaddrinfo()``, similarly to *host* and *port*.
@@ -553,6 +561,12 @@ Opening network connections
      transport. If specified, *local_addr* and *remote_addr* should be omitted
      (must be :const:`None`).
 
+     .. note::
+
+        The *sock* argument transfers ownership of the socket to the
+        transport created. To close the socket, call the transport's
+        :meth:`~asyncio.BaseTransport.close` method.
+
    See :ref:`UDP echo client protocol <asyncio-udp-echo-client-protocol>` and
    :ref:`UDP echo server protocol <asyncio-udp-echo-server-protocol>` examples.
 
@@ -642,6 +656,12 @@ Creating network servers
    * *sock* can optionally be specified in order to use a preexisting
      socket object. If specified, *host* and *port* must not be specified.
 
+     .. note::
+
+        The *sock* argument transfers ownership of the socket to the
+        server created. To close the socket, call the server's
+        :meth:`~asyncio.Server.close` method.
+
    * *backlog* is the maximum number of queued connections passed to
      :meth:`~socket.socket.listen` (defaults to 100).
 
@@ -726,6 +746,12 @@ Creating network servers
 
    * *sock* is a preexisting socket object returned from
      :meth:`socket.accept <socket.socket.accept>`.
+
+     .. note::
+
+        The *sock* argument transfers ownership of the socket to the
+        transport created. To close the socket, call the transport's
+        :meth:`~asyncio.BaseTransport.close` method.
 
    * *ssl* can be set to an :class:`~ssl.SSLContext` to enable SSL over
      the accepted connections.
@@ -1498,6 +1524,7 @@ Do not instantiate the class directly.
 
 
 .. _asyncio-event-loops:
+.. _asyncio-event-loop-implementations:
 
 Event Loop Implementations
 ==========================
@@ -1520,9 +1547,12 @@ on Unix and :class:`ProactorEventLoop` on Windows.
       import asyncio
       import selectors
 
-      selector = selectors.SelectSelector()
-      loop = asyncio.SelectorEventLoop(selector)
-      asyncio.set_event_loop(loop)
+      class MyPolicy(asyncio.DefaultEventLoopPolicy):
+         def new_event_loop(self):
+            selector = selectors.SelectSelector()
+            return asyncio.SelectorEventLoop(selector)
+
+      asyncio.set_event_loop_policy(MyPolicy())
 
 
    .. availability:: Unix, Windows.
@@ -1544,7 +1574,7 @@ on Unix and :class:`ProactorEventLoop` on Windows.
 
    Abstract base class for asyncio-compliant event loops.
 
-   The :ref:`Event Loop Methods <asyncio-event-loop>` section lists all
+   The :ref:`asyncio-event-loop-methods` section lists all
    methods that an alternative implementation of ``AbstractEventLoop``
    should have defined.
 
