@@ -2,6 +2,281 @@
 Python News
 +++++++++++
 
+What's New in Python 3.10.9 final?
+==================================
+
+*Release date: 2022-12-06*
+
+Security
+--------
+
+- gh-issue-100001: ``python -m http.server`` no longer allows terminal
+  control characters sent within a garbage request to be printed to the
+  stderr server log.
+
+  This is done by changing the :mod:`http.server`
+  :class:`BaseHTTPRequestHandler` ``.log_message`` method to replace control
+  characters with a ``\xHH`` hex escape before printing.
+
+- gh-issue-87604: Avoid publishing list of active per-interpreter audit
+  hooks via the :mod:`gc` module
+
+- gh-issue-98433: The IDNA codec decoder used on DNS hostnames by
+  :mod:`socket` or :mod:`asyncio` related name resolution functions no
+  longer involves a quadratic algorithm. This prevents a potential CPU
+  denial of service if an out-of-spec excessive length hostname involving
+  bidirectional characters were decoded. Some protocols such as
+  :mod:`urllib` http ``3xx`` redirects potentially allow for an attacker to
+  supply such a name.
+
+- gh-issue-98739: Update bundled libexpat to 2.5.0
+
+- gh-issue-98517: Port XKCP's fix for the buffer overflows in SHA-3
+  (CVE-2022-37454).
+
+- gh-issue-97514: On Linux the :mod:`multiprocessing` module returns to
+  using filesystem backed unix domain sockets for communication with the
+  *forkserver* process instead of the Linux abstract socket namespace.  Only
+  code that chooses to use the :ref:`"forkserver" start method
+  <multiprocessing-start-methods>` is affected.
+
+  Abstract sockets have no permissions and could allow any user on the
+  system in the same `network namespace
+  <https://man7.org/linux/man-pages/man7/network_namespaces.7.html>`_ (often
+  the whole system) to inject code into the multiprocessing *forkserver*
+  process. This was a potential privilege escalation. Filesystem based
+  socket permissions restrict this to the *forkserver* process user as was
+  the default in Python 3.8 and earlier.
+
+  This prevents Linux `CVE-2022-42919
+  <https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2022-42919>`_.
+
+Core and Builtins
+-----------------
+
+- gh-issue-99578: Fix a reference bug in :func:`_imp.create_builtin()` after
+  the creation of the first sub-interpreter for modules ``builtins`` and
+  ``sys``. Patch by Victor Stinner.
+
+- gh-issue-99581: Fixed a bug that was causing a buffer overflow if the
+  tokenizer copies a line missing the newline caracter from a file that is
+  as long as the available tokenizer buffer. Patch by Pablo galindo
+
+- gh-issue-96055: Update :mod:`faulthandler` to emit an error message with
+  the proper unexpected signal number. Patch by Dong-hee Na.
+
+- gh-issue-98852: Fix subscription of :class:`types.GenericAlias` instances
+  containing bare generic types: for example ``tuple[A, T][int]``, where
+  ``A`` is a generic type, and ``T`` is a type variable.
+
+- gh-issue-98415: Fix detection of MAC addresses for :mod:`uuid` on certain
+  OSs. Patch by Chaim Sanders
+
+- gh-issue-92119: Print exception class name instead of its string
+  representation when raising errors from :mod:`ctypes` calls.
+
+- gh-issue-93696: Allow :mod:`pdb` to locate source for frozen modules in
+  the standard library.
+
+- bpo-31718: Raise :exc:`ValueError` instead of :exc:`SystemError` when
+  methods of uninitialized :class:`io.IncrementalNewlineDecoder` objects are
+  called. Patch by Oren Milman.
+
+- bpo-38031: Fix a possible assertion failure in :class:`io.FileIO` when the
+  opener returns an invalid file descriptor.
+
+Library
+-------
+
+- gh-issue-100001: Also \ escape \s in the http.server
+  BaseHTTPRequestHandler.log_message so that it is technically possible to
+  parse the line and reconstruct what the original data was.  Without this a
+  \xHH is ambiguious as to if it is a hex replacement we put in or the
+  characters r"\x" came through in the original request line.
+
+- gh-issue-93453: :func:`asyncio.get_event_loop` now only emits a
+  deprecation warning when a new event loop was created implicitly. It no
+  longer emits a deprecation warning if the current event loop was set.
+
+- gh-issue-51524: Fix bug when calling trace.CoverageResults with valid
+  infile.
+
+- gh-issue-99645: Fix a bug in handling class cleanups in
+  :class:`unittest.TestCase`.  Now ``addClassCleanup()`` uses separate lists
+  for different ``TestCase`` subclasses, and ``doClassCleanups()`` only
+  cleans up the particular class.
+
+- gh-issue-97001: Release the GIL when calling termios APIs to avoid
+  blocking threads.
+
+- gh-issue-99341: Fix :func:`ast.increment_lineno` to also cover
+  :class:`ast.TypeIgnore` when changing line numbers.
+
+- gh-issue-74044: Fixed bug where :func:`inspect.signature` reported
+  incorrect arguments for decorated methods.
+
+- gh-issue-99275: Fix ``SystemError`` in :mod:`ctypes` when exception was
+  not set during ``__initsubclass__``.
+
+- gh-issue-99155: Fix :class:`statistics.NormalDist` pickle with ``0`` and
+  ``1`` protocols.
+
+- gh-issue-99134: Update the bundled copy of pip to version 22.3.1.
+
+- gh-issue-99130: Apply bugfixes from `importlib_metadata 4.11.4
+  <https://importlib-metadata.readthedocs.io/en/latest/history.html#v4-11-4>`_,
+  namely: In ``PathDistribution._name_from_stem``, avoid including parts of
+  the extension in the result. In ``PathDistribution._normalized_name``,
+  ensure names loaded from the stem of the filename are also normalized,
+  ensuring duplicate entry points by packages varying only by non-normalized
+  name are hidden.
+
+- gh-issue-83004: Clean up refleak on failed module initialisation in
+  :mod:`_zoneinfo`
+
+- gh-issue-83004: Clean up refleaks on failed module initialisation in in
+  :mod:`_pickle`
+
+- gh-issue-83004: Clean up refleak on failed module initialisation in
+  :mod:`_io`.
+
+- gh-issue-98897: Fix memory leak in :func:`math.dist` when both points
+  don't have the same dimension. Patch by Kumar Aditya.
+
+- gh-issue-98793: Fix argument typechecks in :func:`!_overlapped.WSAConnect`
+  and :func:`!_overlapped.Overlapped.WSASendTo` functions.
+
+- gh-issue-98740: Fix internal error in the :mod:`re` module which in very
+  rare circumstances prevented compilation of a regular expression
+  containing a :ref:`conditional expression <re-conditional-expression>`
+  without the "else" branch.
+
+- gh-issue-98703: Fix :meth:`asyncio.StreamWriter.drain` to call
+  ``protocol.connection_lost`` callback only once on Windows.
+
+- gh-issue-98624: Add a mutex to unittest.mock.NonCallableMock to protect
+  concurrent access to mock attributes.
+
+- gh-issue-89237: Fix hang on Windows in ``subprocess.wait_closed()`` in
+  :mod:`asyncio` with :class:`~asyncio.ProactorEventLoop`. Patch by Kumar
+  Aditya.
+
+- gh-issue-98458: Fix infinite loop in unittest when a self-referencing
+  chained exception is raised
+
+- gh-issue-97928: :meth:`tkinter.Text.count` raises now an exception for
+  options starting with "-" instead of silently ignoring them.
+
+- gh-issue-97966: On ``uname_result``, restored expectation that ``_fields``
+  and ``_asdict`` would include all six properties including ``processor``.
+
+- gh-issue-98331: Update the bundled copies of pip and setuptools to
+  versions 22.3 and 65.5.0 respectively.
+
+- gh-issue-96035: Fix bug in :func:`urllib.parse.urlparse` that causes
+  certain port numbers containing whitespace, underscores, plus and minus
+  signs, or non-ASCII digits to be incorrectly accepted.
+
+- gh-issue-98251: Allow :mod:`venv` to pass along :envvar:`PYTHON*`
+  variables to ``ensurepip`` and ``pip`` when they do not impact path
+  resolution
+
+- gh-issue-98178: On macOS, fix a crash in :func:`syslog.syslog` in
+  multi-threaded applications. On macOS, the libc ``syslog()`` function is
+  not thread-safe, so :func:`syslog.syslog` no longer releases the GIL to
+  call it. Patch by Victor Stinner.
+
+- gh-issue-96151: Allow ``BUILTINS`` to be a valid field name for frozen
+  dataclasses.
+
+- gh-issue-98086: Make sure ``patch.dict()`` can be applied on async
+  functions.
+
+- gh-issue-88863: To avoid apparent memory leaks when
+  :func:`asyncio.open_connection` raises, break reference cycles generated
+  by local exception and future instances (which has exception instance as
+  its member var). Patch by Dong Uk, Kang.
+
+- gh-issue-93858: Prevent error when activating venv in nested fish
+  instances.
+
+- bpo-46364: Restrict use of sockets instead of pipes for stdin of
+  subprocesses created by :mod:`asyncio` to AIX platform only.
+
+- bpo-38523: :func:`shutil.copytree` now applies the
+  *ignore_dangling_symlinks* argument recursively.
+
+- bpo-36267: Fix IndexError in :class:`argparse.ArgumentParser` when a
+  ``store_true`` action is given an explicit argument.
+
+Documentation
+-------------
+
+- gh-issue-92892: Document that calling variadic functions with ctypes
+  requires special care on macOS/arm64 (and possibly other platforms).
+
+Tests
+-----
+
+- gh-issue-99892: Skip test_normalization() of test_unicodedata if it fails
+  to download NormalizationTest.txt file from pythontest.net. Patch by
+  Victor Stinner.
+
+- bpo-34272: Some C API tests were moved into the new Lib/test/test_capi/
+  directory.
+
+Build
+-----
+
+- gh-issue-99086: Fix ``-Wimplicit-int``, ``-Wstrict-prototypes``, and
+  ``-Wimplicit-function-declaration`` compiler warnings in
+  :program:`configure` checks.
+
+- gh-issue-99086: Fix ``-Wimplicit-int`` compiler warning in
+  :program:`configure` check for ``PTHREAD_SCOPE_SYSTEM``.
+
+- gh-issue-97731: Specify the full path to the source location for ``make
+  docclean`` (needed for cross-builds).
+
+- gh-issue-98671: Fix ``NO_MISALIGNED_ACCESSES`` being not defined for the
+  SHA3 extension when ``HAVE_ALIGNED_REQUIRED`` is set. Allowing builds on
+  hardware that unaligned memory accesses are not allowed.
+
+Windows
+-------
+
+- gh-issue-99345: Use faster initialization functions to detect install
+  location for Windows Store package
+
+- gh-issue-98689: Update Windows builds to zlib v1.2.13.  v1.2.12 has
+  CVE-2022-37434, but the vulnerable ``inflateGetHeader`` API is not used by
+  Python.
+
+- gh-issue-94328: Update Windows installer to use SQLite 3.39.4.
+
+- bpo-40882: Fix a memory leak in
+  :class:`multiprocessing.shared_memory.SharedMemory` on Windows.
+
+macOS
+-----
+
+- gh-issue-94328: Update macOS installer to SQLite 3.39.4.
+
+IDLE
+----
+
+- gh-issue-97527: Fix a bug in the previous bugfix that caused IDLE to not
+  start when run with 3.10.8, 3.12.0a1, and at least Microsoft Python
+  3.10.2288.0 installed without the Lib/test package.  3.11.0 was never
+  affected.
+
+Tools/Demos
+-----------
+
+- gh-issue-95731: Fix handling of module docstrings in
+  :file:`Tools/i18n/pygettext.py`.
+
+
 What's New in Python 3.10.8 final?
 ==================================
 
@@ -9244,8 +9519,7 @@ Documentation
   creates new event loop only if called from the main thread.
 
 - bpo-38918: Add an entry for ``__module__`` in the "function" & "method"
-  sections of the `inspect docs types and members table
-  <https://docs.python.org/3/library/inspect.html#types-and-members>`_
+  sections of the :mod:`inspect` docs' :ref:`inspect-types` table.
 
 - bpo-3530: In the :mod:`ast` module documentation, fix a misleading
   ``NodeTransformer`` example and add advice on when to use the

@@ -35,6 +35,15 @@ always available.
    can then log the event, raise an exception to abort the operation,
    or terminate the process entirely.
 
+   Note that audit hooks are primarily for collecting information about internal
+   or otherwise unobservable actions, whether by Python or libraries written in
+   Python. They are not suitable for implementing a "sandbox". In particular,
+   malicious code can trivially disable or bypass hooks added using this
+   function. At a minimum, any security-sensitive hooks must be added using the
+   C API :c:func:`PySys_AddAuditHook` before initialising the runtime, and any
+   modules allowing arbitrary memory modification (such as :mod:`ctypes`) should
+   be completely removed or closely monitored.
+
    .. audit-event:: sys.addaudithook "" sys.addaudithook
 
       Calling :func:`sys.addaudithook` will itself raise an auditing event
@@ -250,7 +259,7 @@ always available.
    Print low-level information to stderr about the state of CPython's memory
    allocator.
 
-   If Python is `built in debug mode <debug-build>` (:option:`configure
+   If Python is :ref:`built in debug mode <debug-build>` (:option:`configure
    --with-pydebug option <--with-pydebug>`), it also performs some expensive
    internal consistency checks.
 
@@ -320,7 +329,7 @@ always available.
    files to (and read them from) a parallel directory tree rooted at this
    directory, rather than from ``__pycache__`` directories in the source code
    tree. Any ``__pycache__`` directories in the source code tree will be ignored
-   and new `.pyc` files written within the pycache prefix. Thus if you use
+   and new ``.pyc`` files written within the pycache prefix. Thus if you use
    :mod:`compileall` as a pre-build step, you must ensure you run it with the
    same pycache prefix (if any) that you will use at runtime.
 
@@ -828,7 +837,7 @@ always available.
 .. function:: get_asyncgen_hooks()
 
    Returns an *asyncgen_hooks* object, which is similar to a
-   :class:`~collections.namedtuple` of the form `(firstiter, finalizer)`,
+   :class:`~collections.namedtuple` of the form ``(firstiter, finalizer)``,
    where *firstiter* and *finalizer* are expected to be either ``None`` or
    functions which take an :term:`asynchronous generator iterator` as an
    argument, and are used to schedule finalization of an asynchronous
