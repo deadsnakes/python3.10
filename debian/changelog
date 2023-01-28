@@ -1,3 +1,9 @@
+python3.10 (3.10.9-1+bionic2) bionic; urgency=medium
+
+  * fix sysconfig paths for deb_system and posix_local
+
+ -- Anthony Sottile <asottile@umich.edu>  Sat, 28 Jan 2023 14:09:35 -0500
+
 python3.10 (3.10.9-1+bionic1) bionic; urgency=medium
 
   * Python 3.10.9 release.
