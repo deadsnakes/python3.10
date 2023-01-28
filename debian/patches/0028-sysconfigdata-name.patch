@@ -15,10 +15,10 @@ Forwarded: no
  3 files changed, 7 insertions(+), 4 deletions(-)
 
 diff --git a/Lib/sysconfig.py b/Lib/sysconfig.py
-index 2fc8cbe..6c2fbab 100644
+index 3637dbb..fb2913d 100644
 --- a/Lib/sysconfig.py
 +++ b/Lib/sysconfig.py
-@@ -439,7 +439,7 @@ def _get_sysconfigdata_name():
+@@ -443,7 +443,7 @@ def _get_sysconfigdata_name():
      multiarch = getattr(sys.implementation, '_multiarch', '')
      return os.environ.get(
          '_PYTHON_SYSCONFIGDATA_NAME',
