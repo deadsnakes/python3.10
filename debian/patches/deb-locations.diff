@@ -5,9 +5,9 @@ Subject: deb-locations
 ---
  Lib/distutils/command/install.py |  4 ++--
  Lib/pydoc.py                     |  4 ++++
- Lib/sysconfig.py                 | 46 +++++++++++++++++++++++++++++++++++-----
+ Lib/sysconfig.py                 | 50 ++++++++++++++++++++++++++++++++++++----
  Misc/python.man                  |  2 +-
- 4 files changed, 48 insertions(+), 8 deletions(-)
+ 4 files changed, 52 insertions(+), 8 deletions(-)
 
 diff --git a/Lib/distutils/command/install.py b/Lib/distutils/command/install.py
 index 01d5331..d25b82f 100644
@@ -45,39 +45,43 @@ index e00ba41..497d33f 100755
  
  This can be overridden by setting the PYTHONDOCS environment variable
 diff --git a/Lib/sysconfig.py b/Lib/sysconfig.py
-index daf9f00..908ea48 100644
+index daf9f00..a7fcc7a 100644
 --- a/Lib/sysconfig.py
 +++ b/Lib/sysconfig.py
-@@ -56,7 +56,28 @@ _INSTALL_SCHEMES = {
+@@ -56,7 +56,32 @@ _INSTALL_SCHEMES = {
          'scripts': '{base}/Scripts',
          'data': '{base}',
          },
 +    'deb_system': {
-+        'stdlib': '{installed_base}/{platlibdir}/python{py_version_short}',
-+        'platstdlib': '{platbase}/{platlibdir}/python{py_version_short}',
++        'stdlib': '{installed_base}/lib/python{py_version_short}',
++        'platstdlib': '{platbase}/lib/python{py_version_short}',
 +        'purelib': '{base}/lib/python3/dist-packages',
-+        'platlib': '{platbase}/{platlibdir}/python3/dist-packages',
-+        'include': '{installed_base}/include/python{py_version_short}{abiflags}',
-+        'platinclude': '{installed_platbase}/include/python{py_version_short}{abiflags}',
++        'platlib': '{platbase}/lib/python3/dist-packages',
++        'include':
++            '{installed_base}/include/python{py_version_short}{abiflags}',
++        'platinclude':
++            '{installed_platbase}/include/python{py_version_short}{abiflags}',
 +        'scripts': '{base}/bin',
 +        'data': '{base}',
 +        },
 +    'posix_local': {
-+        'stdlib': '{installed_base}/{platlibdir}/python{py_version_short}',
-+        'platstdlib': '{platbase}/{platlibdir}/python{py_version_short}',
++        'stdlib': '{installed_base}/lib/python{py_version_short}',
++        'platstdlib': '{platbase}/lib/python{py_version_short}',
 +        'purelib': '{base}/local/lib/python{py_version_short}/dist-packages',
 +        'platlib': '{platbase}/local/lib/python{py_version_short}/dist-packages',
-+        'include': '{installed_base}/local/include/python{py_version_short}{abiflags}',
-+        'platinclude': '{installed_platbase}/local/include/python{py_version_short}{abiflags}',
++        'include':
++            '{installed_base}/include/python{py_version_short}{abiflags}',
++        'platinclude':
++            '{installed_platbase}/include/python{py_version_short}{abiflags}',
 +        'scripts': '{base}/local/bin',
-+        'data': '{base}',
++        'data': '{base}/local',
 +        },
      }
 +_INSTALL_SCHEMES['venv'] = _INSTALL_SCHEMES['posix_prefix']
  
  
  # NOTE: site.py has copy of this function.
-@@ -237,11 +258,26 @@ def _get_preferred_schemes():
+@@ -237,11 +262,26 @@ def _get_preferred_schemes():
              'home': 'posix_home',
              'user': 'osx_framework_user',
          }
