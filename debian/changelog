@@ -1,3 +1,9 @@
+python3.10 (3.10.10-1+focal1) focal; urgency=medium
+
+  * Python 3.10.10 release.
+
+ -- Anthony Sottile (deadsnakes) <asottile+deadsnakes@umich.edu>  Wed, 08 Feb 2023 14:50:01 +0000
+
 python3.10 (3.10.9-1+focal2) focal; urgency=medium
 
   * fix sysconfig paths for deb_system and posix_local
