@@ -1,3 +1,9 @@
+python3.10 (3.10.11-1+focal1) focal; urgency=medium
+
+  * Python 3.10.11 release.
+
+ -- Anthony Sottile (deadsnakes) <asottile+deadsnakes@umich.edu>  Wed, 05 Apr 2023 14:15:10 +0000
+
 python3.10 (3.10.10-1+focal1) focal; urgency=medium
 
   * Python 3.10.10 release.
