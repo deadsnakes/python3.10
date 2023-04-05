@@ -654,9 +654,6 @@ Waiting Primitives
    Raises :exc:`asyncio.TimeoutError` if the timeout occurs before
    all Futures are done.
 
-   .. versionchanged:: 3.10
-      Removed the *loop* parameter.
-
    Example::
 
        for coro in as_completed(aws):
@@ -1002,7 +999,7 @@ Task Object
       The *limit* argument is passed to :meth:`get_stack` directly.
 
       The *file* argument is an I/O stream to which the output
-      is written; by default output is written to :data:`sys.stderr`.
+      is written; by default output is written to :data:`sys.stdout`.
 
    .. method:: get_coro()
 

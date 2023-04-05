@@ -1490,7 +1490,7 @@ Basic customization
    :meth:`__hash__`, its instances will not be usable as items in hashable
    collections.  If a class defines mutable objects and implements an
    :meth:`__eq__` method, it should not implement :meth:`__hash__`, since the
-   implementation of hashable collections requires that a key's hash value is
+   implementation of :term:`hashable` collections requires that a key's hash value is
    immutable (if the object's hash value changes, it will be in the wrong hash
    bucket).
 
@@ -1876,8 +1876,10 @@ Notes on using *__slots__*
   descriptor directly from the base class). This renders the meaning of the
   program undefined.  In the future, a check may be added to prevent this.
 
-* Nonempty *__slots__* does not work for classes derived from "variable-length"
-  built-in types such as :class:`int`, :class:`bytes` and :class:`tuple`.
+* :exc:`TypeError` will be raised if nonempty *__slots__* are defined for a
+  class derived from a
+  :c:member:`"variable-length" built-in type <PyTypeObject.tp_itemsize>` such as
+  :class:`int`, :class:`bytes`, and :class:`tuple`.
 
 * Any non-string :term:`iterable` may be assigned to *__slots__*.
 

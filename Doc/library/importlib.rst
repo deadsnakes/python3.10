@@ -809,8 +809,11 @@ ABC hierarchy::
 
 .. class:: Traversable
 
-    An object with a subset of pathlib.Path methods suitable for
+    An object with a subset of :class:`pathlib.Path` methods suitable for
     traversing directories and opening files.
+
+    For a representation of the object on the file-system, use
+    :meth:`importlib.resources.as_file`.
 
     .. versionadded:: 3.9
 
@@ -1722,7 +1725,7 @@ an :term:`importer`.
 
    .. classmethod:: factory(loader)
 
-      A static method which returns a callable that creates a lazy loader. This
+      A class method which returns a callable that creates a lazy loader. This
       is meant to be used in situations where the loader is passed by class
       instead of by instance.
       ::
