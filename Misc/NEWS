@@ -2,6 +2,110 @@
 Python News
 +++++++++++
 
+What's New in Python 3.10.15 final?
+===================================
+
+*Release date: 2024-09-07*
+
+Windows
+-------
+
+- gh-119690: Fixes data type confusion in audit events raised by
+  ``_winapi.CreateFile`` and ``_winapi.CreateNamedPipe``.
+
+- gh-116773: Fix instances of ``<_overlapped.Overlapped object at 0xXXX>
+  still has pending operation at deallocation, the process may crash``.
+
+Tests
+-----
+
+- gh-112769: The tests now correctly compare zlib version when
+  :const:`zlib.ZLIB_RUNTIME_VERSION` contains non-integer suffixes. For
+  example zlib-ng defines the version as ``1.3.0.zlib-ng``.
+
+- gh-117187: Fix XML tests for vanilla Expat <2.6.0.
+
+- gh-100454: Fix SSL tests CI for OpenSSL 3.1+
+
+Security
+--------
+
+- gh-123678: Upgrade libexpat to 2.6.3
+
+- gh-121957: Fixed missing audit events around interactive use of Python,
+  now also properly firing for ``python -i``, as well as for ``python -m
+  asyncio``. The event in question is ``cpython.run_stdin``.
+
+- gh-122133: Authenticate the socket connection for the
+  ``socket.socketpair()`` fallback on platforms where ``AF_UNIX`` is not
+  available like Windows.
+
+  Patch by Gregory P. Smith <greg@krypto.org> and Seth Larson
+  <seth@python.org>. Reported by Ellie <el@horse64.org>
+
+- gh-121285: Remove backtracking from tarfile header parsing for
+  ``hdrcharset``, PAX, and GNU sparse headers.
+
+- gh-118486: :func:`os.mkdir` on Windows now accepts *mode* of ``0o700`` to
+  restrict the new directory to the current user. This fixes CVE-2024-4030
+  affecting :func:`tempfile.mkdtemp` in scenarios where the base temporary
+  directory is more permissive than the default.
+
+- gh-116741: Update bundled libexpat to 2.6.2
+
+Library
+-------
+
+- gh-123693: Use platform-agnostic behavior when computing
+  ``zipfile.Path.name``.
+
+- gh-123270: Applied a more surgical fix for malformed payloads in
+  :class:`zipfile.Path` causing infinite loops (gh-122905) without breaking
+  contents using legitimate characters.
+
+- gh-123067: Fix quadratic complexity in parsing ``"``-quoted cookie values
+  with backslashes by :mod:`http.cookies`.
+
+- gh-122905: :class:`zipfile.Path` objects now sanitize names from the
+  zipfile.
+
+- gh-121650: :mod:`email` headers with embedded newlines are now quoted on
+  output. The :mod:`~email.generator` will now refuse to serialize (write)
+  headers that are unsafely folded or delimited; see
+  :attr:`~email.policy.Policy.verify_generated_headers`. (Contributed by Bas
+  Bloemsaat and Petr Viktorin in :gh:`121650`.)
+
+- gh-113171: Fixed various false positives and false negatives in
+
+  * :attr:`ipaddress.IPv4Address.is_private` (see these docs for details)
+  * :attr:`ipaddress.IPv4Address.is_global`
+  * :attr:`ipaddress.IPv6Address.is_private`
+  * :attr:`ipaddress.IPv6Address.is_global`
+
+  Also in the corresponding :class:`ipaddress.IPv4Network` and
+  :class:`ipaddress.IPv6Network` attributes.
+
+- gh-102988: :func:`email.utils.getaddresses` and
+  :func:`email.utils.parseaddr` now return ``('', '')`` 2-tuples in more
+  situations where invalid email addresses are encountered instead of
+  potentially inaccurate values. Add optional *strict* parameter to these
+  two functions: use ``strict=False`` to get the old behavior, accept
+  malformed inputs. ``getattr(email.utils, 'supports_strict_parsing',
+  False)`` can be use to check if the *strict* paramater is available. Patch
+  by Thomas Dwyer and Victor Stinner to improve the CVE-2023-27043 fix.
+
+- gh-67693: Fix :func:`urllib.parse.urlunparse` and
+  :func:`urllib.parse.urlunsplit` for URIs with path starting with multiple
+  slashes and no authority. Based on patch by Ashwin Ramaswami.
+
+Core and Builtins
+-----------------
+
+- gh-112275: A deadlock involving ``pystate.c``'s ``HEAD_LOCK`` in
+  ``posixmodule.c`` at fork is now fixed. Patch by ChuBoning based on
+  previous Python 3.12 fix by Victor Stinner.
+
+
 What's New in Python 3.10.14 final?
 ===================================
 
@@ -10,7 +114,7 @@ What's New in Python 3.10.14 final?
 Security
 --------
 
-- gh-issue-115398: Allow controlling Expat >=2.6.0 reparse deferral
+- gh-115398: Allow controlling Expat >=2.6.0 reparse deferral
   (CVE-2023-52425) by adding five new methods:
 
   * :meth:`xml.etree.ElementTree.XMLParser.flush`
@@ -19,63 +123,63 @@ Security
   * :meth:`xml.parsers.expat.xmlparser.SetReparseDeferralEnabled`
   * :meth:`xml.sax.expatreader.ExpatParser.flush`
 
-- gh-issue-115399: Update bundled libexpat to 2.6.0
+- gh-115399: Update bundled libexpat to 2.6.0
 
-- gh-issue-114572: :meth:`ssl.SSLContext.cert_store_stats` and
+- gh-114572: :meth:`ssl.SSLContext.cert_store_stats` and
   :meth:`ssl.SSLContext.get_ca_certs` now correctly lock access to the
   certificate store, when the :class:`ssl.SSLContext` is shared across
   multiple threads.
 
-- gh-issue-113659: Skip ``.pth`` files with names starting with a dot or
-  hidden file attribute.
+- gh-113659: Skip ``.pth`` files with names starting with a dot or hidden
+  file attribute.
 
 Core and Builtins
 -----------------
 
-- gh-issue-102388: Fix a bug where ``iso2022_jp_3`` and ``iso2022_jp_2004``
-  codecs read out of bounds
+- gh-102388: Fix a bug where ``iso2022_jp_3`` and ``iso2022_jp_2004`` codecs
+  read out of bounds
 
 Library
 -------
 
-- gh-issue-115197: ``urllib.request`` no longer resolves the hostname before
+- gh-115197: ``urllib.request`` no longer resolves the hostname before
   checking it against the system's proxy bypass list on macOS and Windows.
 
-- gh-issue-115133: Fix tests for
-  :class:`~xml.etree.ElementTree.XMLPullParser` with Expat 2.6.0.
+- gh-115133: Fix tests for :class:`~xml.etree.ElementTree.XMLPullParser`
+  with Expat 2.6.0.
 
-- gh-issue-81194: Fix a crash in :func:`socket.if_indextoname` with specific
-  value (UINT_MAX). Fix an integer overflow in :func:`socket.if_indextoname`
-  on 64-bit non-Windows platforms.
+- gh-81194: Fix a crash in :func:`socket.if_indextoname` with specific value
+  (UINT_MAX). Fix an integer overflow in :func:`socket.if_indextoname` on
+  64-bit non-Windows platforms.
 
-- gh-issue-109858: Protect :mod:`zipfile` from "quoted-overlap" zipbomb. It
-  now raises BadZipFile when try to read an entry that overlaps with other
-  entry or central directory.
+- gh-109858: Protect :mod:`zipfile` from "quoted-overlap" zipbomb. It now
+  raises BadZipFile when try to read an entry that overlaps with other entry
+  or central directory.
 
-- gh-issue-91133: Fix a bug in :class:`tempfile.TemporaryDirectory` cleanup,
-  which now no longer dereferences symlinks when working around file system
+- gh-91133: Fix a bug in :class:`tempfile.TemporaryDirectory` cleanup, which
+  now no longer dereferences symlinks when working around file system
   permission errors.
 
 Documentation
 -------------
 
-- gh-issue-115399: Document CVE-2023-52425 of Expat <2.6.0 under "XML
+- gh-115399: Document CVE-2023-52425 of Expat <2.6.0 under "XML
   vulnerabilities".
 
 Windows
 -------
 
-- gh-issue-111239: Update Windows builds to use zlib v1.3.1.
+- gh-111239: Update Windows builds to use zlib v1.3.1.
 
-- gh-issue-109991: Windows builds now use OpenSSL 1.1.1w. Note that OpenSSL
-  1.1 has reached its end of life and no future fixes will be made, and this
+- gh-109991: Windows builds now use OpenSSL 1.1.1w. Note that OpenSSL 1.1
+  has reached its end of life and no future fixes will be made, and this
   version of Python is no longer receiving maintenance fixes and will not be
   updated to OpenSSL 3.0.
 
 Tools/Demos
 -----------
 
-- gh-issue-109991: Update GitHub CI workflows to use OpenSSL 3.0.11 and
+- gh-109991: Update GitHub CI workflows to use OpenSSL 3.0.11 and
   multissltests to use 1.1.1w, 3.0.11, and 3.1.3.
 
 
@@ -87,10 +191,10 @@ What's New in Python 3.10.13 final?
 Security
 --------
 
-- gh-issue-108310: Fixed an issue where instances of :class:`ssl.SSLSocket`
-  were vulnerable to a bypass of the TLS handshake and included protections
-  (like certificate verification) and treating sent unencrypted data as if
-  it were post-handshake TLS encrypted data.  Security issue reported as
+- gh-108310: Fixed an issue where instances of :class:`ssl.SSLSocket` were
+  vulnerable to a bypass of the TLS handshake and included protections (like
+  certificate verification) and treating sent unencrypted data as if it were
+  post-handshake TLS encrypted data.  Security issue reported as
   `CVE-2023-40217
   <https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2023-40217>`_ by Aapo
   Oksman. Patch by Gregory P. Smith.
@@ -98,21 +202,21 @@ Security
 Library
 -------
 
-- gh-issue-107845: :func:`tarfile.data_filter` now takes the location of
-  symlinks into account when determining their target, so it will no longer
-  reject some valid tarballs with ``LinkOutsideDestinationError``.
+- gh-107845: :func:`tarfile.data_filter` now takes the location of symlinks
+  into account when determining their target, so it will no longer reject
+  some valid tarballs with ``LinkOutsideDestinationError``.
 
 Tools/Demos
 -----------
 
-- gh-issue-107565: Update multissltests and GitHub CI workflows to use
-  OpenSSL 1.1.1v, 3.0.10, and 3.1.2.
+- gh-107565: Update multissltests and GitHub CI workflows to use OpenSSL
+  1.1.1v, 3.0.10, and 3.1.2.
 
 C API
 -----
 
-- gh-issue-99612: Fix :c:func:`PyUnicode_DecodeUTF8Stateful` for ASCII-only
-  data: ``*consumed`` was not set.
+- gh-99612: Fix :c:func:`PyUnicode_DecodeUTF8Stateful` for ASCII-only data:
+  ``*consumed`` was not set.
 
 
 What's New in Python 3.10.12 final?
@@ -123,27 +227,27 @@ What's New in Python 3.10.12 final?
 Security
 --------
 
-- gh-issue-103142: The version of OpenSSL used in our binary builds has been
+- gh-103142: The version of OpenSSL used in our binary builds has been
   upgraded to 1.1.1u to address several CVEs.
 
-- gh-issue-99889: Fixed a security in flaw in :func:`uu.decode` that could
-  allow for directory traversal based on the input if no ``out_file`` was
+- gh-99889: Fixed a security in flaw in :func:`uu.decode` that could allow
+  for directory traversal based on the input if no ``out_file`` was
   specified.
 
-- gh-issue-104049: Do not expose the local on-disk location in directory
-  indexes produced by :class:`http.client.SimpleHTTPRequestHandler`.
+- gh-104049: Do not expose the local on-disk location in directory indexes
+  produced by :class:`http.client.SimpleHTTPRequestHandler`.
 
-- gh-issue-102153: :func:`urllib.parse.urlsplit` now strips leading C0
-  control and space characters following the specification for URLs defined
-  by WHATWG in response to CVE-2023-24329. Patch by Illia Volochii.
+- gh-102153: :func:`urllib.parse.urlsplit` now strips leading C0 control and
+  space characters following the specification for URLs defined by WHATWG in
+  response to CVE-2023-24329. Patch by Illia Volochii.
 
 Library
 -------
 
-- gh-issue-103935: Use :func:`io.open_code` for files to be executed instead
-  of raw :func:`open`
+- gh-103935: Use :func:`io.open_code` for files to be executed instead of
+  raw :func:`open`
 
-- gh-issue-102953: The extraction methods in :mod:`tarfile`, and
+- gh-102953: The extraction methods in :mod:`tarfile`, and
   :func:`shutil.unpack_archive`, have a new a *filter* argument that allows
   limiting tar features than may be surprising or dangerous, such as
   creating files outside the destination directory. See
@@ -152,15 +256,14 @@ Library
 Documentation
 -------------
 
-- gh-issue-89412: Add missing documentation for the ``end_lineno`` and
+- gh-89412: Add missing documentation for the ``end_lineno`` and
   ``end_offset`` attributes of the :class:`traceback.TracebackException`
   class.
 
 Build
 -----
 
-- gh-issue-103262: Fixes Windows installer build to work with latest
-  compilers.
+- gh-103262: Fixes Windows installer build to work with latest compilers.
 
 
 What's New in Python 3.10.11 final?
@@ -171,144 +274,142 @@ What's New in Python 3.10.11 final?
 Security
 --------
 
-- gh-issue-101727: Updated the OpenSSL version used in Windows and macOS
-  binary release builds to 1.1.1t to address CVE-2023-0286, CVE-2022-4303,
-  and CVE-2022-4303 per `the OpenSSL 2023-02-07 security advisory
+- gh-101727: Updated the OpenSSL version used in Windows and macOS binary
+  release builds to 1.1.1t to address CVE-2023-0286, CVE-2022-4303, and
+  CVE-2022-4303 per `the OpenSSL 2023-02-07 security advisory
   <https://www.openssl.org/news/secadv/20230207.txt>`_.
 
-- gh-issue-101283: :class:`subprocess.Popen` now uses a safer approach to
-  find ``cmd.exe`` when launching with ``shell=True``. Patch by Eryk Sun,
-  based on a patch by Oleg Iarygin.
+- gh-101283: :class:`subprocess.Popen` now uses a safer approach to find
+  ``cmd.exe`` when launching with ``shell=True``. Patch by Eryk Sun, based
+  on a patch by Oleg Iarygin.
 
 Core and Builtins
 -----------------
 
-- gh-issue-102416: Do not memoize incorrectly automatically generated loop
-  rules in the parser. Patch by Pablo Galindo.
+- gh-102416: Do not memoize incorrectly automatically generated loop rules
+  in the parser. Patch by Pablo Galindo.
 
-- gh-issue-102356: Fix a bug that caused a crash when deallocating deeply
-  nested filter objects. Patch by Marta Gómez Macías.
+- gh-102356: Fix a bug that caused a crash when deallocating deeply nested
+  filter objects. Patch by Marta Gómez Macías.
 
-- gh-issue-102397: Fix segfault from race condition in signal handling
-  during garbage collection. Patch by Kumar Aditya.
+- gh-102397: Fix segfault from race condition in signal handling during
+  garbage collection. Patch by Kumar Aditya.
 
-- gh-issue-102126: Fix deadlock at shutdown when clearing thread states if
-  any finalizer tries to acquire the runtime head lock. Patch by Kumar
-  Aditya.
+- gh-102126: Fix deadlock at shutdown when clearing thread states if any
+  finalizer tries to acquire the runtime head lock. Patch by Kumar Aditya.
 
-- gh-issue-102027: Fix SSE2 and SSE3 detection in ``_blake2`` internal
-  module. Patch by Max Bachmann.
+- gh-102027: Fix SSE2 and SSE3 detection in ``_blake2`` internal module.
+  Patch by Max Bachmann.
 
-- gh-issue-101967: Fix possible segfault in
-  ``positional_only_passed_as_keyword`` function, when new list created.
+- gh-101967: Fix possible segfault in ``positional_only_passed_as_keyword``
+  function, when new list created.
 
-- gh-issue-101765: Fix SystemError / segmentation fault in iter
-  ``__reduce__`` when internal access of ``builtins.__dict__`` keys mutates
-  the iter object.
+- gh-101765: Fix SystemError / segmentation fault in iter ``__reduce__``
+  when internal access of ``builtins.__dict__`` keys mutates the iter
+  object.
 
 Library
 -------
 
-- gh-issue-102947: Improve traceback when :func:`dataclasses.fields` is
-  called on a non-dataclass. Patch by Alex Waygood
+- gh-102947: Improve traceback when :func:`dataclasses.fields` is called on
+  a non-dataclass. Patch by Alex Waygood
 
-- gh-issue-101979: Fix a bug where parentheses in the ``metavar`` argument
-  to :meth:`argparse.ArgumentParser.add_argument` were dropped. Patch by
-  Yeojin Kim.
+- gh-101979: Fix a bug where parentheses in the ``metavar`` argument to
+  :meth:`argparse.ArgumentParser.add_argument` were dropped. Patch by Yeojin
+  Kim.
 
-- gh-issue-102179: Fix :func:`os.dup2` error message for negative fds.
+- gh-102179: Fix :func:`os.dup2` error message for negative fds.
 
-- gh-issue-101961: For the binary mode, :func:`fileinput.hookcompressed`
-  doesn't set the ``encoding`` value even if the value is ``None``. Patch by
-  Gihwan Kim.
+- gh-101961: For the binary mode, :func:`fileinput.hookcompressed` doesn't
+  set the ``encoding`` value even if the value is ``None``. Patch by Gihwan
+  Kim.
 
-- gh-issue-101936: The default value of ``fp`` becomes :class:`io.BytesIO`
-  if :exc:`~urllib.error.HTTPError` is initialized without a designated
-  ``fp`` parameter. Patch by Long Vo.
+- gh-101936: The default value of ``fp`` becomes :class:`io.BytesIO` if
+  :exc:`~urllib.error.HTTPError` is initialized without a designated ``fp``
+  parameter. Patch by Long Vo.
 
-- gh-issue-101566: In zipfile, apply fix for extractall on the underlying
-  zipfile after being wrapped in ``Path``.
+- gh-101566: In zipfile, apply fix for extractall on the underlying zipfile
+  after being wrapped in ``Path``.
 
-- gh-issue-101997: Upgrade pip wheel bundled with ensurepip (pip 23.0.1)
+- gh-101997: Upgrade pip wheel bundled with ensurepip (pip 23.0.1)
 
-- gh-issue-101892: Callable iterators no longer raise :class:`SystemError`
-  when the callable object exhausts the iterator but forgets to either
-  return a sentinel value or raise :class:`StopIteration`.
+- gh-101892: Callable iterators no longer raise :class:`SystemError` when
+  the callable object exhausts the iterator but forgets to either return a
+  sentinel value or raise :class:`StopIteration`.
 
-- gh-issue-97786: Fix potential undefined behaviour in corner cases of
+- gh-97786: Fix potential undefined behaviour in corner cases of
   floating-point-to-time conversions.
 
-- gh-issue-101517: Fixed bug where :mod:`bdb` looks up the source line with
+- gh-101517: Fixed bug where :mod:`bdb` looks up the source line with
   :mod:`linecache` with a ``lineno=None``, which causes it to fail with an
   unhandled exception.
 
-- gh-issue-101673: Fix a :mod:`pdb` bug where ``ll`` clears the changes to
-  local variables.
+- gh-101673: Fix a :mod:`pdb` bug where ``ll`` clears the changes to local
+  variables.
 
-- gh-issue-96931: Fix incorrect results from
-  :meth:`ssl.SSLSocket.shared_ciphers`
+- gh-96931: Fix incorrect results from :meth:`ssl.SSLSocket.shared_ciphers`
 
-- gh-issue-88233: Correctly preserve "extra" fields in ``zipfile``
-  regardless of their ordering relative to a zip64 "extra."
+- gh-88233: Correctly preserve "extra" fields in ``zipfile`` regardless of
+  their ordering relative to a zip64 "extra."
 
-- gh-issue-95495: When built against OpenSSL 3.0, the :mod:`ssl` module had
-  a bug where it reported unauthenticated EOFs (i.e. without close_notify)
-  as a clean TLS-level EOF. It now raises :exc:`~ssl.SSLEOFError`, matching
-  the behavior in previous versions of OpenSSL. The
+- gh-95495: When built against OpenSSL 3.0, the :mod:`ssl` module had a bug
+  where it reported unauthenticated EOFs (i.e. without close_notify) as a
+  clean TLS-level EOF. It now raises :exc:`~ssl.SSLEOFError`, matching the
+  behavior in previous versions of OpenSSL. The
   :attr:`~ssl.SSLContext.options` attribute on :class:`~ssl.SSLContext` also
   no longer includes :data:`~ssl.OP_IGNORE_UNEXPECTED_EOF` by default. This
   option may be set to specify the previous OpenSSL 3.0 behavior.
 
-- gh-issue-94440: Fix a :mod:`concurrent.futures.process` bug where
+- gh-94440: Fix a :mod:`concurrent.futures.process` bug where
   ``ProcessPoolExecutor`` shutdown could hang after a future has been
   quickly submitted and canceled.
 
 Documentation
 -------------
 
-- gh-issue-103112: Add docstring to :meth:`http.client.HTTPResponse.read` to
-  fix ``pydoc`` output.
+- gh-103112: Add docstring to :meth:`http.client.HTTPResponse.read` to fix
+  ``pydoc`` output.
 
-- gh-issue-85417: Update :mod:`cmath` documentation to clarify behaviour on
-  branch cuts.
+- gh-85417: Update :mod:`cmath` documentation to clarify behaviour on branch
+  cuts.
 
-- gh-issue-97725: Fix :meth:`asyncio.Task.print_stack` description for
+- gh-97725: Fix :meth:`asyncio.Task.print_stack` description for
   ``file=None``. Patch by Oleg Iarygin.
 
 Tests
 -----
 
-- gh-issue-102980: Improve test coverage on :mod:`pdb`.
+- gh-102980: Improve test coverage on :mod:`pdb`.
 
-- gh-issue-102537: Adjust the error handling strategy in
+- gh-102537: Adjust the error handling strategy in
   ``test_zoneinfo.TzPathTest.python_tzpath_context``. Patch by Paul Ganssle.
 
-- gh-issue-101377: Improved test_locale_calendar_formatweekday of calendar.
+- gh-101377: Improved test_locale_calendar_formatweekday of calendar.
 
 Build
 -----
 
-- gh-issue-102711: Fix ``-Wstrict-prototypes`` compiler warnings.
+- gh-102711: Fix ``-Wstrict-prototypes`` compiler warnings.
 
 Windows
 -------
 
-- gh-issue-101759: Update Windows installer to SQLite 3.40.1.
+- gh-101759: Update Windows installer to SQLite 3.40.1.
 
-- gh-issue-101614: Correctly handle extensions built against debug binaries
-  that reference ``python3_d.dll``.
+- gh-101614: Correctly handle extensions built against debug binaries that
+  reference ``python3_d.dll``.
 
 macOS
 -----
 
-- gh-issue-103207: Add instructions to the macOS installer welcome display
-  on how to workaround the macOS 13 Ventura “The installer encountered an
-  error” failure.
+- gh-103207: Add instructions to the macOS installer welcome display on how
+  to workaround the macOS 13 Ventura “The installer encountered an error”
+  failure.
 
-- gh-issue-101759: Update macOS installer to SQLite 3.40.1.
+- gh-101759: Update macOS installer to SQLite 3.40.1.
 
-- gh-issue-87235: On macOS ``python3 /dev/fd/9 9</path/to/script.py`` failed
-  for any script longer than a couple of bytes.
+- gh-87235: On macOS ``python3 /dev/fd/9 9</path/to/script.py`` failed for
+  any script longer than a couple of bytes.
 
 
 What's New in Python 3.10.10 final?
@@ -319,31 +420,30 @@ What's New in Python 3.10.10 final?
 Core and Builtins
 -----------------
 
-- gh-issue-101400: Fix wrong lineno in exception message on
-  :keyword:`continue` or :keyword:`break` which are not in a loop. Patch by
-  Dong-hee Na.
+- gh-101400: Fix wrong lineno in exception message on :keyword:`continue` or
+  :keyword:`break` which are not in a loop. Patch by Dong-hee Na.
 
-- gh-issue-101372: Fix :func:`~unicodedata.is_normalized` to properly handle
-  the UCD 3.2.0 cases. Patch by Dong-hee Na.
+- gh-101372: Fix :func:`~unicodedata.is_normalized` to properly handle the
+  UCD 3.2.0 cases. Patch by Dong-hee Na.
 
-- gh-issue-101046: Fix a possible memory leak in the parser when raising
+- gh-101046: Fix a possible memory leak in the parser when raising
   :exc:`MemoryError`. Patch by Pablo Galindo
 
-- gh-issue-100942: Fixed segfault in property.getter/setter/deleter that
-  occurred when a property subclass overrode the ``__new__`` method to
-  return a non-property instance.
+- gh-100942: Fixed segfault in property.getter/setter/deleter that occurred
+  when a property subclass overrode the ``__new__`` method to return a
+  non-property instance.
 
-- gh-issue-100892: Fix race while iterating over thread states in clearing
+- gh-100892: Fix race while iterating over thread states in clearing
   :class:`threading.local`. Patch by Kumar Aditya.
 
-- gh-issue-100776: Fix misleading default value in :func:`input`'s
+- gh-100776: Fix misleading default value in :func:`input`'s
   ``__text_signature__``.
 
-- gh-issue-100374: Fix incorrect result and delay in :func:`socket.getfqdn`.
-  Patch by Dominic Socular.
+- gh-100374: Fix incorrect result and delay in :func:`socket.getfqdn`. Patch
+  by Dominic Socular.
 
-- gh-issue-100050: Honor existing errors obtained when searching for
-  mismatching parentheses in the tokenizer. Patch by Pablo Galindo
+- gh-100050: Honor existing errors obtained when searching for mismatching
+  parentheses in the tokenizer. Patch by Pablo Galindo
 
 - bpo-32782: ``ctypes`` arrays of length 0 now report a correct itemsize
   when a ``memoryview`` is constructed from them, rather than always giving
@@ -352,71 +452,69 @@ Core and Builtins
 Library
 -------
 
-- gh-issue-100795: Avoid potential unexpected ``freeaddrinfo`` call (double
-  free) in :mod:`socket` when when a libc ``getaddrinfo()`` implementation
-  leaves garbage in an output pointer when returning an error. Original
-  patch by Sergey G. Brester.
+- gh-100795: Avoid potential unexpected ``freeaddrinfo`` call (double free)
+  in :mod:`socket` when when a libc ``getaddrinfo()`` implementation leaves
+  garbage in an output pointer when returning an error. Original patch by
+  Sergey G. Brester.
 
-- gh-issue-101143: Remove unused references to :class:`~asyncio.TimerHandle`
-  in ``asyncio.base_events.BaseEventLoop._add_callback``.
+- gh-101143: Remove unused references to :class:`~asyncio.TimerHandle` in
+  ``asyncio.base_events.BaseEventLoop._add_callback``.
 
-- gh-issue-101144: Make :func:`zipfile.Path.open` and
+- gh-101144: Make :func:`zipfile.Path.open` and
   :func:`zipfile.Path.read_text` also accept ``encoding`` as a positional
   argument. This was the behavior in Python 3.9 and earlier. Earlier 3.10
   versions had a regression where supplying it as a positional argument
   would lead to a :exc:`TypeError`.
 
-- gh-issue-100573: Fix a Windows :mod:`asyncio` bug with named pipes where a
+- gh-100573: Fix a Windows :mod:`asyncio` bug with named pipes where a
   client doing ``os.stat()`` on the pipe would cause an error in the server
   that disabled serving future requests.
 
-- gh-issue-90104: Avoid RecursionError on ``repr`` if a dataclass field
-  definition has a cyclic reference.
+- gh-90104: Avoid RecursionError on ``repr`` if a dataclass field definition
+  has a cyclic reference.
 
-- gh-issue-100689: Fix crash in :mod:`pyexpat` by statically allocating
+- gh-100689: Fix crash in :mod:`pyexpat` by statically allocating
   ``PyExpat_CAPI`` capsule.
 
-- gh-issue-100740: Fix ``unittest.mock.Mock`` not respecting the spec for
+- gh-100740: Fix ``unittest.mock.Mock`` not respecting the spec for
   attribute names prefixed with ``assert``.
 
-- gh-issue-86508: Fix :func:`asyncio.open_connection` to skip binding to
-  local addresses of different family. Patch by Kumar Aditya.
+- gh-86508: Fix :func:`asyncio.open_connection` to skip binding to local
+  addresses of different family. Patch by Kumar Aditya.
 
-- gh-issue-100287: Fix the interaction of :func:`unittest.mock.seal` with
+- gh-100287: Fix the interaction of :func:`unittest.mock.seal` with
   :class:`unittest.mock.AsyncMock`.
 
-- gh-issue-100474: :mod:`http.server` now checks that an index page is
-  actually a regular file before trying to serve it.  This avoids issues
-  with directories named ``index.html``.
+- gh-100474: :mod:`http.server` now checks that an index page is actually a
+  regular file before trying to serve it.  This avoids issues with
+  directories named ``index.html``.
 
-- gh-issue-100160: Remove any deprecation warnings in
+- gh-100160: Remove any deprecation warnings in
   :func:`asyncio.get_event_loop`. They are deferred to Python 3.12.
 
-- gh-issue-99952: Fix a reference undercounting issue in
-  :class:`ctypes.Structure` with ``from_param()`` results larger than a C
-  pointer.
+- gh-99952: Fix a reference undercounting issue in :class:`ctypes.Structure`
+  with ``from_param()`` results larger than a C pointer.
 
-- gh-issue-98778: Update :exc:`~urllib.error.HTTPError` to be initialized
+- gh-98778: Update :exc:`~urllib.error.HTTPError` to be initialized
   properly, even if the ``fp`` is ``None``. Patch by Dong-hee Na.
 
-- gh-issue-83035: Fix :func:`inspect.getsource` handling of decorator calls
-  with nested parentheses.
+- gh-83035: Fix :func:`inspect.getsource` handling of decorator calls with
+  nested parentheses.
 
-- gh-issue-99240: Fix double-free bug in Argument Clinic ``str_converter``
-  by extracting memory clean up to a new ``post_parsing`` section.
+- gh-99240: Fix double-free bug in Argument Clinic ``str_converter`` by
+  extracting memory clean up to a new ``post_parsing`` section.
 
-- gh-issue-85267: Several improvements to :func:`inspect.signature`'s
-  handling of ``__text_signature``. - Fixes a case where
-  :func:`inspect.signature` dropped parameters - Fixes a case where
-  :func:`inspect.signature` raised :exc:`tokenize.TokenError` - Allows
-  :func:`inspect.signature` to understand defaults involving binary
-  operations of constants - :func:`inspect.signature` is documented as only
-  raising :exc:`TypeError` or :exc:`ValueError`, but sometimes raised
-  :exc:`RuntimeError`. These cases now raise :exc:`ValueError` - Removed a
-  dead code path
+- gh-85267: Several improvements to :func:`inspect.signature`'s handling of
+  ``__text_signature``. - Fixes a case where :func:`inspect.signature`
+  dropped parameters - Fixes a case where :func:`inspect.signature` raised
+  :exc:`tokenize.TokenError` - Allows :func:`inspect.signature` to
+  understand defaults involving binary operations of constants -
+  :func:`inspect.signature` is documented as only raising :exc:`TypeError`
+  or :exc:`ValueError`, but sometimes raised :exc:`RuntimeError`. These
+  cases now raise :exc:`ValueError` - Removed a dead code path
 
-- gh-issue-96192: Fix handling of ``bytes`` :term:`path-like objects
-  <path-like object>` in :func:`os.ismount()`.
+- gh-96192: Fix handling of ``bytes`` :term:`path-like objects <path-like
+  object>` in :func:`os.ismount()`.
 
 - bpo-44817: Ignore WinError 53 (ERROR_BAD_NETPATH), 65
   (ERROR_NETWORK_ACCESS_DENIED) and 161 (ERROR_BAD_PATHNAME) when using
@@ -433,10 +531,10 @@ Library
 Documentation
 -------------
 
-- gh-issue-100616: Document existing ``attr`` parameter to
+- gh-100616: Document existing ``attr`` parameter to
   :func:`curses.window.vline` function in :mod:`curses`.
 
-- gh-issue-100472: Remove claim in documentation that the ``stripdir``,
+- gh-100472: Remove claim in documentation that the ``stripdir``,
   ``prependdir`` and ``limit_sl_dest`` parameters of
   :func:`compileall.compile_dir` and :func:`compileall.compile_file` could
   be :class:`bytes`.
@@ -444,24 +542,24 @@ Documentation
 Tests
 -----
 
-- gh-issue-101334: ``test_tarfile`` has been updated to pass when run as a
-  high UID.
+- gh-101334: ``test_tarfile`` has been updated to pass when run as a high
+  UID.
 
-- gh-issue-96002: Add functional test for Argument Clinic.
+- gh-96002: Add functional test for Argument Clinic.
 
 Build
 -----
 
-- gh-issue-101522: Allow overriding Windows dependencies versions and paths
-  using MSBuild properties.
+- gh-101522: Allow overriding Windows dependencies versions and paths using
+  MSBuild properties.
 
 Windows
 -------
 
-- gh-issue-82052: Fixed an issue where writing more than 32K of Unicode
-  output to the console screen in one go can result in mojibake.
+- gh-82052: Fixed an issue where writing more than 32K of Unicode output to
+  the console screen in one go can result in mojibake.
 
-- gh-issue-100180: Update Windows installer to OpenSSL 1.1.1s
+- gh-100180: Update Windows installer to OpenSSL 1.1.1s
 
 - bpo-43984: :meth:`winreg.SetValueEx` now leaves the target value untouched
   in the case of conversion errors. Previously, ``-1`` would be written in
@@ -470,13 +568,13 @@ Windows
 macOS
 -----
 
-- gh-issue-100180: Update macOS installer to OpenSSL 1.1.1s
+- gh-100180: Update macOS installer to OpenSSL 1.1.1s
 
 C API
 -----
 
-- gh-issue-99240: In argument parsing, after deallocating newly allocated
-  memory, reset its pointer to NULL.
+- gh-99240: In argument parsing, after deallocating newly allocated memory,
+  reset its pointer to NULL.
 
 
 What's New in Python 3.10.9 final?
@@ -487,32 +585,31 @@ What's New in Python 3.10.9 final?
 Security
 --------
 
-- gh-issue-100001: ``python -m http.server`` no longer allows terminal
-  control characters sent within a garbage request to be printed to the
-  stderr server log.
+- gh-100001: ``python -m http.server`` no longer allows terminal control
+  characters sent within a garbage request to be printed to the stderr
+  server log.
 
   This is done by changing the :mod:`http.server`
   :class:`BaseHTTPRequestHandler` ``.log_message`` method to replace control
   characters with a ``\xHH`` hex escape before printing.
 
-- gh-issue-87604: Avoid publishing list of active per-interpreter audit
-  hooks via the :mod:`gc` module
+- gh-87604: Avoid publishing list of active per-interpreter audit hooks via
+  the :mod:`gc` module
 
-- gh-issue-98433: The IDNA codec decoder used on DNS hostnames by
-  :mod:`socket` or :mod:`asyncio` related name resolution functions no
-  longer involves a quadratic algorithm. This prevents a potential CPU
-  denial of service if an out-of-spec excessive length hostname involving
-  bidirectional characters were decoded. Some protocols such as
-  :mod:`urllib` http ``3xx`` redirects potentially allow for an attacker to
-  supply such a name.
+- gh-98433: The IDNA codec decoder used on DNS hostnames by :mod:`socket` or
+  :mod:`asyncio` related name resolution functions no longer involves a
+  quadratic algorithm. This prevents a potential CPU denial of service if an
+  out-of-spec excessive length hostname involving bidirectional characters
+  were decoded. Some protocols such as :mod:`urllib` http ``3xx`` redirects
+  potentially allow for an attacker to supply such a name.
 
-- gh-issue-98739: Update bundled libexpat to 2.5.0
+- gh-98739: Update bundled libexpat to 2.5.0
 
-- gh-issue-98517: Port XKCP's fix for the buffer overflows in SHA-3
+- gh-98517: Port XKCP's fix for the buffer overflows in SHA-3
   (CVE-2022-37454).
 
-- gh-issue-97514: On Linux the :mod:`multiprocessing` module returns to
-  using filesystem backed unix domain sockets for communication with the
+- gh-97514: On Linux the :mod:`multiprocessing` module returns to using
+  filesystem backed unix domain sockets for communication with the
   *forkserver* process instead of the Linux abstract socket namespace.  Only
   code that chooses to use the :ref:`"forkserver" start method
   <multiprocessing-start-methods>` is affected.
@@ -531,29 +628,29 @@ Security
 Core and Builtins
 -----------------
 
-- gh-issue-99578: Fix a reference bug in :func:`_imp.create_builtin()` after
-  the creation of the first sub-interpreter for modules ``builtins`` and
+- gh-99578: Fix a reference bug in :func:`_imp.create_builtin()` after the
+  creation of the first sub-interpreter for modules ``builtins`` and
   ``sys``. Patch by Victor Stinner.
 
-- gh-issue-99581: Fixed a bug that was causing a buffer overflow if the
-  tokenizer copies a line missing the newline caracter from a file that is
-  as long as the available tokenizer buffer. Patch by Pablo galindo
+- gh-99581: Fixed a bug that was causing a buffer overflow if the tokenizer
+  copies a line missing the newline caracter from a file that is as long as
+  the available tokenizer buffer. Patch by Pablo galindo
 
-- gh-issue-96055: Update :mod:`faulthandler` to emit an error message with
-  the proper unexpected signal number. Patch by Dong-hee Na.
+- gh-96055: Update :mod:`faulthandler` to emit an error message with the
+  proper unexpected signal number. Patch by Dong-hee Na.
 
-- gh-issue-98852: Fix subscription of :class:`types.GenericAlias` instances
+- gh-98852: Fix subscription of :class:`types.GenericAlias` instances
   containing bare generic types: for example ``tuple[A, T][int]``, where
   ``A`` is a generic type, and ``T`` is a type variable.
 
-- gh-issue-98415: Fix detection of MAC addresses for :mod:`uuid` on certain
-  OSs. Patch by Chaim Sanders
+- gh-98415: Fix detection of MAC addresses for :mod:`uuid` on certain OSs.
+  Patch by Chaim Sanders
 
-- gh-issue-92119: Print exception class name instead of its string
-  representation when raising errors from :mod:`ctypes` calls.
+- gh-92119: Print exception class name instead of its string representation
+  when raising errors from :mod:`ctypes` calls.
 
-- gh-issue-93696: Allow :mod:`pdb` to locate source for frozen modules in
-  the standard library.
+- gh-93696: Allow :mod:`pdb` to locate source for frozen modules in the
+  standard library.
 
 - bpo-31718: Raise :exc:`ValueError` instead of :exc:`SystemError` when
   methods of uninitialized :class:`io.IncrementalNewlineDecoder` objects are
@@ -565,42 +662,41 @@ Core and Builtins
 Library
 -------
 
-- gh-issue-100001: Also \ escape \s in the http.server
+- gh-100001: Also \ escape \s in the http.server
   BaseHTTPRequestHandler.log_message so that it is technically possible to
   parse the line and reconstruct what the original data was.  Without this a
   \xHH is ambiguious as to if it is a hex replacement we put in or the
   characters r"\x" came through in the original request line.
 
-- gh-issue-93453: :func:`asyncio.get_event_loop` now only emits a
-  deprecation warning when a new event loop was created implicitly. It no
-  longer emits a deprecation warning if the current event loop was set.
+- gh-93453: :func:`asyncio.get_event_loop` now only emits a deprecation
+  warning when a new event loop was created implicitly. It no longer emits a
+  deprecation warning if the current event loop was set.
 
-- gh-issue-51524: Fix bug when calling trace.CoverageResults with valid
-  infile.
+- gh-51524: Fix bug when calling trace.CoverageResults with valid infile.
 
-- gh-issue-99645: Fix a bug in handling class cleanups in
+- gh-99645: Fix a bug in handling class cleanups in
   :class:`unittest.TestCase`.  Now ``addClassCleanup()`` uses separate lists
   for different ``TestCase`` subclasses, and ``doClassCleanups()`` only
   cleans up the particular class.
 
-- gh-issue-97001: Release the GIL when calling termios APIs to avoid
-  blocking threads.
+- gh-97001: Release the GIL when calling termios APIs to avoid blocking
+  threads.
 
-- gh-issue-99341: Fix :func:`ast.increment_lineno` to also cover
+- gh-99341: Fix :func:`ast.increment_lineno` to also cover
   :class:`ast.TypeIgnore` when changing line numbers.
 
-- gh-issue-74044: Fixed bug where :func:`inspect.signature` reported
-  incorrect arguments for decorated methods.
+- gh-74044: Fixed bug where :func:`inspect.signature` reported incorrect
+  arguments for decorated methods.
 
-- gh-issue-99275: Fix ``SystemError`` in :mod:`ctypes` when exception was
-  not set during ``__initsubclass__``.
+- gh-99275: Fix ``SystemError`` in :mod:`ctypes` when exception was not set
+  during ``__initsubclass__``.
 
-- gh-issue-99155: Fix :class:`statistics.NormalDist` pickle with ``0`` and
-  ``1`` protocols.
+- gh-99155: Fix :class:`statistics.NormalDist` pickle with ``0`` and ``1``
+  protocols.
 
-- gh-issue-99134: Update the bundled copy of pip to version 22.3.1.
+- gh-99134: Update the bundled copy of pip to version 22.3.1.
 
-- gh-issue-99130: Apply bugfixes from `importlib_metadata 4.11.4
+- gh-99130: Apply bugfixes from `importlib_metadata 4.11.4
   <https://importlib-metadata.readthedocs.io/en/latest/history.html#v4-11-4>`_,
   namely: In ``PathDistribution._name_from_stem``, avoid including parts of
   the extension in the result. In ``PathDistribution._normalized_name``,
@@ -608,74 +704,70 @@ Library
   ensuring duplicate entry points by packages varying only by non-normalized
   name are hidden.
 
-- gh-issue-83004: Clean up refleak on failed module initialisation in
+- gh-83004: Clean up refleak on failed module initialisation in
   :mod:`_zoneinfo`
 
-- gh-issue-83004: Clean up refleaks on failed module initialisation in in
+- gh-83004: Clean up refleaks on failed module initialisation in in
   :mod:`_pickle`
 
-- gh-issue-83004: Clean up refleak on failed module initialisation in
-  :mod:`_io`.
+- gh-83004: Clean up refleak on failed module initialisation in :mod:`_io`.
 
-- gh-issue-98897: Fix memory leak in :func:`math.dist` when both points
-  don't have the same dimension. Patch by Kumar Aditya.
+- gh-98897: Fix memory leak in :func:`math.dist` when both points don't have
+  the same dimension. Patch by Kumar Aditya.
 
-- gh-issue-98793: Fix argument typechecks in :func:`!_overlapped.WSAConnect`
-  and :func:`!_overlapped.Overlapped.WSASendTo` functions.
+- gh-98793: Fix argument typechecks in :func:`!_overlapped.WSAConnect` and
+  :func:`!_overlapped.Overlapped.WSASendTo` functions.
 
-- gh-issue-98740: Fix internal error in the :mod:`re` module which in very
-  rare circumstances prevented compilation of a regular expression
-  containing a :ref:`conditional expression <re-conditional-expression>`
-  without the "else" branch.
+- gh-98740: Fix internal error in the :mod:`re` module which in very rare
+  circumstances prevented compilation of a regular expression containing a
+  :ref:`conditional expression <re-conditional-expression>` without the
+  "else" branch.
 
-- gh-issue-98703: Fix :meth:`asyncio.StreamWriter.drain` to call
+- gh-98703: Fix :meth:`asyncio.StreamWriter.drain` to call
   ``protocol.connection_lost`` callback only once on Windows.
 
-- gh-issue-98624: Add a mutex to unittest.mock.NonCallableMock to protect
+- gh-98624: Add a mutex to unittest.mock.NonCallableMock to protect
   concurrent access to mock attributes.
 
-- gh-issue-89237: Fix hang on Windows in ``subprocess.wait_closed()`` in
+- gh-89237: Fix hang on Windows in ``subprocess.wait_closed()`` in
   :mod:`asyncio` with :class:`~asyncio.ProactorEventLoop`. Patch by Kumar
   Aditya.
 
-- gh-issue-98458: Fix infinite loop in unittest when a self-referencing
-  chained exception is raised
+- gh-98458: Fix infinite loop in unittest when a self-referencing chained
+  exception is raised
 
-- gh-issue-97928: :meth:`tkinter.Text.count` raises now an exception for
-  options starting with "-" instead of silently ignoring them.
+- gh-97928: :meth:`tkinter.Text.count` raises now an exception for options
+  starting with "-" instead of silently ignoring them.
 
-- gh-issue-97966: On ``uname_result``, restored expectation that ``_fields``
-  and ``_asdict`` would include all six properties including ``processor``.
+- gh-97966: On ``uname_result``, restored expectation that ``_fields`` and
+  ``_asdict`` would include all six properties including ``processor``.
 
-- gh-issue-98331: Update the bundled copies of pip and setuptools to
-  versions 22.3 and 65.5.0 respectively.
+- gh-98331: Update the bundled copies of pip and setuptools to versions 22.3
+  and 65.5.0 respectively.
 
-- gh-issue-96035: Fix bug in :func:`urllib.parse.urlparse` that causes
-  certain port numbers containing whitespace, underscores, plus and minus
-  signs, or non-ASCII digits to be incorrectly accepted.
+- gh-96035: Fix bug in :func:`urllib.parse.urlparse` that causes certain
+  port numbers containing whitespace, underscores, plus and minus signs, or
+  non-ASCII digits to be incorrectly accepted.
 
-- gh-issue-98251: Allow :mod:`venv` to pass along :envvar:`PYTHON*`
-  variables to ``ensurepip`` and ``pip`` when they do not impact path
-  resolution
+- gh-98251: Allow :mod:`venv` to pass along :envvar:`PYTHON*` variables to
+  ``ensurepip`` and ``pip`` when they do not impact path resolution
 
-- gh-issue-98178: On macOS, fix a crash in :func:`syslog.syslog` in
-  multi-threaded applications. On macOS, the libc ``syslog()`` function is
-  not thread-safe, so :func:`syslog.syslog` no longer releases the GIL to
-  call it. Patch by Victor Stinner.
+- gh-98178: On macOS, fix a crash in :func:`syslog.syslog` in multi-threaded
+  applications. On macOS, the libc ``syslog()`` function is not thread-safe,
+  so :func:`syslog.syslog` no longer releases the GIL to call it. Patch by
+  Victor Stinner.
 
-- gh-issue-96151: Allow ``BUILTINS`` to be a valid field name for frozen
+- gh-96151: Allow ``BUILTINS`` to be a valid field name for frozen
   dataclasses.
 
-- gh-issue-98086: Make sure ``patch.dict()`` can be applied on async
-  functions.
+- gh-98086: Make sure ``patch.dict()`` can be applied on async functions.
 
-- gh-issue-88863: To avoid apparent memory leaks when
+- gh-88863: To avoid apparent memory leaks when
   :func:`asyncio.open_connection` raises, break reference cycles generated
   by local exception and future instances (which has exception instance as
   its member var). Patch by Dong Uk, Kang.
 
-- gh-issue-93858: Prevent error when activating venv in nested fish
-  instances.
+- gh-93858: Prevent error when activating venv in nested fish instances.
 
 - bpo-46364: Restrict use of sockets instead of pipes for stdin of
   subprocesses created by :mod:`asyncio` to AIX platform only.
@@ -689,15 +781,15 @@ Library
 Documentation
 -------------
 
-- gh-issue-92892: Document that calling variadic functions with ctypes
-  requires special care on macOS/arm64 (and possibly other platforms).
+- gh-92892: Document that calling variadic functions with ctypes requires
+  special care on macOS/arm64 (and possibly other platforms).
 
 Tests
 -----
 
-- gh-issue-99892: Skip test_normalization() of test_unicodedata if it fails
-  to download NormalizationTest.txt file from pythontest.net. Patch by
-  Victor Stinner.
+- gh-99892: Skip test_normalization() of test_unicodedata if it fails to
+  download NormalizationTest.txt file from pythontest.net. Patch by Victor
+  Stinner.
 
 - bpo-34272: Some C API tests were moved into the new Lib/test/test_capi/
   directory.
@@ -705,31 +797,31 @@ Tests
 Build
 -----
 
-- gh-issue-99086: Fix ``-Wimplicit-int``, ``-Wstrict-prototypes``, and
+- gh-99086: Fix ``-Wimplicit-int``, ``-Wstrict-prototypes``, and
   ``-Wimplicit-function-declaration`` compiler warnings in
   :program:`configure` checks.
 
-- gh-issue-99086: Fix ``-Wimplicit-int`` compiler warning in
-  :program:`configure` check for ``PTHREAD_SCOPE_SYSTEM``.
+- gh-99086: Fix ``-Wimplicit-int`` compiler warning in :program:`configure`
+  check for ``PTHREAD_SCOPE_SYSTEM``.
 
-- gh-issue-97731: Specify the full path to the source location for ``make
+- gh-97731: Specify the full path to the source location for ``make
   docclean`` (needed for cross-builds).
 
-- gh-issue-98671: Fix ``NO_MISALIGNED_ACCESSES`` being not defined for the
-  SHA3 extension when ``HAVE_ALIGNED_REQUIRED`` is set. Allowing builds on
+- gh-98671: Fix ``NO_MISALIGNED_ACCESSES`` being not defined for the SHA3
+  extension when ``HAVE_ALIGNED_REQUIRED`` is set. Allowing builds on
   hardware that unaligned memory accesses are not allowed.
 
 Windows
 -------
 
-- gh-issue-99345: Use faster initialization functions to detect install
-  location for Windows Store package
+- gh-99345: Use faster initialization functions to detect install location
+  for Windows Store package
 
-- gh-issue-98689: Update Windows builds to zlib v1.2.13.  v1.2.12 has
+- gh-98689: Update Windows builds to zlib v1.2.13.  v1.2.12 has
   CVE-2022-37434, but the vulnerable ``inflateGetHeader`` API is not used by
   Python.
 
-- gh-issue-94328: Update Windows installer to use SQLite 3.39.4.
+- gh-94328: Update Windows installer to use SQLite 3.39.4.
 
 - bpo-40882: Fix a memory leak in
   :class:`multiprocessing.shared_memory.SharedMemory` on Windows.
@@ -737,20 +829,19 @@ Windows
 macOS
 -----
 
-- gh-issue-94328: Update macOS installer to SQLite 3.39.4.
+- gh-94328: Update macOS installer to SQLite 3.39.4.
 
 IDLE
 ----
 
-- gh-issue-97527: Fix a bug in the previous bugfix that caused IDLE to not
-  start when run with 3.10.8, 3.12.0a1, and at least Microsoft Python
-  3.10.2288.0 installed without the Lib/test package.  3.11.0 was never
-  affected.
+- gh-97527: Fix a bug in the previous bugfix that caused IDLE to not start
+  when run with 3.10.8, 3.12.0a1, and at least Microsoft Python 3.10.2288.0
+  installed without the Lib/test package.  3.11.0 was never affected.
 
 Tools/Demos
 -----------
 
-- gh-issue-95731: Fix handling of module docstrings in
+- gh-95731: Fix handling of module docstrings in
   :file:`Tools/i18n/pygettext.py`.
 
 
@@ -762,69 +853,67 @@ What's New in Python 3.10.8 final?
 Security
 --------
 
-- gh-issue-97616: Fix multiplying a list by an integer (``list *= int``):
-  detect the integer overflow when the new allocated length is close to the
-  maximum size. Issue reported by Jordan Limor.  Patch by Victor Stinner.
+- gh-97616: Fix multiplying a list by an integer (``list *= int``): detect
+  the integer overflow when the new allocated length is close to the maximum
+  size. Issue reported by Jordan Limor.  Patch by Victor Stinner.
 
-- gh-issue-97612: Fix a shell code injection vulnerability in the
+- gh-97612: Fix a shell code injection vulnerability in the
   ``get-remote-certificate.py`` example script. The script no longer uses a
   shell to run ``openssl`` commands. Issue reported and initial fix by Caleb
   Shortt. Patch by Victor Stinner.
 
-- gh-issue-68966: The deprecated mailcap module now refuses to inject unsafe
-  text (filenames, MIME types, parameters) into shell commands. Instead of
-  using such text, it will warn and act as if a match was not found (or for
-  test commands, as if the test failed).
+- gh-68966: The deprecated mailcap module now refuses to inject unsafe text
+  (filenames, MIME types, parameters) into shell commands. Instead of using
+  such text, it will warn and act as if a match was not found (or for test
+  commands, as if the test failed).
 
 Core and Builtins
 -----------------
 
-- gh-issue-96078: :func:`os.sched_yield` now release the GIL while calling
+- gh-96078: :func:`os.sched_yield` now release the GIL while calling
   sched_yield(2). Patch by Dong-hee Na.
 
-- gh-issue-97943: Bugfix: :func:`PyFunction_GetAnnotations` should return a
+- gh-97943: Bugfix: :func:`PyFunction_GetAnnotations` should return a
   borrowed reference. It was returning a new reference.
 
-- gh-issue-97591: Fixed a missing incref/decref pair in
+- gh-97591: Fixed a missing incref/decref pair in
   `Exception.__setstate__()`. Patch by Ofey Chan.
 
-- gh-issue-96848: Fix command line parsing: reject :option:`-X
-  int_max_str_digits <-X>` option with no value (invalid) when the
+- gh-96848: Fix command line parsing: reject :option:`-X int_max_str_digits
+  <-X>` option with no value (invalid) when the
   :envvar:`PYTHONINTMAXSTRDIGITS` environment variable is set to a valid
   limit. Patch by Victor Stinner.
 
-- gh-issue-95921: Fix overly-broad source position information for chained
+- gh-95921: Fix overly-broad source position information for chained
   comparisons used as branching conditions.
 
-- gh-issue-96821: Fix undefined behaviour in ``_testcapimodule.c``.
+- gh-96821: Fix undefined behaviour in ``_testcapimodule.c``.
 
-- gh-issue-95778: When :exc:`ValueError` is raised if an integer is larger
-  than the limit, mention the :func:`sys.set_int_max_str_digits` function in
-  the error message. Patch by Victor Stinner.
+- gh-95778: When :exc:`ValueError` is raised if an integer is larger than
+  the limit, mention the :func:`sys.set_int_max_str_digits` function in the
+  error message. Patch by Victor Stinner.
 
-- gh-issue-96387: At Python exit, sometimes a thread holding the GIL can
-  wait forever for a thread (usually a daemon thread) which requested to
-  drop the GIL, whereas the thread already exited. To fix the race
-  condition, the thread which requested the GIL drop now resets its request
-  before exiting. Issue discovered and analyzed by Mingliang ZHAO. Patch by
-  Victor Stinner.
+- gh-96387: At Python exit, sometimes a thread holding the GIL can wait
+  forever for a thread (usually a daemon thread) which requested to drop the
+  GIL, whereas the thread already exited. To fix the race condition, the
+  thread which requested the GIL drop now resets its request before exiting.
+  Issue discovered and analyzed by Mingliang ZHAO. Patch by Victor Stinner.
 
-- gh-issue-96864: Fix a possible assertion failure, fatal error, or
+- gh-96864: Fix a possible assertion failure, fatal error, or
   :exc:`SystemError` if a line tracing event raises an exception while
   opcode tracing is enabled.
 
-- gh-issue-96678: Fix undefined behaviour in C code of null pointer
-  arithmetic.
+- gh-96678: Fix undefined behaviour in C code of null pointer arithmetic.
 
-- gh-issue-96641: Do not expose ``KeyWrapper`` in :mod:`_functools`.
+- gh-96641: Do not expose ``KeyWrapper`` in :mod:`_functools`.
 
-- gh-issue-96611: When loading a file with invalid UTF-8 inside a multi-line
+- gh-96611: When loading a file with invalid UTF-8 inside a multi-line
   string, a correct SyntaxError is emitted.
 
-- gh-issue-95196: Disable incorrect pickling of the C implemented
-  classmethod descriptors.
+- gh-95196: Disable incorrect pickling of the C implemented classmethod
+  descriptors.
 
-- gh-issue-96352: Fix :exc:`AttributeError` missing ``name`` and ``obj``
+- gh-96352: Fix :exc:`AttributeError` missing ``name`` and ``obj``
   attributes in :meth:`object.__getattribute__`. Patch by Philip Georgi.
 
 - bpo-42316: Document some places where an assignment expression needs
@@ -833,116 +922,114 @@ Core and Builtins
 Library
 -------
 
-- gh-issue-87730: Wrap network errors consistently in urllib FTP support, so
-  the test suite doesn't fail when a network is available but the public
+- gh-87730: Wrap network errors consistently in urllib FTP support, so the
+  test suite doesn't fail when a network is available but the public
   internet is not reachable.
 
-- gh-issue-97825: Fixes :exc:`AttributeError` when
-  :meth:`subprocess.check_output` is used with argument ``input=None`` and
-  either of the arguments *encoding* or *errors* are used.
+- gh-97825: Fixes :exc:`AttributeError` when :meth:`subprocess.check_output`
+  is used with argument ``input=None`` and either of the arguments
+  *encoding* or *errors* are used.
 
-- gh-issue-96827: Avoid spurious tracebacks from :mod:`asyncio` when default
+- gh-96827: Avoid spurious tracebacks from :mod:`asyncio` when default
   executor cleanup is delayed until after the event loop is closed (e.g. as
   the result of a keyboard interrupt).
 
-- gh-issue-97592: Avoid a crash in the C version of
+- gh-97592: Avoid a crash in the C version of
   :meth:`asyncio.Future.remove_done_callback` when an evil argument is
   passed.
 
-- gh-issue-97639: Remove ``tokenize.NL`` check from :mod:`tabnanny`.
+- gh-97639: Remove ``tokenize.NL`` check from :mod:`tabnanny`.
 
-- gh-issue-97545: Make Semaphore run faster.
+- gh-97545: Make Semaphore run faster.
 
-- gh-issue-73588: Fix generation of the default name of
+- gh-73588: Fix generation of the default name of
   :class:`tkinter.Checkbutton`. Previously, checkbuttons in different parent
   widgets could have the same short name and share the same state if
   arguments "name" and "variable" are not specified. Now they are globally
   unique.
 
-- gh-issue-97005: Update bundled libexpat to 2.4.9
+- gh-97005: Update bundled libexpat to 2.4.9
 
-- gh-issue-85760: Fix race condition in :mod:`asyncio` where
+- gh-85760: Fix race condition in :mod:`asyncio` where
   :meth:`~asyncio.SubprocessProtocol.process_exited` called before the
   :meth:`~asyncio.SubprocessProtocol.pipe_data_received` leading to
   inconsistent output. Patch by Kumar Aditya.
 
-- gh-issue-96819: Fixed check in :mod:`multiprocessing.resource_tracker`
-  that guarantees that the length of a write to a pipe is not greater than
+- gh-96819: Fixed check in :mod:`multiprocessing.resource_tracker` that
+  guarantees that the length of a write to a pipe is not greater than
   ``PIPE_BUF``.
 
-- gh-issue-96741: Corrected type annotation for dataclass attribute
+- gh-96741: Corrected type annotation for dataclass attribute
   ``pstats.FunctionProfile.ncalls`` to be ``str``.
 
-- gh-issue-96652: Fix the faulthandler implementation of
+- gh-96652: Fix the faulthandler implementation of
   ``faulthandler.register(signal, chain=True)`` if the ``sigaction()``
   function is not available: don't call the previous signal handler if it's
   NULL. Patch by Victor Stinner.
 
-- gh-issue-96073: In :mod:`inspect`, fix overeager replacement of
-  "``typing.``" in formatting annotations.
+- gh-96073: In :mod:`inspect`, fix overeager replacement of "``typing.``" in
+  formatting annotations.
 
-- gh-issue-90467: Fix :class:`asyncio.streams.StreamReaderProtocol` to keep
-  a strong reference to the created task, so that it's not garbage collected
+- gh-90467: Fix :class:`asyncio.streams.StreamReaderProtocol` to keep a
+  strong reference to the created task, so that it's not garbage collected
 
-- gh-issue-96052: Fix handling compiler warnings (SyntaxWarning and
+- gh-96052: Fix handling compiler warnings (SyntaxWarning and
   DeprecationWarning) in :func:`codeop.compile_command` when checking for
   incomplete input. Previously it emitted warnings and raised a SyntaxError.
   Now it always returns ``None`` for incomplete input without emitting any
   warnings.
 
-- gh-issue-91212: Fixed flickering of the turtle window when the tracer is
-  turned off. Patch by Shin-myoung-serp.
+- gh-91212: Fixed flickering of the turtle window when the tracer is turned
+  off. Patch by Shin-myoung-serp.
 
-- gh-issue-74116: Allow :meth:`asyncio.StreamWriter.drain` to be awaited
+- gh-74116: Allow :meth:`asyncio.StreamWriter.drain` to be awaited
   concurrently by multiple tasks. Patch by Kumar Aditya.
 
-- gh-issue-90155: Fix broken :class:`asyncio.Semaphore` when acquire is
-  cancelled.
+- gh-90155: Fix broken :class:`asyncio.Semaphore` when acquire is cancelled.
 
-- gh-issue-92986: Fix :func:`ast.unparse` when ``ImportFrom.level`` is None
+- gh-92986: Fix :func:`ast.unparse` when ``ImportFrom.level`` is None
 
-- gh-issue-91539: Improve performance of
-  ``urllib.request.getproxies_environment`` when there are many environment
-  variables
+- gh-91539: Improve performance of ``urllib.request.getproxies_environment``
+  when there are many environment variables
 
 Documentation
 -------------
 
-- gh-issue-97741: Fix ``!`` in c domain ref target syntax via a ``conf.py``
-  patch, so it works as intended to disable ref target resolution.
+- gh-97741: Fix ``!`` in c domain ref target syntax via a ``conf.py`` patch,
+  so it works as intended to disable ref target resolution.
 
-- gh-issue-95588: Clarified the conflicting advice given in the :mod:`ast`
+- gh-95588: Clarified the conflicting advice given in the :mod:`ast`
   documentation about :func:`ast.literal_eval` being "safe" for use on
   untrusted input while at the same time warning that it can crash the
   process. The latter statement is true and is deemed unfixable without a
   large amount of work unsuitable for a bugfix. So we keep the warning and
   no longer claim that ``literal_eval`` is safe.
 
-- gh-issue-93031: Update tutorial introduction output to use 3.10+
-  SyntaxError invalid range.
+- gh-93031: Update tutorial introduction output to use 3.10+ SyntaxError
+  invalid range.
 
 Build
 -----
 
-- gh-issue-96729: Ensure that Windows releases built with
+- gh-96729: Ensure that Windows releases built with
   ``Tools\msi\buildrelease.bat`` are upgradable to and from official Python
   releases.
 
 Windows
 -------
 
-- gh-issue-97728: Fix possible crashes caused by the use of uninitialized
+- gh-97728: Fix possible crashes caused by the use of uninitialized
   variables when pass invalid arguments in :func:`os.system` on Windows and
   in Windows-specific modules (like ``winreg``).
 
-- gh-issue-90989: Clarify some text in the Windows installer.
+- gh-90989: Clarify some text in the Windows installer.
 
-- gh-issue-96577: Fixes a potential buffer overrun in :mod:`msilib`.
+- gh-96577: Fixes a potential buffer overrun in :mod:`msilib`.
 
 macOS
 -----
 
-- gh-issue-97897: The macOS 13 SDK includes support for the ``mkfifoat`` and
+- gh-97897: The macOS 13 SDK includes support for the ``mkfifoat`` and
   ``mknodat`` system calls. Using the ``dir_fd`` option with either
   :func:`os.mkfifo` or :func:`os.mknod` could result in a segfault if
   cpython is built with the macOS 13 SDK but run on an earlier version of
@@ -958,12 +1045,11 @@ What's New in Python 3.10.7 final?
 Security
 --------
 
-- gh-issue-95778: Converting between :class:`int` and :class:`str` in bases
-  other than 2 (binary), 4, 8 (octal), 16 (hexadecimal), or 32 such as base
-  10 (decimal) now raises a :exc:`ValueError` if the number of digits in
-  string form is above a limit to avoid potential denial of service attacks
-  due to the algorithmic complexity. This is a mitigation for
-  `CVE-2020-10735
+- gh-95778: Converting between :class:`int` and :class:`str` in bases other
+  than 2 (binary), 4, 8 (octal), 16 (hexadecimal), or 32 such as base 10
+  (decimal) now raises a :exc:`ValueError` if the number of digits in string
+  form is above a limit to avoid potential denial of service attacks due to
+  the algorithmic complexity. This is a mitigation for `CVE-2020-10735
   <https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2020-10735>`_.
 
   This new limit can be configured or disabled by environment variable,
@@ -978,57 +1064,57 @@ Security
 Core and Builtins
 -----------------
 
-- gh-issue-96187: Fixed a bug that caused ``_PyCode_GetExtra`` to return
-  garbage for negative indexes. Patch by Pablo Galindo
+- gh-96187: Fixed a bug that caused ``_PyCode_GetExtra`` to return garbage
+  for negative indexes. Patch by Pablo Galindo
 
-- gh-issue-95876: Fix format string in
-  ``_PyPegen_raise_error_known_location`` that can lead to memory corruption
-  on some 64bit systems. The function was building a tuple with ``i`` (int)
-  instead of ``n`` (Py_ssize_t) for Py_ssize_t arguments.
+- gh-95876: Fix format string in ``_PyPegen_raise_error_known_location``
+  that can lead to memory corruption on some 64bit systems. The function was
+  building a tuple with ``i`` (int) instead of ``n`` (Py_ssize_t) for
+  Py_ssize_t arguments.
 
-- gh-issue-95605: Fix misleading contents of error message when converting
-  an all-whitespace string to :class:`float`.
+- gh-95605: Fix misleading contents of error message when converting an
+  all-whitespace string to :class:`float`.
 
-- gh-issue-93592: ``coroutine.throw()`` now properly initializes the
+- gh-93592: ``coroutine.throw()`` now properly initializes the
   ``frame.f_back`` when resuming a stack of coroutines. This allows e.g.
   ``traceback.print_stack()`` to work correctly when an exception (such as
   ``CancelledError``) is thrown into a coroutine.
 
-- gh-issue-94996: :func:`ast.parse` will no longer parse function
-  definitions with positional-only params when passed ``feature_version``
-  less than ``(3, 8)``. Patch by Shantanu Jain.
+- gh-94996: :func:`ast.parse` will no longer parse function definitions with
+  positional-only params when passed ``feature_version`` less than ``(3,
+  8)``. Patch by Shantanu Jain.
 
 Library
 -------
 
-- gh-issue-68163: Correct conversion of :class:`numbers.Rational`'s to
+- gh-68163: Correct conversion of :class:`numbers.Rational`'s to
   :class:`float`.
 
-- gh-issue-96159: Fix a performance regression in logging
+- gh-96159: Fix a performance regression in logging
   TimedRotatingFileHandler. Only check for special files when the rollover
   time has passed.
 
-- gh-issue-96175: Fix unused ``localName`` parameter in the ``Attr`` class
-  in :mod:`xml.dom.minidom`.
+- gh-96175: Fix unused ``localName`` parameter in the ``Attr`` class in
+  :mod:`xml.dom.minidom`.
 
-- gh-issue-95609: Update bundled pip to 22.2.2.
+- gh-95609: Update bundled pip to 22.2.2.
 
-- gh-issue-95231: Fail gracefully if :data:`~errno.EPERM` or
-  :data:`~errno.ENOSYS` is raised when loading :mod:`crypt` methods. This
-  may happen when trying to load ``MD5`` on a Linux kernel with :abbr:`FIPS
-  (Federal Information Processing Standard)` enabled.
+- gh-95231: Fail gracefully if :data:`~errno.EPERM` or :data:`~errno.ENOSYS`
+  is raised when loading :mod:`crypt` methods. This may happen when trying
+  to load ``MD5`` on a Linux kernel with :abbr:`FIPS (Federal Information
+  Processing Standard)` enabled.
 
 Documentation
 -------------
 
-- gh-issue-96098: Improve discoverability of the higher level
-  concurrent.futures module by providing clearer links from the lower level
-  threading and multiprocessing modules.
+- gh-96098: Improve discoverability of the higher level concurrent.futures
+  module by providing clearer links from the lower level threading and
+  multiprocessing modules.
 
-- gh-issue-95789: Update the default RFC base URL from deprecated
-  tools.ietf.org to datatracker.ietf.org
+- gh-95789: Update the default RFC base URL from deprecated tools.ietf.org
+  to datatracker.ietf.org
 
-- gh-issue-91207: Fix stylesheet not working in Windows CHM htmlhelp docs.
+- gh-91207: Fix stylesheet not working in Windows CHM htmlhelp docs.
   Contributed by C.A.M. Gerlach.
 
 - bpo-47115: The documentation now lists which members of C structs are part
@@ -1037,21 +1123,21 @@ Documentation
 Tests
 -----
 
-- gh-issue-95243: Mitigate the inherent race condition from using
+- gh-95243: Mitigate the inherent race condition from using
   find_unused_port() in testSockName() by trying to find an unused port a
   few times before failing. Patch by Ross Burton.
 
 Build
 -----
 
-- gh-issue-94682: Build and test with OpenSSL 1.1.1q
+- gh-94682: Build and test with OpenSSL 1.1.1q
 
 IDLE
 ----
 
-- gh-issue-65802: Document handling of extensions in Save As dialogs.
+- gh-65802: Document handling of extensions in Save As dialogs.
 
-- gh-issue-95191: Include prompts when saving Shell (interactive input and
+- gh-95191: Include prompts when saving Shell (interactive input and
   output).
 
 
@@ -1063,127 +1149,126 @@ What's New in Python 3.10.6 final?
 Security
 --------
 
-- gh-issue-87389: :mod:`http.server`: Fix an open redirection vulnerability
-  in the HTTP server when an URI path starts with ``//``.  Vulnerability
+- gh-87389: :mod:`http.server`: Fix an open redirection vulnerability in the
+  HTTP server when an URI path starts with ``//``.  Vulnerability
   discovered, and initial fix proposed, by Hamza Avvan.
 
-- gh-issue-92888: Fix ``memoryview`` use after free when accessing the
-  backing buffer in certain cases.
+- gh-92888: Fix ``memoryview`` use after free when accessing the backing
+  buffer in certain cases.
 
 Core and Builtins
 -----------------
 
-- gh-issue-95355: ``_PyPegen_Parser_New`` now properly detects token memory
+- gh-95355: ``_PyPegen_Parser_New`` now properly detects token memory
   allocation errors. Patch by Honglin Zhu.
 
-- gh-issue-94938: Fix error detection in some builtin functions when keyword
+- gh-94938: Fix error detection in some builtin functions when keyword
   argument name is an instance of a str subclass with overloaded ``__eq__``
   and ``__hash__``. Previously it could cause SystemError or other undesired
   behavior.
 
-- gh-issue-94949: :func:`ast.parse` will no longer parse parenthesized
-  context managers when passed ``feature_version`` less than ``(3, 9)``.
-  Patch by Shantanu Jain.
-
-- gh-issue-94947: :func:`ast.parse` will no longer parse assignment
-  expressions when passed ``feature_version`` less than ``(3, 8)``. Patch by
+- gh-94949: :func:`ast.parse` will no longer parse parenthesized context
+  managers when passed ``feature_version`` less than ``(3, 9)``. Patch by
   Shantanu Jain.
 
-- gh-issue-94869: Fix the column offsets for some expressions in multi-line
+- gh-94947: :func:`ast.parse` will no longer parse assignment expressions
+  when passed ``feature_version`` less than ``(3, 8)``. Patch by Shantanu
+  Jain.
+
+- gh-94869: Fix the column offsets for some expressions in multi-line
   f-strings :mod:`ast` nodes. Patch by Pablo Galindo.
 
-- gh-issue-91153: Fix an issue where a :class:`bytearray` item assignment
-  could crash if it's resized by the new value's :meth:`__index__` method.
+- gh-91153: Fix an issue where a :class:`bytearray` item assignment could
+  crash if it's resized by the new value's :meth:`__index__` method.
 
-- gh-issue-94329: Compile and run code with unpacking of extremely large
-  sequences (1000s of elements). Such code failed to compile. It now
-  compiles and runs correctly.
+- gh-94329: Compile and run code with unpacking of extremely large sequences
+  (1000s of elements). Such code failed to compile. It now compiles and runs
+  correctly.
 
-- gh-issue-94360: Fixed a tokenizer crash when reading encoded files with
-  syntax errors from ``stdin`` with non utf-8 encoded text. Patch by Pablo
-  Galindo
+- gh-94360: Fixed a tokenizer crash when reading encoded files with syntax
+  errors from ``stdin`` with non utf-8 encoded text. Patch by Pablo Galindo
 
-- gh-issue-94192: Fix error for dictionary literals with invalid expression
-  as value.
+- gh-94192: Fix error for dictionary literals with invalid expression as
+  value.
 
-- gh-issue-93964: Strengthened compiler overflow checks to prevent crashes
-  when compiling very large source files.
+- gh-93964: Strengthened compiler overflow checks to prevent crashes when
+  compiling very large source files.
 
-- gh-issue-93671: Fix some exponential backtrace case happening with deeply
-  nested sequence patterns in match statements. Patch by Pablo Galindo
+- gh-93671: Fix some exponential backtrace case happening with deeply nested
+  sequence patterns in match statements. Patch by Pablo Galindo
 
-- gh-issue-93021: Fix the :attr:`__text_signature__` for :meth:`__get__`
-  methods implemented in C. Patch by Jelle Zijlstra.
+- gh-93021: Fix the :attr:`__text_signature__` for :meth:`__get__` methods
+  implemented in C. Patch by Jelle Zijlstra.
 
-- gh-issue-92930: Fixed a crash in ``_pickle.c`` from mutating collections
-  during ``__reduce__`` or ``persistent_id``.
+- gh-92930: Fixed a crash in ``_pickle.c`` from mutating collections during
+  ``__reduce__`` or ``persistent_id``.
 
-- gh-issue-92914: Always round the allocated size for lists up to the
-  nearest even number.
+- gh-92914: Always round the allocated size for lists up to the nearest even
+  number.
 
-- gh-issue-92858: Improve error message for some suites with syntax error
-  before ':'
+- gh-92858: Improve error message for some suites with syntax error before
+  ':'
 
 Library
 -------
 
-- gh-issue-95339: Update bundled pip to 22.2.1.
+- gh-95339: Update bundled pip to 22.2.1.
 
-- gh-issue-95045: Fix GC crash when deallocating ``_lsprof.Profiler`` by
+- gh-95045: Fix GC crash when deallocating ``_lsprof.Profiler`` by
   untracking it before calling any callbacks. Patch by Kumar Aditya.
 
-- gh-issue-95087: Fix IndexError in parsing invalid date in the :mod:`email`
+- gh-95087: Fix IndexError in parsing invalid date in the :mod:`email`
   module.
 
-- gh-issue-95199: Upgrade bundled setuptools to 63.2.0.
+- gh-95199: Upgrade bundled setuptools to 63.2.0.
 
-- gh-issue-95194: Upgrade bundled pip to 22.2.
+- gh-95194: Upgrade bundled pip to 22.2.
 
-- gh-issue-93899: Fix check for existence of :data:`os.EFD_CLOEXEC`,
+- gh-93899: Fix check for existence of :data:`os.EFD_CLOEXEC`,
   :data:`os.EFD_NONBLOCK` and :data:`os.EFD_SEMAPHORE` flags on older kernel
   versions where these flags are not present. Patch by Kumar Aditya.
 
-- gh-issue-95166: Fix :meth:`concurrent.futures.Executor.map` to cancel the
+- gh-95166: Fix :meth:`concurrent.futures.Executor.map` to cancel the
   currently waiting on future on an error - e.g. TimeoutError or
   KeyboardInterrupt.
 
-- gh-issue-93157: Fix :mod:`fileinput` module didn't support ``errors``
-  option when ``inplace`` is true.
+- gh-93157: Fix :mod:`fileinput` module didn't support ``errors`` option
+  when ``inplace`` is true.
 
-- gh-issue-94821: Fix binding of unix socket to empty address on Linux to
-  use an available address from the abstract namespace, instead of "\0".
+- gh-94821: Fix binding of unix socket to empty address on Linux to use an
+  available address from the abstract namespace, instead of "\0".
 
-- gh-issue-94736: Fix crash when deallocating an instance of a subclass of
+- gh-94736: Fix crash when deallocating an instance of a subclass of
   ``_multiprocessing.SemLock``. Patch by Kumar Aditya.
 
-- gh-issue-94637: :meth:`SSLContext.set_default_verify_paths` now releases
-  the GIL around ``SSL_CTX_set_default_verify_paths`` call. The function
-  call performs I/O and CPU intensive work.
+- gh-94637: :meth:`SSLContext.set_default_verify_paths` now releases the GIL
+  around ``SSL_CTX_set_default_verify_paths`` call. The function call
+  performs I/O and CPU intensive work.
 
-- gh-issue-94510: Re-entrant calls to :func:`sys.setprofile` and
+- gh-94510: Re-entrant calls to :func:`sys.setprofile` and
   :func:`sys.settrace` now raise :exc:`RuntimeError`. Patch by Pablo
   Galindo.
 
-- gh-issue-92336: Fix bug where :meth:`linecache.getline` fails on bad files
-  with :exc:`UnicodeDecodeError` or :exc:`SyntaxError`. It now returns an
-  empty string as per the documentation.
+- gh-92336: Fix bug where :meth:`linecache.getline` fails on bad files with
+  :exc:`UnicodeDecodeError` or :exc:`SyntaxError`. It now returns an empty
+  string as per the documentation.
 
-- gh-issue-89988: Fix memory leak in :class:`pickle.Pickler` when looking up
+- gh-89988: Fix memory leak in :class:`pickle.Pickler` when looking up
   :attr:`dispatch_table`. Patch by Kumar Aditya.
 
-- gh-issue-94254: Fixed types of :mod:`struct` module to be immutable. Patch
-  by Kumar Aditya.
+- gh-94254: Fixed types of :mod:`struct` module to be immutable. Patch by
+  Kumar Aditya.
 
-- gh-issue-94245: Fix pickling and copying of ``typing.Tuple[()]``.
+- gh-94245: Fix pickling and copying of ``typing.Tuple[()]``.
 
-- gh-issue-94207: Made :class:`_struct.Struct` GC-tracked in order to fix a
+- gh-94207: Made :class:`_struct.Struct` GC-tracked in order to fix a
   reference leak in the :mod:`_struct` module.
 
-- gh-issue-94101: Manual instantiation of :class:`ssl.SSLSession` objects is
-  no longer allowed as it lead to misconfigured instances that crashed the
+- gh-94101: Manual instantiation of :class:`ssl.SSLSession` objects is no
+  longer allowed as it lead to misconfigured instances that crashed the
   interpreter when attributes where accessed on them.
 
-- gh-issue-84753: :func:`inspect.iscoroutinefunction`,
+- gh-84753: :func:`inspect.iscoroutinefunction`,
   :func:`inspect.isgeneratorfunction`, and
   :func:`inspect.isasyncgenfunction` now properly return ``True`` for
   duck-typed function-like objects like instances of
@@ -1192,46 +1277,45 @@ Library
   This makes :func:`inspect.iscoroutinefunction` consistent with the
   behavior of :func:`asyncio.iscoroutinefunction`.  Patch by Mehdi ABAAKOUK.
 
-- gh-issue-83499: Fix double closing of file description in :mod:`tempfile`.
+- gh-83499: Fix double closing of file description in :mod:`tempfile`.
 
-- gh-issue-79512: Fixed names and ``__module__`` value of :mod:`weakref`
-  classes :class:`~weakref.ReferenceType`, :class:`~weakref.ProxyType`,
+- gh-79512: Fixed names and ``__module__`` value of :mod:`weakref` classes
+  :class:`~weakref.ReferenceType`, :class:`~weakref.ProxyType`,
   :class:`~weakref.CallableProxyType`. It makes them pickleable.
 
-- gh-issue-90494: :func:`copy.copy` and :func:`copy.deepcopy` now always
-  raise a TypeError if ``__reduce__()`` returns a tuple with length 6
-  instead of silently ignore the 6th item or produce incorrect result.
+- gh-90494: :func:`copy.copy` and :func:`copy.deepcopy` now always raise a
+  TypeError if ``__reduce__()`` returns a tuple with length 6 instead of
+  silently ignore the 6th item or produce incorrect result.
 
-- gh-issue-90549: Fix a multiprocessing bug where a global named resource
-  (such as a semaphore) could leak when a child process is spawned (as
-  opposed to forked).
+- gh-90549: Fix a multiprocessing bug where a global named resource (such as
+  a semaphore) could leak when a child process is spawned (as opposed to
+  forked).
 
-- gh-issue-79579: :mod:`sqlite3` now correctly detects DML queries with
-  leading comments. Patch by Erlend E. Aasland.
+- gh-79579: :mod:`sqlite3` now correctly detects DML queries with leading
+  comments. Patch by Erlend E. Aasland.
 
-- gh-issue-93421: Update :data:`sqlite3.Cursor.rowcount` when a DML
-  statement has run to completion. This fixes the row count for SQL queries
-  like ``UPDATE ... RETURNING``. Patch by Erlend E. Aasland.
+- gh-93421: Update :data:`sqlite3.Cursor.rowcount` when a DML statement has
+  run to completion. This fixes the row count for SQL queries like ``UPDATE
+  ... RETURNING``. Patch by Erlend E. Aasland.
 
-- gh-issue-91810: Suppress writing an XML declaration in open files in
+- gh-91810: Suppress writing an XML declaration in open files in
   ``ElementTree.write()`` with ``encoding='unicode'`` and
   ``xml_declaration=None``.
 
-- gh-issue-93353: Fix the :func:`importlib.resources.as_file` context
-  manager to remove the temporary file if destroyed late during Python
-  finalization: keep a local reference to the :func:`os.remove` function.
-  Patch by Victor Stinner.
+- gh-93353: Fix the :func:`importlib.resources.as_file` context manager to
+  remove the temporary file if destroyed late during Python finalization:
+  keep a local reference to the :func:`os.remove` function. Patch by Victor
+  Stinner.
 
-- gh-issue-83658: Make :class:`multiprocessing.Pool` raise an exception if
+- gh-83658: Make :class:`multiprocessing.Pool` raise an exception if
   ``maxtasksperchild`` is not ``None`` or a positive int.
 
-- gh-issue-74696: :func:`shutil.make_archive` no longer temporarily changes
-  the current working directory during creation of standard ``.zip`` or tar
+- gh-74696: :func:`shutil.make_archive` no longer temporarily changes the
+  current working directory during creation of standard ``.zip`` or tar
   archives.
 
-- gh-issue-91577: Move imports in :class:`~multiprocessing.SharedMemory`
-  methods to module level so that they can be executed late in python
-  finalization.
+- gh-91577: Move imports in :class:`~multiprocessing.SharedMemory` methods
+  to module level so that they can be executed late in python finalization.
 
 - bpo-47231: Fixed an issue with inconsistent trailing slashes in tarfile
   longname directories.
@@ -1253,24 +1337,24 @@ Library
 Documentation
 -------------
 
-- gh-issue-94321: Document the :pep:`246` style protocol type
+- gh-94321: Document the :pep:`246` style protocol type
   :class:`sqlite3.PrepareProtocol`.
 
-- gh-issue-86128: Document a limitation in ThreadPoolExecutor where its exit
+- gh-86128: Document a limitation in ThreadPoolExecutor where its exit
   handler is executed before any handlers in atexit.
 
-- gh-issue-61162: Clarify :mod:`sqlite3` behavior when
+- gh-61162: Clarify :mod:`sqlite3` behavior when
   :ref:`sqlite3-connection-context-manager`.
 
-- gh-issue-87260: Align :mod:`sqlite3` argument specs with the actual
+- gh-87260: Align :mod:`sqlite3` argument specs with the actual
   implementation.
 
-- gh-issue-86986: The minimum Sphinx version required to build the
-  documentation is now 3.2.
+- gh-86986: The minimum Sphinx version required to build the documentation
+  is now 3.2.
 
-- gh-issue-88831: Augmented documentation of asyncio.create_task().
-  Clarified the need to keep strong references to tasks and added a code
-  snippet detailing how to do this.
+- gh-88831: Augmented documentation of asyncio.create_task(). Clarified the
+  need to keep strong references to tasks and added a code snippet detailing
+  how to do this.
 
 - bpo-47161: Document that :class:`pathlib.PurePath` does not collapse
   initial double slashes because they denote UNC paths.
@@ -1278,29 +1362,29 @@ Documentation
 Tests
 -----
 
-- gh-issue-95280: Fix problem with ``test_ssl`` ``test_get_ciphers`` on
-  systems that require perfect forward secrecy (PFS) ciphers.
+- gh-95280: Fix problem with ``test_ssl`` ``test_get_ciphers`` on systems
+  that require perfect forward secrecy (PFS) ciphers.
 
-- gh-issue-95212: Make multiprocessing test case
-  ``test_shared_memory_recreate`` parallel-safe.
+- gh-95212: Make multiprocessing test case ``test_shared_memory_recreate``
+  parallel-safe.
 
-- gh-issue-91330: Added more tests for :mod:`dataclasses` to cover behavior
-  with data descriptor-based fields.
+- gh-91330: Added more tests for :mod:`dataclasses` to cover behavior with
+  data descriptor-based fields.
 
-- gh-issue-94208: ``test_ssl`` is now checking for supported TLS version and
+- gh-94208: ``test_ssl`` is now checking for supported TLS version and
   protocols in more tests.
 
-- gh-issue-93951: In test_bdb.StateTestCase.test_skip, avoid including
-  auxiliary importers.
+- gh-93951: In test_bdb.StateTestCase.test_skip, avoid including auxiliary
+  importers.
 
-- gh-issue-93957: Provide nicer error reporting from subprocesses in
+- gh-93957: Provide nicer error reporting from subprocesses in
   test_venv.EnsurePipTest.test_with_pip.
 
-- gh-issue-57539: Increase calendar test coverage for
+- gh-57539: Increase calendar test coverage for
   :meth:`calendar.LocaleTextCalendar.formatweekday`.
 
-- gh-issue-92886: Fixing tests that fail when running with optimizations
-  (``-O``) in ``test_zipimport.py``
+- gh-92886: Fixing tests that fail when running with optimizations (``-O``)
+  in ``test_zipimport.py``
 
 - bpo-47016: Create a GitHub Actions workflow for verifying bundled pip and
   setuptools. Patch by Illia Volochii and Adam Turner.
@@ -1308,7 +1392,7 @@ Tests
 Build
 -----
 
-- gh-issue-94841: Fix the possible performance regression of
+- gh-94841: Fix the possible performance regression of
   :c:func:`PyObject_Free` compiled with MSVC version 1932.
 
 - bpo-45816: Python now supports building with Visual Studio 2022 (MSVC
@@ -1317,12 +1401,12 @@ Build
 Windows
 -------
 
-- gh-issue-90844: Allow virtual environments to correctly launch when they
-  have spaces in the path.
+- gh-90844: Allow virtual environments to correctly launch when they have
+  spaces in the path.
 
-- gh-issue-92841: :mod:`asyncio` no longer throws ``RuntimeError: Event loop
-  is closed`` on interpreter exit after asynchronous socket activity. Patch
-  by Oleg Iarygin.
+- gh-92841: :mod:`asyncio` no longer throws ``RuntimeError: Event loop is
+  closed`` on interpreter exit after asynchronous socket activity. Patch by
+  Oleg Iarygin.
 
 - bpo-42658: Support native Windows case-insensitive path comparisons by
   using ``LCMapStringEx`` instead of :func:`str.lower` in
@@ -1332,35 +1416,34 @@ Windows
 IDLE
 ----
 
-- gh-issue-95511: Fix the Shell context menu copy-with-prompts bug of
-  copying an extra line when one selects whole lines.
+- gh-95511: Fix the Shell context menu copy-with-prompts bug of copying an
+  extra line when one selects whole lines.
 
-- gh-issue-95471: In the Edit menu, move ``Select All`` and add a new
-  separator.
+- gh-95471: In the Edit menu, move ``Select All`` and add a new separator.
 
-- gh-issue-95411: Enable using IDLE's module browser with .pyw files.
+- gh-95411: Enable using IDLE's module browser with .pyw files.
 
-- gh-issue-89610: Add .pyi as a recognized extension for IDLE on macOS.
-  This allows opening stub files by double clicking on them in the Finder.
+- gh-89610: Add .pyi as a recognized extension for IDLE on macOS.    This
+  allows opening stub files by double clicking on them in the Finder.
 
 Tools/Demos
 -----------
 
-- gh-issue-94538: Fix Argument Clinic output to custom file destinations.
-  Patch by Erlend E. Aasland.
+- gh-94538: Fix Argument Clinic output to custom file destinations. Patch by
+  Erlend E. Aasland.
 
-- gh-issue-94430: Allow parameters named ``module`` and ``self`` with custom
-  C names in Argument Clinic. Patch by Erlend E. Aasland
+- gh-94430: Allow parameters named ``module`` and ``self`` with custom C
+  names in Argument Clinic. Patch by Erlend E. Aasland
 
 C API
 -----
 
-- gh-issue-94930: Fix ``SystemError`` raised when
+- gh-94930: Fix ``SystemError`` raised when
   :c:func:`PyArg_ParseTupleAndKeywords` is used with ``#`` in ``(...)`` but
   without ``PY_SSIZE_T_CLEAN`` defined.
 
-- gh-issue-94864: Fix ``PyArg_Parse*`` with deprecated format units "u" and
-  "Z". It returned 1 (success) when warnings are turned into exceptions.
+- gh-94864: Fix ``PyArg_Parse*`` with deprecated format units "u" and "Z".
+  It returned 1 (success) when warnings are turned into exceptions.
 
 
 What's New in Python 3.10.5 final?
@@ -1371,37 +1454,36 @@ What's New in Python 3.10.5 final?
 Core and Builtins
 -----------------
 
-- gh-issue-93418: Fixed an assert where an f-string has an equal sign '='
+- gh-93418: Fixed an assert where an f-string has an equal sign '='
   following an expression, but there's no trailing brace. For example,
   f"{i=".
 
-- gh-issue-91924: Fix ``__ltrace__`` debug feature if the stdout encoding is
-  not UTF-8. Patch by Victor Stinner.
+- gh-91924: Fix ``__ltrace__`` debug feature if the stdout encoding is not
+  UTF-8. Patch by Victor Stinner.
 
-- gh-issue-93061: Backward jumps after ``async for`` loops are no longer
-  given dubious line numbers.
+- gh-93061: Backward jumps after ``async for`` loops are no longer given
+  dubious line numbers.
 
-- gh-issue-93065: Fix contextvars HAMT implementation to handle iteration
-  over deep trees.
+- gh-93065: Fix contextvars HAMT implementation to handle iteration over
+  deep trees.
 
   The bug was discovered and fixed by Eli Libman. See
   `MagicStack/immutables#84
   <https://github.com/MagicStack/immutables/issues/84>`_ for more details.
 
-- gh-issue-92311: Fixed a bug where setting ``frame.f_lineno`` to jump over
-  a list comprehension could misbehave or crash.
+- gh-92311: Fixed a bug where setting ``frame.f_lineno`` to jump over a list
+  comprehension could misbehave or crash.
 
-- gh-issue-92112: Fix crash triggered by an evil custom ``mro()`` on a
-  metaclass.
+- gh-92112: Fix crash triggered by an evil custom ``mro()`` on a metaclass.
 
-- gh-issue-92036: Fix a crash in subinterpreters related to the garbage
-  collector. When a subinterpreter is deleted, untrack all objects tracked
-  by its GC. To prevent a crash in deallocator functions expecting objects
-  to be tracked by the GC, leak a strong reference to these objects on
-  purpose, so they are never deleted and their deallocator functions are not
-  called. Patch by Victor Stinner.
+- gh-92036: Fix a crash in subinterpreters related to the garbage collector.
+  When a subinterpreter is deleted, untrack all objects tracked by its GC.
+  To prevent a crash in deallocator functions expecting objects to be
+  tracked by the GC, leak a strong reference to these objects on purpose, so
+  they are never deleted and their deallocator functions are not called.
+  Patch by Victor Stinner.
 
-- gh-issue-91421: Fix a potential integer overflow in _Py_DecodeUTF8Ex.
+- gh-91421: Fix a potential integer overflow in _Py_DecodeUTF8Ex.
 
 - bpo-47212: Raise :exc:`IndentationError` instead of :exc:`SyntaxError` for
   a bare ``except`` with no following indent. Improve :exc:`SyntaxError`
@@ -1441,30 +1523,30 @@ Core and Builtins
 Library
 -------
 
-- gh-issue-93156: Accessing the :attr:`pathlib.PurePath.parents` sequence of
-  an absolute path using negative index values produced incorrect results.
+- gh-93156: Accessing the :attr:`pathlib.PurePath.parents` sequence of an
+  absolute path using negative index values produced incorrect results.
 
-- gh-issue-89973: Fix :exc:`re.error` raised in :mod:`fnmatch` if the
-  pattern contains a character range with upper bound lower than lower bound
-  (e.g. ``[c-a]``). Now such ranges are interpreted as empty ranges.
+- gh-89973: Fix :exc:`re.error` raised in :mod:`fnmatch` if the pattern
+  contains a character range with upper bound lower than lower bound (e.g.
+  ``[c-a]``). Now such ranges are interpreted as empty ranges.
 
-- gh-issue-93010: In a very special case, the email package tried to append
-  the nonexistent ``InvalidHeaderError`` to the defect list. It should have
-  been ``InvalidHeaderDefect``.
+- gh-93010: In a very special case, the email package tried to append the
+  nonexistent ``InvalidHeaderError`` to the defect list. It should have been
+  ``InvalidHeaderDefect``.
 
-- gh-issue-92839: Fixed crash resulting from calling bisect.insort() or
+- gh-92839: Fixed crash resulting from calling bisect.insort() or
   bisect.insort_left() with the key argument not equal to None.
 
-- gh-issue-91581: :meth:`~datetime.datetime.utcfromtimestamp` no longer
-  attempts to resolve ``fold`` in the pure Python implementation, since the
-  fold is never 1 in UTC. In addition to being slightly faster in the common
-  case, this also prevents some errors when the timestamp is close to
+- gh-91581: :meth:`~datetime.datetime.utcfromtimestamp` no longer attempts
+  to resolve ``fold`` in the pure Python implementation, since the fold is
+  never 1 in UTC. In addition to being slightly faster in the common case,
+  this also prevents some errors when the timestamp is close to
   :attr:`datetime.min <datetime.datetime.min>`.  Patch by Paul Ganssle.
 
-- gh-issue-92530: Fix an issue that occurred after interrupting
+- gh-92530: Fix an issue that occurred after interrupting
   :func:`threading.Condition.notify`.
 
-- gh-issue-92049: Forbid pickling constants ``re._constants.SUCCESS`` etc.
+- gh-92049: Forbid pickling constants ``re._constants.SUCCESS`` etc.
   Previously, pickling did not fail, but the result could not be unpickled.
 
 - bpo-47029: Always close the read end of the pipe used by
@@ -1473,57 +1555,57 @@ Library
   collection and at :meth:`multiprocessing.Queue.close` calls. Patch by Géry
   Ogam.
 
-- gh-issue-91401: Provide a fail-safe way to disable :mod:`subprocess` use
-  of ``vfork()`` via a private ``subprocess._USE_VFORK`` attribute. While
-  there is currently no known need for this, if you find a need please only
-  set it to ``False``. File a CPython issue as to why you needed it and link
-  to that from a comment in your code. This attribute is documented as a
+- gh-91401: Provide a fail-safe way to disable :mod:`subprocess` use of
+  ``vfork()`` via a private ``subprocess._USE_VFORK`` attribute. While there
+  is currently no known need for this, if you find a need please only set it
+  to ``False``. File a CPython issue as to why you needed it and link to
+  that from a comment in your code. This attribute is documented as a
   footnote in 3.11.
 
-- gh-issue-91910: Add missing f prefix to f-strings in error messages from
-  the :mod:`multiprocessing` and :mod:`asyncio` modules.
+- gh-91910: Add missing f prefix to f-strings in error messages from the
+  :mod:`multiprocessing` and :mod:`asyncio` modules.
 
-- gh-issue-91810: :class:`~xml.etree.ElementTree.ElementTree` method
+- gh-91810: :class:`~xml.etree.ElementTree.ElementTree` method
   :meth:`~xml.etree.ElementTree.ElementTree.write` and function
   :func:`~xml.etree.ElementTree.tostring` now use the text file's encoding
   ("UTF-8" if not available) instead of locale encoding in XML declaration
   when ``encoding="unicode"`` is specified.
 
-- gh-issue-91832: Add ``required`` attribute to :class:`argparse.Action`
-  repr output.
+- gh-91832: Add ``required`` attribute to :class:`argparse.Action` repr
+  output.
 
-- gh-issue-91734: Fix OSS audio support on Solaris.
+- gh-91734: Fix OSS audio support on Solaris.
 
-- gh-issue-91700: Compilation of regular expression containing a conditional
+- gh-91700: Compilation of regular expression containing a conditional
   expression ``(?(group)...)`` now raises an appropriate :exc:`re.error` if
   the group number refers to not defined group. Previously an internal
   RuntimeError was raised.
 
-- gh-issue-91676: Fix :class:`unittest.IsolatedAsyncioTestCase` to shutdown
-  the per test event loop executor before returning from its ``run`` method
-  so that a not yet stopped or garbage collected executor state does not
+- gh-91676: Fix :class:`unittest.IsolatedAsyncioTestCase` to shutdown the
+  per test event loop executor before returning from its ``run`` method so
+  that a not yet stopped or garbage collected executor state does not
   persist beyond the test.
 
-- gh-issue-90568: Parsing ``\N`` escapes of Unicode Named Character
-  Sequences in a :mod:`regular expression <re>` raises now :exc:`re.error`
-  instead of ``TypeError``.
+- gh-90568: Parsing ``\N`` escapes of Unicode Named Character Sequences in a
+  :mod:`regular expression <re>` raises now :exc:`re.error` instead of
+  ``TypeError``.
 
-- gh-issue-91595: Fix the comparison of character and integer inside
+- gh-91595: Fix the comparison of character and integer inside
   :func:`Tools.gdb.libpython.write_repr`. Patch by Yu Liu.
 
-- gh-issue-90622: Worker processes for
+- gh-90622: Worker processes for
   :class:`concurrent.futures.ProcessPoolExecutor` are no longer spawned on
   demand (a feature added in 3.9) when the multiprocessing context start
   method is ``"fork"`` as that can lead to deadlocks in the child processes
   due to a fork happening while threads are running.
 
-- gh-issue-91575: Update case-insensitive matching in the :mod:`re` module
-  to the latest Unicode version.
+- gh-91575: Update case-insensitive matching in the :mod:`re` module to the
+  latest Unicode version.
 
-- gh-issue-91581: Remove an unhandled error case in the C implementation of
-  calls to :meth:`datetime.fromtimestamp <datetime.datetime.fromtimestamp>`
-  with no time zone (i.e. getting a local time from an epoch timestamp).
-  This should have no user-facing effect other than giving a possibly more
+- gh-91581: Remove an unhandled error case in the C implementation of calls
+  to :meth:`datetime.fromtimestamp <datetime.datetime.fromtimestamp>` with
+  no time zone (i.e. getting a local time from an epoch timestamp). This
+  should have no user-facing effect other than giving a possibly more
   accurate error message when called with timestamps that fall on
   10000-01-01 in the local time. Patch by Paul Ganssle.
 
@@ -1582,20 +1664,20 @@ Library
 Documentation
 -------------
 
-- gh-issue-86438: Clarify that :option:`-W` and :envvar:`PYTHONWARNINGS` are
+- gh-86438: Clarify that :option:`-W` and :envvar:`PYTHONWARNINGS` are
   matched literally and case-insensitively, rather than as regular
   expressions, in :mod:`warnings`.
 
-- gh-issue-92240: Added release dates for "What's New in Python 3.X" for
-  3.0, 3.1, 3.2, 3.8 and 3.10
+- gh-92240: Added release dates for "What's New in Python 3.X" for 3.0, 3.1,
+  3.2, 3.8 and 3.10
 
-- gh-issue-91888: Add a new ``gh`` role to the documentation to link to
-  GitHub issues.
+- gh-91888: Add a new ``gh`` role to the documentation to link to GitHub
+  issues.
 
-- gh-issue-91783: Document security issues concerning the use of the
-  function :meth:`shutil.unpack_archive`
+- gh-91783: Document security issues concerning the use of the function
+  :meth:`shutil.unpack_archive`
 
-- gh-issue-91547: Remove "Undocumented modules" page.
+- gh-91547: Remove "Undocumented modules" page.
 
 - bpo-44347: Clarify the meaning of *dirs_exist_ok*, a kwarg of
   :func:`shutil.copytree`.
@@ -1640,20 +1722,18 @@ Documentation
 Tests
 -----
 
-- gh-issue-92886: Fixing tests that fail when running with optimizations
-  (``-O``) in ``test_imaplib.py``.
+- gh-92886: Fixing tests that fail when running with optimizations (``-O``)
+  in ``test_imaplib.py``.
 
-- gh-issue-92670: Skip
-  ``test_shutil.TestCopy.test_copyfile_nonexistent_dir`` test on AIX as the
-  test uses a trailing slash to force the OS consider the path as a
-  directory, but on AIX the trailing slash has no effect and is considered
-  as a file.
+- gh-92670: Skip ``test_shutil.TestCopy.test_copyfile_nonexistent_dir`` test
+  on AIX as the test uses a trailing slash to force the OS consider the path
+  as a directory, but on AIX the trailing slash has no effect and is
+  considered as a file.
 
-- gh-issue-91904: Fix initialization of
-  :envvar:`PYTHONREGRTEST_UNICODE_GUARD` which prevented running regression
-  tests on non-UTF-8 locale.
+- gh-91904: Fix initialization of :envvar:`PYTHONREGRTEST_UNICODE_GUARD`
+  which prevented running regression tests on non-UTF-8 locale.
 
-- gh-issue-91607: Fix ``test_concurrent_futures`` to test the correct
+- gh-91607: Fix ``test_concurrent_futures`` to test the correct
   multiprocessing start method context in several cases where the test logic
   mixed this up.
 
@@ -1677,8 +1757,7 @@ Build
 Windows
 -------
 
-- gh-issue-92984: Explicitly disable incremental linking for non-Debug
-  builds
+- gh-92984: Explicitly disable incremental linking for non-Debug builds
 
 - bpo-47194: Update ``zlib`` to v1.2.12 to resolve CVE-2018-25032.
 
@@ -1691,8 +1770,8 @@ Windows
 Tools/Demos
 -----------
 
-- gh-issue-91583: Fix regression in the code generated by Argument Clinic
-  for functions with the ``defining_class`` parameter.
+- gh-91583: Fix regression in the code generated by Argument Clinic for
+  functions with the ``defining_class`` parameter.
 
 
 What's New in Python 3.10.4 final?
