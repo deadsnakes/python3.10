@@ -27,4 +27,3 @@ argparse-no-shutil.diff
 0036-allow-older-libmpdec.patch
 0028-sysconfigdata-name.patch
 0029-destshared-location.patch
-0030-apply-upstream-patch-0a263ccd1f022df1d827f46656bc789.patch
