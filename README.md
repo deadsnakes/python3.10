@@ -1,3 +1,8 @@
+# archived
+
+moved to [py3.10](https://github.com/deadsnakes/py3.10)
+
+___
 python3.10
 ==========
 
